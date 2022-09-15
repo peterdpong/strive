@@ -66,10 +66,10 @@ export default function BudgetUI() {
   }, 0);
 
   const categories = () => {
-    let categoryList: Array<CategoryType> = [];
+    const categoryList: Array<CategoryType> = [];
 
     expenses.forEach((expense) => {
-      for (var i = 0; i < categoryList.length; i++) {
+      for (let i = 0; i < categoryList.length; i++) {
         if (expense.category === categoryList[i].name) {
           categoryList[i].amount += expense.amount;
           return;
@@ -119,7 +119,7 @@ export default function BudgetUI() {
                 h="100%"
                 backgroundColor={colors[i]}
                 key={i}
-              ></Box>
+              />
             ))}
           </Flex>
         </Box>
