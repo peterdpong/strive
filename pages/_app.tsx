@@ -4,8 +4,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { initializeApp } from "firebase/app";
 import { initializeAuth } from "firebase/auth";
 import { FirebaseAppProvider, AuthProvider } from "reactfire";
-
-import config from "~config";
+import config from "../config";
 
 function App({ Component, pageProps }: AppProps) {
   const app = initializeApp(config.firebase);
