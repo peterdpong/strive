@@ -28,5 +28,10 @@ export function useSignUpWithEmailAndPassword() {
     [auth, setData, setLoading, setError]
   );
 
-  return [signUp, loading, data, error];
+  return [signUp, data, loading, error] as [
+    typeof signUp,
+    typeof data,
+    typeof loading,
+    typeof error
+  ];
 }
