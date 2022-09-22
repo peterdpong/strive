@@ -1,25 +1,25 @@
 import React, { FormEvent, useCallback, useEffect } from "react";
-import { useSignUpWithEmailAndPassword } from "../src/firebase/firebase-auth";
+import { useSignUpWithEmailAndPassword } from "../src/hooks/auth/useSignUpWithEmailAndPassword";
 
 function EmailSignUpForm(
   props: React.PropsWithChildren<{
     onSignUp: () => void;
   }>
 ) {
-  // TODO(Peter): Cleanup signup with email hook -> see firebase-auth.ts
-  const [signUp, data, loading, error] = useSignUpWithEmailAndPassword();
+  const [signUp, state] = useSignUpWithEmailAndPassword();
 
+  // useEffect hook to trigger once auth state is set to success
   useEffect(() => {
-    if (data !== undefined) {
+    if (state.success) {
       props.onSignUp();
     }
-  }, [props, data]);
+  }, [props, state.success]);
 
   const onSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
-      if (loading) return;
+      if (state.loading) return;
 
       const data = new FormData(event.currentTarget);
 
@@ -28,12 +28,11 @@ function EmailSignUpForm(
 
       return signUp(email, password);
     },
-    [loading, signUp]
+    [state.loading, signUp]
   );
 
-  console.log(data);
-
   // TODO(Peter): Styling and use CharkaUI components
+  // TODO(Peter): Better form control
   return (
     <form onSubmit={onSubmit}>
       <div>
@@ -53,9 +52,9 @@ function EmailSignUpForm(
           className="TextField"
         />
 
-        {error ? <span>{error.message}</span> : null}
+        {state.error ? <span>{state.error.message}</span> : null}
 
-        <button disabled={loading}>Sign Up</button>
+        <button disabled={state.loading}>Sign Up</button>
       </div>
     </form>
   );
