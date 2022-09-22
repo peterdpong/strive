@@ -6,6 +6,7 @@ function EmailSignUpForm(
     onSignUp: () => void;
   }>
 ) {
+  // TODO(Peter): Cleanup signup with email hook -> see firebase-auth.ts
   const [signUp, data, loading, error] = useSignUpWithEmailAndPassword();
 
   useEffect(() => {
@@ -32,9 +33,10 @@ function EmailSignUpForm(
 
   console.log(data);
 
+  // TODO(Peter): Styling and use CharkaUI components
   return (
     <form onSubmit={onSubmit}>
-      <div className={"flex-col space-y-6"}>
+      <div>
         <input
           required
           placeholder="Your Email"
@@ -51,11 +53,9 @@ function EmailSignUpForm(
           className="TextField"
         />
 
-        {error ? <span className="text-red-500">{error.message}</span> : null}
+        {error ? <span>{error.message}</span> : null}
 
-        <button disabled={loading} className="Button w-full">
-          Sign Up
-        </button>
+        <button disabled={loading}>Sign Up</button>
       </div>
     </form>
   );

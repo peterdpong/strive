@@ -5,6 +5,8 @@ import { useAuth } from "reactfire";
 
 export function useSignUpWithEmailAndPassword() {
   const auth = useAuth();
+
+  // TODO(Peter): Clean up this state management and add success state
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<UserCredential | undefined>(undefined);
   const [error, setError] = useState<FirebaseError | undefined>(undefined);
