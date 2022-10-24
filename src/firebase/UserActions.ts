@@ -3,11 +3,13 @@ import { firestoreDB } from "./firebase";
 
 export const addNewUser = async (
   uid: string,
+  email: string,
   firstName: string,
   lastName: string
 ) => {
   try {
     await setDoc(doc(firestoreDB, "users", uid), {
+      email,
       firstName,
       lastName,
     });

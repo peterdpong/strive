@@ -16,7 +16,12 @@ export function useSignUpWithEmailAndPassword() {
       try {
         await createUserWithEmailAndPassword(auth, email, password).then(
           async (userCredentials: UserCredential) => {
-            addNewUser(userCredentials.user.uid, "cool", "beans");
+            addNewUser(
+              userCredentials.user.uid,
+              email,
+              "firstNamePlaceholder",
+              "lastNamePlaceholder"
+            );
             setData(userCredentials);
           }
         );
