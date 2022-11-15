@@ -10,18 +10,18 @@ export function useSignUpWithEmailAndPassword() {
   const { state, setLoading, setData, setError } = useAuthRequestState();
 
   const signUp = useCallback(
-    async (email: string, password: string) => {
+    async (
+      email: string,
+      password: string,
+      firstName: string,
+      lastName: string
+    ) => {
       setLoading(true);
 
       try {
         await createUserWithEmailAndPassword(auth, email, password).then(
           async (userCredentials: UserCredential) => {
-            addNewUser(
-              userCredentials.user.uid,
-              email,
-              "firstNamePlaceholder",
-              "lastNamePlaceholder"
-            );
+            addNewUser(userCredentials.user.uid, email, firstName, lastName);
             setData(userCredentials);
           }
         );

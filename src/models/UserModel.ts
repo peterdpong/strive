@@ -5,6 +5,24 @@ export type UserModel = {
   lastName: string;
 };
 
+export type UserFinancials = {
+  income: number;
+  fixedCosts: number;
+  accounts: Account[];
+};
+
+export enum AccountType {
+  SAVINGS,
+  CHEQUINGS,
+  TFSA,
+  RRSP,
+  GIC,
+}
+
+export type Account = {
+  type: AccountType;
+};
+
 export const createUserModel = (
   uid: string,
   email: string,

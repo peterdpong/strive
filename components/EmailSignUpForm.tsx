@@ -25,8 +25,10 @@ function EmailSignUpForm(
 
       const email = data.get("email") as string;
       const password = data.get("password") as string;
+      const firstName = data.get("firstName") as string;
+      const lastName = data.get("lastName") as string;
 
-      return signUp(email, password);
+      return signUp(email, password, firstName, lastName);
     },
     [state.loading, signUp]
   );
@@ -41,6 +43,22 @@ function EmailSignUpForm(
           placeholder="Your Email"
           name="email"
           type="email"
+          className="TextField"
+        />
+
+        <input
+          required
+          placeholder="First Name"
+          name="firstName"
+          type="text"
+          className="TextField"
+        />
+
+        <input
+          required
+          placeholder="Last Name"
+          name="lastName"
+          type="text"
           className="TextField"
         />
 
