@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Container,
   Divider,
@@ -11,7 +12,6 @@ import {
   NumberInputField,
   NumberInputStepper,
   Radio,
-  RadioGroup,
   Slider,
   SliderFilledTrack,
   SliderThumb,
@@ -20,77 +20,83 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { Formik } from "formik";
+import {
+  NumberInputControl,
+  RadioGroupControl,
+  SliderControl,
+  SubmitButton,
+} from "formik-chakra-ui";
 
 const format = (val: number) => `$` + val;
-const parse = (val: string) => parseFloat(val.replace(/^\$/, ""));
 
 export default function GoalPage() {
-  const [goalValue, setGoalValue] = useState<number>(25000);
-  const [goalType, setGoalType] = useState<string>("timeframe");
-
   return (
-    <Container
-      bg={"gray.400"}
-      maxW="container.lg"
-      rounded={"5px"}
-      my={"25px"}
-      p={"25px"}
+    <Formik
+      initialValues={{
+        goalType: "timeframe",
+        goalValue: 25000,
+      }}
+      onSubmit={(values, actions) => {
+        console.log(values);
+        alert(JSON.stringify(values, null, 2));
+        actions.resetForm;
+      }}
     >
-      <Heading>Goal Creation</Heading>
-      <Text fontSize={"lg"}>Where do you want to be financially?</Text>
-
-      <Divider borderColor={"currentcolor"} py={"10px"} />
-
-      <FormLabel fontSize={"xl"}>What&apos;s you net worth goal?</FormLabel>
-      <HStack spacing={"8px"}>
-        <Slider
-          aria-label="slider-ex-1"
-          onChange={(value) => setGoalValue(value)}
-          value={goalValue}
-          defaultValue={goalValue}
-          min={5000}
-          max={1000000}
+      {({ handleSubmit, values }) => (
+        <Container
+          bg={"gray.400"}
+          maxW="container.lg"
+          rounded={"5px"}
+          my={"25px"}
+          p={"25px"}
+          as="form"
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onSubmit={handleSubmit as any}
         >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
+          <Heading>Goal Creation</Heading>
+          <Text fontSize={"lg"}>Where do you want to be financially?</Text>
 
-        <NumberInput
-          step={1000}
-          onChange={(value) => setGoalValue(parse(value))}
-          value={format(goalValue)}
-          defaultValue={goalValue}
-          min={5000}
-          max={1000000}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </HStack>
+          <Divider borderColor={"currentcolor"} py={"10px"} />
 
-      <Divider borderColor={"currentcolor"} py={"10px"} />
-      <FormLabel fontSize={"xl"}>Time or Monthly Savings goal?</FormLabel>
-      <RadioGroup
-        value={goalType}
-        onChange={(value) => setGoalType(value)}
-        defaultValue="timeframe"
-      >
-        <HStack spacing="24px">
-          <Radio value="timeframe">Timeframe</Radio>
-          <Radio value="monthly">Monthly Savings</Radio>
-        </HStack>
-      </RadioGroup>
+          <FormLabel fontSize={"xl"}>What&apos;s you net worth goal?</FormLabel>
+          <HStack spacing={"8px"}>
+            <SliderControl
+              name="goalValue"
+              sliderProps={{ min: 5000, max: 1000000 }}
+            />
 
-      <Divider borderColor={"currentcolor"} py={"10px"} />
-      {goalType === "timeframe" ? <Timeframe /> : <Monthly />}
+            <NumberInputControl
+              name="goalValue"
+              numberInputProps={{
+                step: 1000,
+                min: 5000,
+                max: 1000000,
+                value: format(values.goalValue),
+              }}
+            />
+          </HStack>
 
-      <Button>Next step</Button>
-    </Container>
+          <Divider borderColor={"currentcolor"} py={"10px"} />
+          {/* <FormLabel fontSize={"xl"}>Time or Monthly Savings goal?</FormLabel> */}
+          <RadioGroupControl
+            name="goalType"
+            label="Time or Monthly Savings goal? "
+          >
+            <Radio value="timeframe">Timeframe</Radio>
+            <Radio value="monthly">Monthly Savings</Radio>
+          </RadioGroupControl>
+
+          <Divider borderColor={"currentcolor"} py={"10px"} />
+          {values.goalType === "timeframe" ? <Timeframe /> : <Monthly />}
+          <SubmitButton>Next Step</SubmitButton>
+          <Box as="pre" marginY={10}>
+            {JSON.stringify(values, null, 2)}
+            <br />
+          </Box>
+        </Container>
+      )}
+    </Formik>
   );
 }
 

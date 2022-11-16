@@ -13,6 +13,8 @@
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "firebase": "^9.9.4",
+    "formik": "^2.2.9",
+    "formik-chakra-ui": "^1.6.1",
     "framer-motion": "^7.3.2",
     "next": "12.2.5",
     "react": "18.2.0",
