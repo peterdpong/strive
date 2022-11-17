@@ -14,14 +14,12 @@ import {
   Heading,
   HStack,
   Stat,
-  StatArrow,
   StatHelpText,
   StatLabel,
   StatNumber,
   Text,
   VStack,
   Card,
-  CardHeader,
   CardBody,
   Table,
   Thead,
@@ -33,6 +31,7 @@ import {
   SimpleGrid,
   CardFooter,
 } from "@chakra-ui/react";
+import { CheckIcon } from "@chakra-ui/icons";
 
 import {
   Chart as ChartJS,
@@ -149,7 +148,7 @@ export default function Dashboard() {
                 <StatLabel fontSize="xl">Net Worth</StatLabel>
                 <StatNumber fontSize="3xl">$123.56</StatNumber>
                 <StatHelpText fontSize="lg">
-                  <StatArrow type="increase" />
+                  <CheckIcon mr={2} />
                   On track
                 </StatHelpText>
               </Stat>
@@ -160,7 +159,7 @@ export default function Dashboard() {
                 <StatLabel fontSize="xl">Lower food spending</StatLabel>
                 <StatNumber fontSize="3xl">$123.56</StatNumber>
                 <StatHelpText fontSize="lg">
-                  <StatArrow type="increase" />
+                  <CheckIcon mr={2} />
                   On track
                 </StatHelpText>
               </Stat>
@@ -291,7 +290,12 @@ export default function Dashboard() {
               </Button>
             </GridItem>
             <GridItem colSpan={2}>
-              <Heading size="lg">Your accounts</Heading>
+              <HStack my={2} justifyContent="space-between">
+                <Heading size="lg">Your accounts</Heading>
+                <Button size="sm" colorScheme="green">
+                  New account
+                </Button>
+              </HStack>
               <SimpleGrid
                 spacing={4}
                 templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
