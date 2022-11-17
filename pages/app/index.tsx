@@ -15,7 +15,6 @@ import {
   HStack,
   Stat,
   StatArrow,
-  StatGroup,
   StatHelpText,
   StatLabel,
   StatNumber,
