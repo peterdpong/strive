@@ -131,7 +131,16 @@ export default function Dashboard() {
         </HStack>
 
         <Box py={2}>
-          <Heading size="lg">Your goals</Heading>
+          <HStack>
+            <Heading size="lg">Your goals</Heading>
+            <Button
+              onClick={() => router.push("app/goals")}
+              size="xs"
+              variant="outline"
+            >
+              See all goals
+            </Button>
+          </HStack>
           <Divider my={1} />
           <HStack justifyContent="space-between" align="flex-start">
             <VStack align="flex-start">
@@ -141,7 +150,7 @@ export default function Dashboard() {
                 <StatNumber fontSize="3xl">$123.56</StatNumber>
                 <StatHelpText fontSize="lg">
                   <StatArrow type="increase" />
-                  On track!
+                  On track
                 </StatHelpText>
               </Stat>
             </VStack>
@@ -152,7 +161,7 @@ export default function Dashboard() {
                 <StatNumber fontSize="3xl">$123.56</StatNumber>
                 <StatHelpText fontSize="lg">
                   <StatArrow type="increase" />
-                  On track!
+                  On track
                 </StatHelpText>
               </Stat>
             </VStack>
@@ -175,16 +184,16 @@ export default function Dashboard() {
 
         <Box py={2}>
           <Card>
-            <CardHeader>
-              <Heading size="lg">Your suggestions</Heading>
-            </CardHeader>
             <CardBody>
+              <Heading my={2} size="lg">
+                Your suggestions and alerts
+              </Heading>
               <Accordion allowMultiple>
                 <AccordionItem>
                   <h2>
                     <AccordionButton>
                       <Box flex="1" textAlign="left">
-                        Suggestion 1
+                        Unused TFSA Room
                       </Box>
                       <Badge colorScheme="green">Savings opportunity</Badge>
                       <AccordionIcon />
@@ -202,7 +211,7 @@ export default function Dashboard() {
                   <h2>
                     <AccordionButton>
                       <Box flex="1" textAlign="left">
-                        Suggestion 2
+                        Spending on entertainment 15% greater than last month
                       </Box>
                       <Badge colorScheme="red">Increased spending</Badge>
                       <AccordionIcon />
@@ -294,6 +303,8 @@ export default function Dashboard() {
                     <Stat>
                       <StatLabel>Current Balance</StatLabel>
                       <StatNumber>$123.56</StatNumber>
+                      <StatLabel>Payment Due</StatLabel>
+                      <StatNumber fontSize="md">Nov 26, 2022</StatNumber>
                     </Stat>
                   </CardBody>
                   <CardFooter>
@@ -312,6 +323,8 @@ export default function Dashboard() {
                       <Stat>
                         <StatLabel>Remaining Balance</StatLabel>
                         <StatNumber>$123.56</StatNumber>
+                        <StatLabel>Next Payment Due</StatLabel>
+                        <StatNumber fontSize="md">Nov 29, 2022</StatNumber>
                       </Stat>
                     </Box>
                   </CardBody>
@@ -322,7 +335,7 @@ export default function Dashboard() {
                   </CardFooter>
                 </Card>
                 <Card justify="space-between">
-                  <CardBody justifyContent="space-between">
+                  <CardBody>
                     <Box>
                       <Badge colorScheme="green">SAVINGS ACCOUNT</Badge>
                       <Heading size="sm"> Tangerine Savings Account </Heading>
