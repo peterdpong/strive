@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import EmailSignInForm from "../../components/EmailSignInForm";
+import EmailSignInForm from "../components/EmailSignInForm";
 
 const SignIn = () => {
   const router = useRouter();

@@ -1,7 +1,8 @@
 import { FirebaseError } from "firebase/app";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, UserCredential } from "firebase/auth";
 import { useCallback } from "react";
 import { useAuth } from "reactfire";
+import { addNewUser } from "../../firebase/UserActions";
 import { useAuthRequestState } from "./useAuthRequestState";
 
 export function useSignUpWithEmailAndPassword() {
@@ -9,17 +10,21 @@ export function useSignUpWithEmailAndPassword() {
   const { state, setLoading, setData, setError } = useAuthRequestState();
 
   const signUp = useCallback(
-    async (email: string, password: string) => {
+    async (
+      email: string,
+      password: string,
+      firstName: string,
+      lastName: string
+    ) => {
       setLoading(true);
 
       try {
-        const credentials = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
+        await createUserWithEmailAndPassword(auth, email, password).then(
+          async (userCredentials: UserCredential) => {
+            addNewUser(userCredentials.user.uid, email, firstName, lastName);
+            setData(userCredentials);
+          }
         );
-
-        setData(credentials);
       } catch (error) {
         setError(error as FirebaseError);
       }

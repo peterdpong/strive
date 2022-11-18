@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import EmailSignUpForm from "../../components/EmailSignUpForm";
+import EmailSignUpForm from "../components/EmailSignUpForm";
 
 const SignUp = () => {
   const router = useRouter();

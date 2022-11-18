@@ -1,17 +1,15 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
-import { initializeApp } from "firebase/app";
 import { initializeAuth } from "firebase/auth";
 import { FirebaseAppProvider, AuthProvider } from "reactfire";
-import config from "../config";
+import { firebaseApp } from "../src/firebase/firebase";
 
 function App({ Component, pageProps }: AppProps) {
-  const app = initializeApp(config.firebase);
-  const auth = initializeAuth(app);
+  const auth = initializeAuth(firebaseApp);
 
   return (
-    <FirebaseAppProvider firebaseApp={app}>
+    <FirebaseAppProvider firebaseApp={firebaseApp}>
       <AuthProvider sdk={auth}>
         <ChakraProvider>
           <Component {...pageProps} />
