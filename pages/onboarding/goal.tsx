@@ -6,20 +6,9 @@ import {
   FormLabel,
   Heading,
   HStack,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
   Radio,
-  Slider,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderTrack,
-  Stack,
   Text,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { Formik } from "formik";
 import {
   NumberInputControl,
@@ -36,6 +25,8 @@ export default function GoalPage() {
       initialValues={{
         goalType: "timeframe",
         goalValue: 25000,
+        monthlyAmount: 500,
+        timeframeValue: 5,
       }}
       onSubmit={(values, actions) => {
         console.log(values);
@@ -78,7 +69,6 @@ export default function GoalPage() {
           </HStack>
 
           <Divider borderColor={"currentcolor"} py={"10px"} />
-          {/* <FormLabel fontSize={"xl"}>Time or Monthly Savings goal?</FormLabel> */}
           <RadioGroupControl
             name="goalType"
             label="Time or Monthly Savings goal? "
@@ -88,7 +78,50 @@ export default function GoalPage() {
           </RadioGroupControl>
 
           <Divider borderColor={"currentcolor"} py={"10px"} />
-          {values.goalType === "timeframe" ? <Timeframe /> : <Monthly />}
+          {values.goalType === "timeframe" ? (
+            <>
+              <FormLabel fontSize={"xl"}>
+                By when do you want to achieve your goal?
+              </FormLabel>
+              <HStack spacing={"8px"}>
+                <SliderControl
+                  name="timeframeValue"
+                  sliderProps={{ min: 1, max: 20 }}
+                />
+
+                <NumberInputControl
+                  name="timeframeValue"
+                  numberInputProps={{
+                    min: 1,
+                    max: 20,
+                    value: values.timeframeValue,
+                  }}
+                />
+              </HStack>
+            </>
+          ) : (
+            <HStack justifyContent={"space-evenly"}>
+              <RadioGroupControl
+                name="monthlyAmount"
+                label="How much would you like to save every month?"
+              >
+                <Radio value="1000">$1000</Radio>
+                <Radio value="2000">$2000</Radio>
+                <Radio value="3000">$3000</Radio>
+                <Radio value="4000">$4000</Radio>
+                <Radio value="5000">$5000</Radio>
+              </RadioGroupControl>
+              <NumberInputControl
+                name="monthlyAmount"
+                numberInputProps={{
+                  step: 100,
+                  min: 1,
+                  max: 25000,
+                  value: format(values.monthlyAmount),
+                }}
+              />
+            </HStack>
+          )}
           <SubmitButton>Next Step</SubmitButton>
           <Box as="pre" marginY={10}>
             {JSON.stringify(values, null, 2)}
@@ -97,74 +130,5 @@ export default function GoalPage() {
         </Container>
       )}
     </Formik>
-  );
-}
-
-function Timeframe() {
-  const [timeframeValue, setTimeframeValue] = useState<number>(5);
-
-  return (
-    <>
-      <FormLabel fontSize={"xl"}>
-        By when do you want to achieve your goal?
-      </FormLabel>
-      <HStack spacing={"8px"}>
-        <Slider
-          aria-label="slider-ex-1"
-          onChange={(value) => setTimeframeValue(value)}
-          value={timeframeValue}
-          defaultValue={timeframeValue}
-          min={1}
-          max={20}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
-
-        <NumberInput
-          step={1}
-          onChange={(value) => setTimeframeValue(parseInt(value))}
-          value={timeframeValue}
-          defaultValue={timeframeValue}
-          min={1}
-          max={20}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </HStack>
-    </>
-  );
-}
-
-function Monthly() {
-  return (
-    <>
-      <FormLabel fontSize={"xl"}>
-        How much would you like to save every month?
-      </FormLabel>
-      <HStack justifyContent={"space-evenly"}>
-        <Button>$1000</Button>
-        <Button>$2000</Button>
-        <Button>$3000</Button>
-        <Button>$4000</Button>
-        <Button>$5000</Button>
-        <Stack>
-          <NumberInput step={100} min={1} max={25000}>
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <Text>Press enter to confirm.</Text>
-        </Stack>
-      </HStack>
-    </>
   );
 }
