@@ -15,10 +15,13 @@ import {
   SliderControl,
   SubmitButton,
 } from "formik-chakra-ui";
+import { useRouter } from "next/router";
 
 const format = (val: number) => `$` + val;
 
 export default function GoalPage() {
+  const router = useRouter();
+
   return (
     <Formik
       initialValues={{
@@ -29,13 +32,14 @@ export default function GoalPage() {
       }}
       onSubmit={(values, actions) => {
         console.log(values);
-        alert(JSON.stringify(values, null, 2));
+        //alert(JSON.stringify(values, null, 2));
         actions.resetForm;
+        router.push("/onboarding/financials");
       }}
     >
       {({ handleSubmit, values }) => (
         <Container
-          bg={"gray.400"}
+          bg={"gray.300"}
           maxW="container.lg"
           rounded={"5px"}
           my={"25px"}
@@ -121,6 +125,7 @@ export default function GoalPage() {
               />
             </HStack>
           )}
+          <Divider borderColor={"currentcolor"} my={2} />
           <SubmitButton>Next Step</SubmitButton>
           <Box as="pre" marginY={10}>
             {JSON.stringify(values, null, 2)}

@@ -1,164 +1,158 @@
 import {
+  Box,
   Button,
   Container,
   Divider,
+  Flex,
   FormLabel,
   Heading,
   HStack,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Radio,
-  RadioGroup,
-  Slider,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderTrack,
-  Stack,
+  Stat,
+  StatLabel,
+  StatNumber,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
+  Th,
+  Thead,
+  Tr,
+  VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { Formik } from "formik";
+import { SubmitButton } from "formik-chakra-ui";
+import { useRouter } from "next/router";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
 
-const format = (val: number) => `$` + val;
-const parse = (val: string) => parseFloat(val.replace(/^\$/, ""));
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+// Boilerplate data
+const data = {
+  labels: ["Food", "Entertainment", "Savings", "Unallocated"],
+  datasets: [
+    {
+      label: "$ Dollars",
+      data: [123, 23, 34, 45],
+      backgroundColor: [
+        "rgba(255, 99, 132, 0.2)",
+        "rgba(54, 162, 235, 0.2)",
+        "rgba(255, 206, 86, 0.2)",
+        "rgba(75, 192, 192, 0.2)",
+      ],
+      borderColor: [
+        "rgba(255, 99, 132, 1)",
+        "rgba(54, 162, 235, 1)",
+        "rgba(255, 206, 86, 1)",
+        "rgba(75, 192, 192, 1)",
+      ],
+      borderWidth: 1,
+    },
+  ],
+};
+
+const options = {
+  aspectRatio: 4,
+};
 
 export default function VariableBudgetPage() {
-  const [goalValue, setGoalValue] = useState<number>(25000);
-  const [goalType, setGoalType] = useState<string>("timeframe");
+  const router = useRouter();
 
   return (
-    <Container
-      bg={"gray.400"}
-      maxW="container.lg"
-      rounded={"5px"}
-      my={"25px"}
-      p={"25px"}
+    <Formik
+      initialValues={{
+        monthlyAllocations: [],
+      }}
+      onSubmit={(values, actions) => {
+        console.log(values);
+        //alert(JSON.stringify(values, null, 2));
+        actions.resetForm;
+        router.push("/onboarding/suggestions");
+      }}
     >
-      <Heading>Goal Creation</Heading>
-      <Text fontSize={"lg"}>Where do you want to be financially?</Text>
-
-      <Divider borderColor={"currentcolor"} py={"10px"} />
-
-      <FormLabel fontSize={"xl"}>What&apos;s you net worth goal?</FormLabel>
-      <HStack spacing={"8px"}>
-        <Slider
-          aria-label="slider-ex-1"
-          onChange={(value) => setGoalValue(value)}
-          value={goalValue}
-          defaultValue={goalValue}
-          min={5000}
-          max={1000000}
+      {({ handleSubmit, values }) => (
+        <Container
+          bg={"gray.300"}
+          maxW="container.lg"
+          rounded={"5px"}
+          my={"25px"}
+          p={"25px"}
+          as="form"
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onSubmit={handleSubmit as any}
         >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
+          <Button
+            size="sm"
+            onClick={() => router.push("/onboarding/financials")}
+          >
+            Back
+          </Button>
+          <Heading>Your variable budget</Heading>
+          <Flex>
+            <Box flex="2">
+              <VStack align="flex-start">
+                <Text fontSize={"lg"}>
+                  Allocate your remaining monthly budget
+                </Text>
+                <Stat>
+                  <StatLabel fontSize="xl">Remaining monthly budget</StatLabel>
+                  <StatNumber fontSize="3xl">$123.56</StatNumber>
+                </Stat>
+              </VStack>
+            </Box>
+            <Box flex="3">
+              <Doughnut data={data} options={options} />
+            </Box>
+          </Flex>
 
-        <NumberInput
-          step={1000}
-          onChange={(value) => setGoalValue(parse(value))}
-          value={format(goalValue)}
-          defaultValue={goalValue}
-          min={5000}
-          max={1000000}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </HStack>
+          <Divider borderColor={"currentcolor"} my={2} />
 
-      <Divider borderColor={"currentcolor"} py={"10px"} />
-      <FormLabel fontSize={"xl"}>Time or Monthly Savings goal?</FormLabel>
-      <RadioGroup
-        value={goalType}
-        onChange={(value) => setGoalType(value)}
-        defaultValue="timeframe"
-      >
-        <HStack spacing="24px">
-          <Radio value="timeframe">Timeframe</Radio>
-          <Radio value="monthly">Monthly Savings</Radio>
-        </HStack>
-      </RadioGroup>
+          <Box>
+            <HStack justifyContent="space-between" my={2}>
+              <FormLabel fontSize={"xl"}>Allocations</FormLabel>
+              <Button size="sm">Add monthly allocation</Button>
+            </HStack>
 
-      <Divider borderColor={"currentcolor"} py={"10px"} />
-      {goalType === "timeframe" ? <Timeframe /> : <Monthly />}
+            <TableContainer>
+              <Table size="sm">
+                <Thead>
+                  <Tr>
+                    <Th>Category</Th>
+                    <Th>Name</Th>
+                    <Th isNumeric>Allocation per month</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  <Tr>
+                    <Td>Food</Td>
+                    <Td>Payment</Td>
+                    <Td isNumeric>$15.32</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Entertainment</Td>
+                    <Td>Deposit</Td>
+                    <Td isNumeric>$30.48</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Savings</Td>
+                    <Td>Monthly Student Loan Payment</Td>
+                    <Td isNumeric>$200</Td>
+                  </Tr>
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </Box>
 
-      <Button>Next step</Button>
-    </Container>
-  );
-}
+          <Divider borderColor={"currentcolor"} my={2} />
 
-function Timeframe() {
-  const [timeframeValue, setTimeframeValue] = useState<number>(5);
-
-  return (
-    <>
-      <FormLabel fontSize={"xl"}>
-        By when do you want to achieve your goal?
-      </FormLabel>
-      <HStack spacing={"8px"}>
-        <Slider
-          aria-label="slider-ex-1"
-          onChange={(value) => setTimeframeValue(value)}
-          value={timeframeValue}
-          defaultValue={timeframeValue}
-          min={1}
-          max={20}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
-
-        <NumberInput
-          step={1}
-          onChange={(value) => setTimeframeValue(parseInt(value))}
-          value={timeframeValue}
-          defaultValue={timeframeValue}
-          min={1}
-          max={20}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </HStack>
-    </>
-  );
-}
-
-function Monthly() {
-  return (
-    <>
-      <FormLabel fontSize={"xl"}>
-        How much would you like to save every month?
-      </FormLabel>
-      <HStack justifyContent={"space-evenly"}>
-        <Button>$1000</Button>
-        <Button>$2000</Button>
-        <Button>$3000</Button>
-        <Button>$4000</Button>
-        <Button>$5000</Button>
-        <Stack>
-          <NumberInput step={100} min={1} max={25000}>
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <Text>Press enter to confirm.</Text>
-        </Stack>
-      </HStack>
-    </>
+          <SubmitButton>Next Step</SubmitButton>
+          <Box as="pre" marginY={10}>
+            {JSON.stringify(values, null, 2)}
+            <br />
+          </Box>
+        </Container>
+      )}
+    </Formik>
   );
 }

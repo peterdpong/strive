@@ -1,164 +1,167 @@
 import {
+  Box,
   Button,
   Container,
   Divider,
   FormLabel,
   Heading,
   HStack,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
   Radio,
-  RadioGroup,
-  Slider,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderTrack,
-  Stack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
   Text,
+  Th,
+  Thead,
+  Tr,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { Formik } from "formik";
+import {
+  NumberInputControl,
+  RadioGroupControl,
+  SubmitButton,
+} from "formik-chakra-ui";
+import { useRouter } from "next/router";
 
-const format = (val: number) => `$` + val;
-const parse = (val: string) => parseFloat(val.replace(/^\$/, ""));
-
-export default function FinancialsPage() {
-  const [goalValue, setGoalValue] = useState<number>(25000);
-  const [goalType, setGoalType] = useState<string>("timeframe");
+export default function FinancesPages() {
+  const router = useRouter();
 
   return (
-    <Container
-      bg={"gray.400"}
-      maxW="container.lg"
-      rounded={"5px"}
-      my={"25px"}
-      p={"25px"}
+    <Formik
+      initialValues={{
+        incomeValue: 0,
+        incomeIsAnnual: "true",
+        hoursPerWeek: 0,
+        timeframeValue: 5,
+        monthlyTransactions: [],
+      }}
+      onSubmit={(values, actions) => {
+        console.log(values);
+        //alert(JSON.stringify(values, null, 2));
+        actions.resetForm;
+        router.push("/onboarding/variablebudget");
+      }}
     >
-      <Heading>Goal Creation</Heading>
-      <Text fontSize={"lg"}>Where do you want to be financially?</Text>
-
-      <Divider borderColor={"currentcolor"} py={"10px"} />
-
-      <FormLabel fontSize={"xl"}>What&apos;s you net worth goal?</FormLabel>
-      <HStack spacing={"8px"}>
-        <Slider
-          aria-label="slider-ex-1"
-          onChange={(value) => setGoalValue(value)}
-          value={goalValue}
-          defaultValue={goalValue}
-          min={5000}
-          max={1000000}
+      {({ handleSubmit, values }) => (
+        <Container
+          bg={"gray.300"}
+          maxW="container.lg"
+          rounded={"5px"}
+          my={"25px"}
+          p={"25px"}
+          as="form"
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onSubmit={handleSubmit as any}
         >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
+          <Button size="sm" onClick={() => router.push("/onboarding/goal")}>
+            Back
+          </Button>
+          <Heading>Your Finances</Heading>
+          <Text fontSize={"lg"}>What does you finances look like?</Text>
 
-        <NumberInput
-          step={1000}
-          onChange={(value) => setGoalValue(parse(value))}
-          value={format(goalValue)}
-          defaultValue={goalValue}
-          min={5000}
-          max={1000000}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </HStack>
+          <Divider borderColor={"currentcolor"} py={"10px"} />
 
-      <Divider borderColor={"currentcolor"} py={"10px"} />
-      <FormLabel fontSize={"xl"}>Time or Monthly Savings goal?</FormLabel>
-      <RadioGroup
-        value={goalType}
-        onChange={(value) => setGoalType(value)}
-        defaultValue="timeframe"
-      >
-        <HStack spacing="24px">
-          <Radio value="timeframe">Timeframe</Radio>
-          <Radio value="monthly">Monthly Savings</Radio>
-        </HStack>
-      </RadioGroup>
+          <FormLabel fontSize={"xl"}>What&apos;s your income?</FormLabel>
+          <RadioGroupControl
+            name="incomeIsAnnual"
+            label="Income annual or hourly"
+            defaultValue="true"
+          >
+            <Radio value="true">Annual</Radio>
+            <Radio value="false">Hourly</Radio>
+          </RadioGroupControl>
 
-      <Divider borderColor={"currentcolor"} py={"10px"} />
-      {goalType === "timeframe" ? <Timeframe /> : <Monthly />}
+          <Divider borderColor={"currentcolor"} py={"10px"} />
+          {values.incomeIsAnnual === "true" ? (
+            <>
+              <FormLabel fontSize={"xl"}>Annual Income - $/year</FormLabel>
+              <NumberInputControl
+                name="incomeValue"
+                numberInputProps={{
+                  min: 1,
+                  max: 10000000,
+                  value: values.incomeValue,
+                }}
+              />
+            </>
+          ) : (
+            <>
+              <FormLabel fontSize={"xl"}>Hourly Income</FormLabel>
+              <HStack justifyContent={"space-evenly"}>
+                <NumberInputControl
+                  name="incomeValue"
+                  label="Hourly Salary - $/hr"
+                  numberInputProps={{
+                    min: 1,
+                    max: 250,
+                    value: values.incomeValue,
+                  }}
+                />
+                <NumberInputControl
+                  name="hoursPerWeek"
+                  label="Hours worked a week"
+                  numberInputProps={{
+                    step: 1,
+                    min: 1,
+                    max: 48,
+                    value: values.hoursPerWeek,
+                  }}
+                />
+              </HStack>
+            </>
+          )}
 
-      <Button>Next step</Button>
-    </Container>
-  );
-}
+          <Divider borderColor={"currentcolor"} my={2} />
 
-function Timeframe() {
-  const [timeframeValue, setTimeframeValue] = useState<number>(5);
+          <Box>
+            <HStack justifyContent="space-between" my={2}>
+              <FormLabel fontSize={"xl"}>
+                Fixed Monthly Transactions: Rent, Loan payments, and
+                subscriptions
+              </FormLabel>
+              <Button size="sm">Add monthly transactions</Button>
+            </HStack>
 
-  return (
-    <>
-      <FormLabel fontSize={"xl"}>
-        By when do you want to achieve your goal?
-      </FormLabel>
-      <HStack spacing={"8px"}>
-        <Slider
-          aria-label="slider-ex-1"
-          onChange={(value) => setTimeframeValue(value)}
-          value={timeframeValue}
-          defaultValue={timeframeValue}
-          min={1}
-          max={20}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
+            <TableContainer>
+              <Table size="sm">
+                <Thead>
+                  <Tr>
+                    <Th>Category</Th>
+                    <Th>Name</Th>
+                    <Th isNumeric>Amount per month</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  <Tr>
+                    <Td>Credit Card</Td>
+                    <Td>Payment</Td>
+                    <Td isNumeric>-$15.32</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Savings account</Td>
+                    <Td>Deposit</Td>
+                    <Td isNumeric>+$30.48</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>Student Loan</Td>
+                    <Td>Monthly Student Loan Payment</Td>
+                    <Td isNumeric>-$200</Td>
+                  </Tr>
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </Box>
 
-        <NumberInput
-          step={1}
-          onChange={(value) => setTimeframeValue(parseInt(value))}
-          value={timeframeValue}
-          defaultValue={timeframeValue}
-          min={1}
-          max={20}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </HStack>
-    </>
-  );
-}
+          <Divider borderColor={"currentcolor"} my={2} />
 
-function Monthly() {
-  return (
-    <>
-      <FormLabel fontSize={"xl"}>
-        How much would you like to save every month?
-      </FormLabel>
-      <HStack justifyContent={"space-evenly"}>
-        <Button>$1000</Button>
-        <Button>$2000</Button>
-        <Button>$3000</Button>
-        <Button>$4000</Button>
-        <Button>$5000</Button>
-        <Stack>
-          <NumberInput step={100} min={1} max={25000}>
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <Text>Press enter to confirm.</Text>
-        </Stack>
-      </HStack>
-    </>
+          <SubmitButton>Next Step</SubmitButton>
+          <Box as="pre" marginY={10}>
+            {JSON.stringify(values, null, 2)}
+            <br />
+          </Box>
+        </Container>
+      )}
+    </Formik>
   );
 }
