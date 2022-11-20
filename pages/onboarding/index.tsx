@@ -1,6 +1,9 @@
 import { Button, Container, Heading, Text } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 export default function OnboardingIndex() {
+  const router = useRouter();
+
   return (
     <Container
       bg={"gray.300"}
@@ -10,9 +13,11 @@ export default function OnboardingIndex() {
       p={"25px"}
       centerContent
     >
-      <Heading textAlign={"center"}>Welcome to financial-optimizer.</Heading>
-      <Text fontSize={"xl"}>Let&apos;s build your financial plan.</Text>
-      <Button>Get Started.</Button>
+      <Heading textAlign={"center"}>Welcome to Circulation.</Heading>
+      <Text fontSize={"xl"}>Your personal finance manager.</Text>
+      <Button onClick={() => router.push("onboarding/goal")}>
+        Get Started
+      </Button>
     </Container>
   );
 }
