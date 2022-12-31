@@ -25,6 +25,7 @@ import { SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import ProtectedPage from "../../components/ProtectedPage";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -60,99 +61,103 @@ export default function VariableBudgetPage() {
   const router = useRouter();
 
   return (
-    <Formik
-      initialValues={{
-        monthlyAllocations: [],
-      }}
-      onSubmit={(values, actions) => {
-        console.log(values);
-        //alert(JSON.stringify(values, null, 2));
-        actions.resetForm;
-        router.push("/onboarding/suggestions");
-      }}
-    >
-      {({ handleSubmit, values }) => (
-        <Container
-          bg={"gray.300"}
-          maxW="container.lg"
-          rounded={"5px"}
-          my={"25px"}
-          p={"25px"}
-          as="form"
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onSubmit={handleSubmit as any}
-        >
-          <Button
-            size="sm"
-            onClick={() => router.push("/onboarding/financials")}
+    <ProtectedPage whenSignedOut="login">
+      <Formik
+        initialValues={{
+          monthlyAllocations: [],
+        }}
+        onSubmit={(values, actions) => {
+          console.log(values);
+          //alert(JSON.stringify(values, null, 2));
+          actions.resetForm;
+          router.push("/onboarding/suggestions");
+        }}
+      >
+        {({ handleSubmit, values }) => (
+          <Container
+            bg={"gray.300"}
+            maxW="container.lg"
+            rounded={"5px"}
+            my={"25px"}
+            p={"25px"}
+            as="form"
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onSubmit={handleSubmit as any}
           >
-            Back
-          </Button>
-          <Heading>Your variable budget</Heading>
-          <Flex>
-            <Box flex="2">
-              <VStack align="flex-start">
-                <Text fontSize={"lg"}>
-                  Allocate your remaining monthly budget
-                </Text>
-                <Stat>
-                  <StatLabel fontSize="xl">Remaining monthly budget</StatLabel>
-                  <StatNumber fontSize="3xl">$123.56</StatNumber>
-                </Stat>
-              </VStack>
+            <Button
+              size="sm"
+              onClick={() => router.push("/onboarding/financials")}
+            >
+              Back
+            </Button>
+            <Heading>Your variable budget</Heading>
+            <Flex>
+              <Box flex="2">
+                <VStack align="flex-start">
+                  <Text fontSize={"lg"}>
+                    Allocate your remaining monthly budget
+                  </Text>
+                  <Stat>
+                    <StatLabel fontSize="xl">
+                      Remaining monthly budget
+                    </StatLabel>
+                    <StatNumber fontSize="3xl">$123.56</StatNumber>
+                  </Stat>
+                </VStack>
+              </Box>
+              <Box flex="3">
+                <Doughnut data={data} options={options} />
+              </Box>
+            </Flex>
+
+            <Divider borderColor={"currentcolor"} my={2} />
+
+            <Box>
+              <HStack justifyContent="space-between" my={2}>
+                <FormLabel fontSize={"xl"}>Allocations</FormLabel>
+                <Button size="sm">Add monthly allocation</Button>
+              </HStack>
+
+              <TableContainer>
+                <Table size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>Category</Th>
+                      <Th>Name</Th>
+                      <Th isNumeric>Allocation per month</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    <Tr>
+                      <Td>Food</Td>
+                      <Td>Payment</Td>
+                      <Td isNumeric>$15.32</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Entertainment</Td>
+                      <Td>Deposit</Td>
+                      <Td isNumeric>$30.48</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Savings</Td>
+                      <Td>Monthly Student Loan Payment</Td>
+                      <Td isNumeric>$200</Td>
+                    </Tr>
+                  </Tbody>
+                </Table>
+              </TableContainer>
             </Box>
-            <Box flex="3">
-              <Doughnut data={data} options={options} />
+
+            <Divider borderColor={"currentcolor"} my={2} />
+
+            <SubmitButton>Next Step</SubmitButton>
+            <Box as="pre" marginY={10}>
+              {JSON.stringify(values, null, 2)}
+              <br />
             </Box>
-          </Flex>
-
-          <Divider borderColor={"currentcolor"} my={2} />
-
-          <Box>
-            <HStack justifyContent="space-between" my={2}>
-              <FormLabel fontSize={"xl"}>Allocations</FormLabel>
-              <Button size="sm">Add monthly allocation</Button>
-            </HStack>
-
-            <TableContainer>
-              <Table size="sm">
-                <Thead>
-                  <Tr>
-                    <Th>Category</Th>
-                    <Th>Name</Th>
-                    <Th isNumeric>Allocation per month</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  <Tr>
-                    <Td>Food</Td>
-                    <Td>Payment</Td>
-                    <Td isNumeric>$15.32</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Entertainment</Td>
-                    <Td>Deposit</Td>
-                    <Td isNumeric>$30.48</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>Savings</Td>
-                    <Td>Monthly Student Loan Payment</Td>
-                    <Td isNumeric>$200</Td>
-                  </Tr>
-                </Tbody>
-              </Table>
-            </TableContainer>
-          </Box>
-
-          <Divider borderColor={"currentcolor"} my={2} />
-
-          <SubmitButton>Next Step</SubmitButton>
-          <Box as="pre" marginY={10}>
-            {JSON.stringify(values, null, 2)}
-            <br />
-          </Box>
-        </Container>
-      )}
-    </Formik>
+          </Container>
+        )}
+      </Formik>
+    </ProtectedPage>
   );
 }

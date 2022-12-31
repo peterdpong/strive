@@ -44,7 +44,6 @@ import {
 } from "chart.js";
 import { useRouter } from "next/router";
 import { Bar } from "react-chartjs-2";
-import { useAuth, useUser } from "reactfire";
 import ProtectedPage from "../../components/ProtectedPage";
 
 // Boilerplate data
