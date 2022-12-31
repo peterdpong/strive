@@ -1,5 +1,6 @@
 import { setDoc, doc } from "firebase/firestore";
 import { Transaction } from "../models/BudgetModel";
+import { GoalModel } from "../models/GoalModel";
 import { firestoreDB } from "./firebase";
 
 export const addNewUser = async (
@@ -23,10 +24,19 @@ export const addNewUser = async (
       email,
       firstName,
       lastName,
+      onboardingFinished: {
+        finished: false,
+        stageNum: -1,
+      },
       monthTransactionsMap: initMonthTransactionsMap,
     });
     console.log("Document written with ID: ", uid);
   } catch (e) {
     console.error("Error adding document: ", e);
   }
+};
+
+export const addUserGoal = async (uid: string, goalInfo: GoalModel) => {
+  const userDataRef = doc(firestoreDB, "users", uid);
+  setDoc(userDataRef, { goalInfo: goalInfo }, { merge: true });
 };

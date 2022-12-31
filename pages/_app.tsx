@@ -1,12 +1,14 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
-import { initializeAuth } from "firebase/auth";
+import { indexedDBLocalPersistence, initializeAuth } from "firebase/auth";
 import { FirebaseAppProvider, AuthProvider } from "reactfire";
 import { firebaseApp } from "../src/firebase/firebase";
 
 function App({ Component, pageProps }: AppProps) {
-  const auth = initializeAuth(firebaseApp);
+  const auth = initializeAuth(firebaseApp, {
+    persistence: indexedDBLocalPersistence,
+  });
 
   return (
     <FirebaseAppProvider firebaseApp={firebaseApp}>

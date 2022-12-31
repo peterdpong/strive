@@ -6,9 +6,15 @@ export type UserModel = {
   email: string;
   firstName: string;
   lastName: string;
+  onboardingStatus: OnboardingStatus;
   financialInfo: UserFinancialInfo;
   goalInfo: GoalModel;
   monthTransactionsMap: { [key: string]: Transaction[] };
+};
+
+export type OnboardingStatus = {
+  finished: boolean;
+  stageNum: number;
 };
 
 export type UserFinancialInfo = {

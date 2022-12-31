@@ -1,5 +1,5 @@
 import { FirebaseError } from "firebase/app";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, UserCredential } from "firebase/auth";
 import { useCallback } from "react";
 import { useAuth } from "reactfire";
 import { useAuthRequestState } from "./useAuthRequestState";
@@ -13,13 +13,11 @@ export function useSignInWithEmailAndPassword() {
       setLoading(true);
 
       try {
-        const credentials = await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
+        await signInWithEmailAndPassword(auth, email, password).then(
+          (userCredentials: UserCredential) => {
+            setData(userCredentials);
+          }
         );
-
-        setData(credentials);
       } catch (error) {
         setError(error as FirebaseError);
       }

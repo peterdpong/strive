@@ -16,11 +16,15 @@ import {
   SubmitButton,
 } from "formik-chakra-ui";
 import { useRouter } from "next/router";
+import { useAuth, useSigninCheck } from "reactfire";
+import { addUserGoal } from "../../src/firebase/UserActions";
 
 const format = (val: number) => `$` + val;
 
 export default function GoalPage() {
   const router = useRouter();
+  const auth = useAuth();
+  const { status, data } = useSigninCheck();
 
   return (
     <Formik
@@ -31,10 +35,16 @@ export default function GoalPage() {
         timeframeValue: 5,
       }}
       onSubmit={(values, actions) => {
-        console.log(values);
-        //alert(JSON.stringify(values, null, 2));
-        actions.resetForm;
-        router.push("/onboarding/financials");
+        console.log(auth, status, data);
+        if (auth.currentUser) {
+          addUserGoal(auth.currentUser.uid, values);
+          actions.resetForm;
+          console.log(values);
+          router.push("/onboarding/financials");
+        } else {
+          alert("Error: User not logged in...");
+          //router.push("/login");
+        }
       }}
     >
       {({ handleSubmit, values }) => (

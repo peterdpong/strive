@@ -6,7 +6,7 @@ const SignIn = () => {
   const router = useRouter();
 
   const signInCallback = useCallback(() => {
-    router.push("/budgetui");
+    router.push("/app");
   }, [router]);
 
   return (
