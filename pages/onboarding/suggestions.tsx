@@ -37,6 +37,8 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import ProtectedPage from "../../components/ProtectedPage";
+import { useAuth } from "reactfire";
+import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -87,18 +89,31 @@ const data = {
 };
 export default function SuggestionsPage() {
   const router = useRouter();
+  const auth = useAuth();
 
   return (
     <ProtectedPage whenSignedOut="login">
       <Formik
         initialValues={{
-          monthlyAllocations: [],
+          selectedGoalInfo: auth.currentUser
+            ? getUserGoal(auth.currentUser.uid)
+            : null,
         }}
         onSubmit={(values, actions) => {
-          console.log(values);
-          //alert(JSON.stringify(values, null, 2));
-          actions.resetForm;
-          router.push("/app");
+          if (auth.currentUser) {
+            if (
+              values.selectedGoalInfo &&
+              getUserGoal(auth.currentUser.uid) !== values.selectedGoalInfo
+            ) {
+              addUserGoal(auth.currentUser.uid, values.selectedGoalInfo);
+            }
+            actions.resetForm;
+            console.log(values);
+            router.push("/app");
+          } else {
+            alert("Error: User not logged in...");
+            router.push("/login");
+          }
         }}
       >
         {({ handleSubmit }) => (

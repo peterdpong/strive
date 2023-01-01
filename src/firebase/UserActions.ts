@@ -1,10 +1,10 @@
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, getDoc } from "firebase/firestore";
 import { BudgetModel, Transaction } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
-import { FinancialInfo } from "../models/UserModel";
+import { FinancialInfo, UserModel } from "../models/UserModel";
 import { firestoreDB } from "./firebase";
 
-export const addNewUser = async (
+export const addNewUser = (
   uid: string,
   email: string,
   firstName: string,
@@ -21,7 +21,7 @@ export const addNewUser = async (
   ] = [];
 
   try {
-    await setDoc(doc(firestoreDB, "users", uid), {
+    setDoc(doc(firestoreDB, "users", uid), {
       email,
       firstName,
       lastName,
@@ -42,15 +42,23 @@ export const addUserGoal = async (uid: string, goalInfo: GoalModel) => {
   setDoc(userDataRef, { goalInfo: goalInfo }, { merge: true });
 };
 
-export const addFinancialInfo = async (
-  uid: string,
-  financialInfo: FinancialInfo
-) => {
+export const getUserGoal = (uid: string) => {
+  const userDataRef = doc(firestoreDB, "users", uid);
+  getDoc(userDataRef).then((userDataSnapshot) => {
+    if (userDataSnapshot.exists()) {
+      return (userDataSnapshot.data() as UserModel).goalInfo;
+    } else {
+      return null;
+    }
+  });
+};
+
+export const addFinancialInfo = (uid: string, financialInfo: FinancialInfo) => {
   const userDataRef = doc(firestoreDB, "users", uid);
   setDoc(userDataRef, { financialInfo: financialInfo }, { merge: true });
 };
 
-export const addBudgetInfo = async (uid: string, budgetInfo: BudgetModel) => {
+export const addBudgetInfo = (uid: string, budgetInfo: BudgetModel) => {
   const userDataRef = doc(firestoreDB, "users", uid);
   setDoc(userDataRef, { budgetInfo: budgetInfo }, { merge: true });
 };
