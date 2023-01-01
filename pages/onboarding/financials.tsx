@@ -23,26 +23,34 @@ import {
   SubmitButton,
 } from "formik-chakra-ui";
 import { useRouter } from "next/router";
+import { useAuth } from "reactfire";
 import ProtectedPage from "../../components/ProtectedPage";
+import { addFinancialInfo } from "../../src/firebase/UserActions";
 
 export default function FinancesPages() {
   const router = useRouter();
+  const auth = useAuth();
 
   return (
     <ProtectedPage whenSignedOut="login">
       <Formik
         initialValues={{
           incomeValue: 0,
-          incomeIsAnnual: "true",
+          incomeIsAnnual: true,
           hoursPerWeek: 0,
-          timeframeValue: 5,
           monthlyTransactions: [],
+          accounts: [],
         }}
         onSubmit={(values, actions) => {
-          console.log(values);
-          //alert(JSON.stringify(values, null, 2));
-          actions.resetForm;
-          router.push("/onboarding/variablebudget");
+          if (auth.currentUser) {
+            addFinancialInfo(auth.currentUser.uid, values);
+            actions.resetForm;
+            console.log(values);
+            router.push("/onboarding/financials");
+          } else {
+            alert("Error: User not logged in...");
+            router.push("/login");
+          }
         }}
       >
         {({ handleSubmit, values }) => (
@@ -75,7 +83,7 @@ export default function FinancesPages() {
             </RadioGroupControl>
 
             <Divider borderColor={"currentcolor"} py={"10px"} />
-            {values.incomeIsAnnual === "true" ? (
+            {values.incomeIsAnnual === true ? (
               <>
                 <FormLabel fontSize={"xl"}>Annual Income - $/year</FormLabel>
                 <NumberInputControl
@@ -123,6 +131,44 @@ export default function FinancesPages() {
                   subscriptions
                 </FormLabel>
                 <Button size="sm">Add monthly transactions</Button>
+              </HStack>
+
+              <TableContainer>
+                <Table size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>Category</Th>
+                      <Th>Name</Th>
+                      <Th isNumeric>Amount per month</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    <Tr>
+                      <Td>Credit Card</Td>
+                      <Td>Payment</Td>
+                      <Td isNumeric>-$15.32</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Savings account</Td>
+                      <Td>Deposit</Td>
+                      <Td isNumeric>+$30.48</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Student Loan</Td>
+                      <Td>Monthly Student Loan Payment</Td>
+                      <Td isNumeric>-$200</Td>
+                    </Tr>
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </Box>
+
+            <Divider borderColor={"currentcolor"} my={2} />
+
+            <Box>
+              <HStack justifyContent="space-between" my={2}>
+                <FormLabel fontSize={"xl"}>Accounts</FormLabel>
+                <Button size="sm">Add account</Button>
               </HStack>
 
               <TableContainer>

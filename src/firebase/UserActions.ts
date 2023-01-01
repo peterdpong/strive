@@ -1,6 +1,7 @@
 import { setDoc, doc } from "firebase/firestore";
 import { Transaction } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
+import { FinancialInfo } from "../models/UserModel";
 import { firestoreDB } from "./firebase";
 
 export const addNewUser = async (
@@ -39,4 +40,12 @@ export const addNewUser = async (
 export const addUserGoal = async (uid: string, goalInfo: GoalModel) => {
   const userDataRef = doc(firestoreDB, "users", uid);
   setDoc(userDataRef, { goalInfo: goalInfo }, { merge: true });
+};
+
+export const addFinancialInfo = async (
+  uid: string,
+  financialInfo: FinancialInfo
+) => {
+  const userDataRef = doc(firestoreDB, "users", uid);
+  setDoc(userDataRef, { financialInfo: financialInfo }, { merge: true });
 };

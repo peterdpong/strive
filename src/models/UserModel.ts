@@ -7,7 +7,7 @@ export type UserModel = {
   firstName: string;
   lastName: string;
   onboardingStatus: OnboardingStatus;
-  financialInfo: UserFinancialInfo;
+  financialInfo: FinancialInfo;
   goalInfo: GoalModel;
   monthTransactionsMap: { [key: string]: Transaction[] };
 };
@@ -17,9 +17,11 @@ export type OnboardingStatus = {
   stageNum: number;
 };
 
-export type UserFinancialInfo = {
-  income: number;
-  fixedCosts: number;
+export type FinancialInfo = {
+  incomeValue: number;
+  incomeIsAnnual: boolean;
+  hoursPerWeek: number;
+  monthlyTransactions: Transaction[];
   accounts: Account[];
 };
 
