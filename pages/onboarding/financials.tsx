@@ -46,7 +46,7 @@ export default function FinancesPages() {
             addFinancialInfo(auth.currentUser.uid, values);
             actions.resetForm;
             console.log(values);
-            router.push("/onboarding/financials");
+            router.push("/onboarding/variable");
           } else {
             alert("Error: User not logged in...");
             router.push("/login");

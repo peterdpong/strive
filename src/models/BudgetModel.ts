@@ -1,3 +1,8 @@
+export type BudgetModel = {
+  monthlyAllocations: { [category: string]: Transaction[] };
+  totalVariableBudget: number;
+};
+
 export enum TransactionCategories {
   TRANSPORTATION,
   FOODANDDRINK,
