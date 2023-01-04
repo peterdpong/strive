@@ -26,8 +26,8 @@ import { useRouter } from "next/router";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import { useAuth } from "reactfire";
 import { addBudgetInfo } from "../../src/firebase/UserActions";
+import { useAuth } from "../../src/auth/auth";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -61,7 +61,10 @@ const options = {
 
 export default function VariableBudgetPage() {
   const router = useRouter();
-  const auth = useAuth();
+
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
+  console.log(userData);
 
   return (
     <ProtectedRoute>
@@ -71,8 +74,8 @@ export default function VariableBudgetPage() {
           totalVariableBudget: 0,
         }}
         onSubmit={(values, actions) => {
-          if (auth.currentUser) {
-            addBudgetInfo(auth.currentUser.uid, values);
+          if (userData) {
+            addBudgetInfo(userData.uid, values);
             actions.resetForm;
             console.log(values);
             router.push("/onboarding/suggestions");

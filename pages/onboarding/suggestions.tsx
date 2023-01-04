@@ -37,8 +37,8 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import { useAuth } from "reactfire";
 import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
+import { useAuth } from "../../src/auth/auth";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -89,23 +89,24 @@ const data = {
 };
 export default function SuggestionsPage() {
   const router = useRouter();
-  const auth = useAuth();
+
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
+  console.log(userData);
 
   return (
     <ProtectedRoute>
       <Formik
         initialValues={{
-          selectedGoalInfo: auth.currentUser
-            ? getUserGoal(auth.currentUser.uid)
-            : null,
+          selectedGoalInfo: userData ? getUserGoal(userData?.uid) : null,
         }}
         onSubmit={(values, actions) => {
-          if (auth.currentUser) {
+          if (userData) {
             if (
               values.selectedGoalInfo &&
-              getUserGoal(auth.currentUser.uid) !== values.selectedGoalInfo
+              getUserGoal(userData.uid) !== values.selectedGoalInfo
             ) {
-              addUserGoal(auth.currentUser.uid, values.selectedGoalInfo);
+              addUserGoal(userData.uid, values.selectedGoalInfo);
             }
             actions.resetForm;
             console.log(values);

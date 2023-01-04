@@ -24,15 +24,19 @@ import {
   SubmitButton,
 } from "formik-chakra-ui";
 import { useRouter } from "next/router";
-import { useAuth } from "reactfire";
 import AddAccountModal from "../../components/modals/AddAccountModal";
 import TransactionsModal from "../../components/modals/TransactionsModal";
+import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { addFinancialInfo } from "../../src/firebase/UserActions";
 
 export default function FinancesPages() {
   const router = useRouter();
-  const auth = useAuth();
+
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
+  console.log(userData);
+
   const accountsModalProps = useDisclosure();
   const transactionsModalProps = useDisclosure();
 

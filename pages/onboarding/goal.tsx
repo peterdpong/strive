@@ -16,7 +16,7 @@ import {
   SubmitButton,
 } from "formik-chakra-ui";
 import { useRouter } from "next/router";
-import { useAuth } from "reactfire";
+import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { addUserGoal, getFinancialInfo } from "../../src/firebase/UserActions";
 
@@ -24,7 +24,10 @@ const format = (val: number) => `$` + val;
 
 export default function GoalPage() {
   const router = useRouter();
-  const auth = useAuth();
+
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
+  console.log(userData);
 
   console.log(getFinancialInfo(auth.currentUser?.uid));
 
