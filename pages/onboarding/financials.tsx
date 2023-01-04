@@ -51,8 +51,8 @@ export default function FinancesPages() {
           accounts: [],
         }}
         onSubmit={(values, actions) => {
-          if (auth.currentUser) {
-            addFinancialInfo(auth.currentUser.uid, values);
+          if (userData) {
+            addFinancialInfo(userData.uid, values);
             actions.resetForm;
             console.log(values);
             router.push("/onboarding/variable");
@@ -228,13 +228,13 @@ export default function FinancesPages() {
       <TransactionsModal
         isOpen={transactionsModalProps.isOpen}
         onClose={transactionsModalProps.onClose}
-        uid={auth.currentUser?.uid}
+        uid={userData?.uid}
       />
 
       <AddAccountModal
         isOpen={accountsModalProps.isOpen}
         onClose={accountsModalProps.onClose}
-        uid={auth.currentUser?.uid}
+        uid={userData?.uid}
       />
     </ProtectedRoute>
   );
