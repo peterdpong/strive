@@ -29,7 +29,7 @@ export default function GoalPage() {
   const userData = useRequiredAuth();
   console.log(userData);
 
-  console.log(getFinancialInfo(auth.currentUser?.uid));
+  console.log(getFinancialInfo(userData?.uid));
 
   return (
     <ProtectedRoute>
@@ -41,14 +41,14 @@ export default function GoalPage() {
           timeframeValue: 5,
         }}
         onSubmit={(values, actions) => {
-          if (auth.currentUser) {
+          if (userData) {
             if (values.goalType === "timeframe") {
               // Get monthly savings value required to meet goal.
               values.monthlyAmount =
                 values.goalValue / (values.timeframeValue * 12);
             }
 
-            addUserGoal(auth.currentUser.uid, values);
+            addUserGoal(userData.uid, values);
             actions.resetForm;
             console.log(values);
             router.push("/onboarding/financials");
