@@ -15,6 +15,7 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import {
@@ -24,12 +25,16 @@ import {
 } from "formik-chakra-ui";
 import { useRouter } from "next/router";
 import { useAuth } from "reactfire";
+import AddAccountModal from "../../components/modals/AddAccountModal";
+import TransactionsModal from "../../components/modals/TransactionsModal";
 import ProtectedPage from "../../components/ProtectedPage";
 import { addFinancialInfo } from "../../src/firebase/UserActions";
 
 export default function FinancesPages() {
   const router = useRouter();
   const auth = useAuth();
+  const accountsModalProps = useDisclosure();
+  const transactionsModalProps = useDisclosure();
 
   return (
     <ProtectedPage whenSignedOut="login">
@@ -130,7 +135,9 @@ export default function FinancesPages() {
                   Fixed Monthly Transactions: Rent, Loan payments, and
                   subscriptions
                 </FormLabel>
-                <Button size="sm">Add monthly transactions</Button>
+                <Button onClick={transactionsModalProps.onOpen} size="sm">
+                  Add monthly transactions
+                </Button>
               </HStack>
 
               <TableContainer>
@@ -168,7 +175,9 @@ export default function FinancesPages() {
             <Box>
               <HStack justifyContent="space-between" my={2}>
                 <FormLabel fontSize={"xl"}>Accounts</FormLabel>
-                <Button size="sm">Add account</Button>
+                <Button onClick={accountsModalProps.onOpen} size="sm">
+                  Add account
+                </Button>
               </HStack>
 
               <TableContainer>
@@ -211,6 +220,18 @@ export default function FinancesPages() {
           </Container>
         )}
       </Formik>
+
+      <TransactionsModal
+        isOpen={transactionsModalProps.isOpen}
+        onClose={transactionsModalProps.onClose}
+        uid={auth.currentUser?.uid}
+      />
+
+      <AddAccountModal
+        isOpen={accountsModalProps.isOpen}
+        onClose={accountsModalProps.onClose}
+        uid={auth.currentUser?.uid}
+      />
     </ProtectedPage>
   );
 }

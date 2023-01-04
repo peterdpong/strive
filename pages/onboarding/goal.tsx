@@ -18,13 +18,15 @@ import {
 import { useRouter } from "next/router";
 import { useAuth } from "reactfire";
 import ProtectedPage from "../../components/ProtectedPage";
-import { addUserGoal } from "../../src/firebase/UserActions";
+import { addUserGoal, getFinancialInfo } from "../../src/firebase/UserActions";
 
 const format = (val: number) => `$` + val;
 
 export default function GoalPage() {
   const router = useRouter();
   const auth = useAuth();
+
+  console.log(getFinancialInfo(auth.currentUser?.uid));
 
   return (
     <ProtectedPage whenSignedOut="login">
@@ -37,6 +39,12 @@ export default function GoalPage() {
         }}
         onSubmit={(values, actions) => {
           if (auth.currentUser) {
+            if (values.goalType === "timeframe") {
+              // Get monthly savings value required to meet goal.
+              values.monthlyAmount =
+                values.goalValue / (values.timeframeValue * 12);
+            }
+
             addUserGoal(auth.currentUser.uid, values);
             actions.resetForm;
             console.log(values);
