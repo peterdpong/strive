@@ -25,7 +25,7 @@ import { SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import ProtectedPage from "../../components/ProtectedPage";
+import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { useAuth } from "reactfire";
 import { addBudgetInfo } from "../../src/firebase/UserActions";
 
@@ -64,7 +64,7 @@ export default function VariableBudgetPage() {
   const auth = useAuth();
 
   return (
-    <ProtectedPage whenSignedOut="login">
+    <ProtectedRoute>
       <Formik
         initialValues={{
           monthlyAllocations: {},
@@ -167,6 +167,6 @@ export default function VariableBudgetPage() {
           </Container>
         )}
       </Formik>
-    </ProtectedPage>
+    </ProtectedRoute>
   );
 }

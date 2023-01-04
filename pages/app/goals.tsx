@@ -1,12 +1,12 @@
 import { Container, Heading } from "@chakra-ui/react";
-import ProtectedPage from "../../components/ProtectedPage";
+import ProtectedRoute from "../../src/auth/ProtectedRoute";
 
 export default function GoalsPage() {
   return (
-    <ProtectedPage whenSignedOut="login">
+    <ProtectedRoute>
       <Container>
         <Heading>Goals Page</Heading>
       </Container>
-    </ProtectedPage>
+    </ProtectedRoute>
   );
 }

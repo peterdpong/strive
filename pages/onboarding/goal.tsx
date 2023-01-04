@@ -17,7 +17,7 @@ import {
 } from "formik-chakra-ui";
 import { useRouter } from "next/router";
 import { useAuth } from "reactfire";
-import ProtectedPage from "../../components/ProtectedPage";
+import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { addUserGoal, getFinancialInfo } from "../../src/firebase/UserActions";
 
 const format = (val: number) => `$` + val;
@@ -29,7 +29,7 @@ export default function GoalPage() {
   console.log(getFinancialInfo(auth.currentUser?.uid));
 
   return (
-    <ProtectedPage whenSignedOut="login">
+    <ProtectedRoute>
       <Formik
         initialValues={{
           goalType: "timeframe",
@@ -154,6 +154,6 @@ export default function GoalPage() {
           </Container>
         )}
       </Formik>
-    </ProtectedPage>
+    </ProtectedRoute>
   );
 }

@@ -1,12 +1,12 @@
 import { Button, Container, Heading, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import ProtectedPage from "../../components/ProtectedPage";
+import ProtectedRoute from "../../src/auth/ProtectedRoute";
 
 export default function OnboardingIndex() {
   const router = useRouter();
 
   return (
-    <ProtectedPage whenSignedOut="login">
+    <ProtectedRoute>
       <Container
         bg={"gray.300"}
         maxW="container.md"
@@ -21,6 +21,6 @@ export default function OnboardingIndex() {
           Get Started
         </Button>
       </Container>
-    </ProtectedPage>
+    </ProtectedRoute>
   );
 }

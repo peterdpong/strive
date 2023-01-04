@@ -8,7 +8,7 @@ import {
   Spacer,
   HStack,
 } from "@chakra-ui/react";
-import ProtectedPage from "../../../components/ProtectedPage";
+import ProtectedRoute from "../../../src/auth/ProtectedRoute";
 
 const expenses = [
   {
@@ -86,7 +86,7 @@ export default function BudgetUI() {
   };
 
   return (
-    <ProtectedPage whenSignedOut="login">
+    <ProtectedRoute>
       <Box>
         <Container maxW="container.md" rounded={"5px"} px={"0px"} mt="60px">
           <Heading size="md">May</Heading>
@@ -157,6 +157,6 @@ export default function BudgetUI() {
           </Box>
         </Container>
       </Box>
-    </ProtectedPage>
+    </ProtectedRoute>
   );
 }

@@ -27,7 +27,7 @@ import { useRouter } from "next/router";
 import { useAuth } from "reactfire";
 import AddAccountModal from "../../components/modals/AddAccountModal";
 import TransactionsModal from "../../components/modals/TransactionsModal";
-import ProtectedPage from "../../components/ProtectedPage";
+import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { addFinancialInfo } from "../../src/firebase/UserActions";
 
 export default function FinancesPages() {
@@ -37,7 +37,7 @@ export default function FinancesPages() {
   const transactionsModalProps = useDisclosure();
 
   return (
-    <ProtectedPage whenSignedOut="login">
+    <ProtectedRoute>
       <Formik
         initialValues={{
           incomeValue: 0,
@@ -232,6 +232,6 @@ export default function FinancesPages() {
         onClose={accountsModalProps.onClose}
         uid={auth.currentUser?.uid}
       />
-    </ProtectedPage>
+    </ProtectedRoute>
   );
 }

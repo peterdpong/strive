@@ -36,7 +36,7 @@ import {
   ScriptableContext,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import ProtectedPage from "../../components/ProtectedPage";
+import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { useAuth } from "reactfire";
 import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
 
@@ -92,7 +92,7 @@ export default function SuggestionsPage() {
   const auth = useAuth();
 
   return (
-    <ProtectedPage whenSignedOut="login">
+    <ProtectedRoute>
       <Formik
         initialValues={{
           selectedGoalInfo: auth.currentUser
@@ -255,6 +255,6 @@ export default function SuggestionsPage() {
           </Container>
         )}
       </Formik>
-    </ProtectedPage>
+    </ProtectedRoute>
   );
 }

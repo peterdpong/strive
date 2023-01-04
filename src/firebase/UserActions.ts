@@ -1,8 +1,14 @@
-import { setDoc, doc, getDoc } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  getDoc,
+  DocumentSnapshot,
+  DocumentData,
+} from "firebase/firestore";
 import { BudgetModel, Transaction } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
 import { FinancialInfo, UserModel } from "../models/UserModel";
-import { firebaseApp, firestoreDB } from "./firebase";
+import { firestoreDB } from "./firebase";
 
 export const addNewUser = (
   uid: string,
@@ -20,21 +26,64 @@ export const addNewUser = (
       currentDate.getUTCFullYear().toString()
   ] = [];
 
+  const newUserData: UserModel = {
+    uid,
+    email,
+    firstName,
+    lastName,
+    onboardingStatus: {
+      finished: false,
+      stageNum: -1,
+    },
+    financialInfo: {
+      incomeValue: 0,
+      incomeIsAnnual: true,
+      hoursPerWeek: 0,
+      monthlyTransactions: [],
+      accounts: [],
+    },
+    budgetInfo: {
+      monthlyAllocations: {},
+      totalVariableBudget: 0,
+    },
+    goalInfo: {
+      goalType: "timeframe",
+      goalValue: 25000,
+      monthlyAmount: 500,
+      timeframeValue: 5,
+    },
+    monthTransactionsMap: initMonthTransactionsMap,
+  };
+
   try {
-    setDoc(doc(firestoreDB, "users", uid), {
-      email,
-      firstName,
-      lastName,
-      onboardingFinished: {
-        finished: false,
-        stageNum: -1,
-      },
-      monthTransactionsMap: initMonthTransactionsMap,
-    });
+    setDoc(doc(firestoreDB, "users", uid), newUserData);
     console.log("Document written with ID: ", uid);
+    return newUserData;
   } catch (e) {
     console.error("Error adding document: ", e);
   }
+
+  return null;
+};
+
+export const getUserData = async (
+  uid: string
+): Promise<UserModel | undefined> => {
+  const userDataRef = doc(firestoreDB, "users", uid);
+
+  let userData: UserModel | undefined = undefined;
+
+  await getDoc(userDataRef).then(
+    (userDataSnapshot: DocumentSnapshot<DocumentData>) => {
+      // console.log(uid, userDataSnapshot.exists(), userDataSnapshot.data());
+      if (userDataSnapshot.exists()) {
+        console.log("returned", userDataSnapshot.data());
+        userData = userDataSnapshot.data() as UserModel;
+      }
+    }
+  );
+
+  return userData;
 };
 
 export const addUserGoal = async (uid: string, goalInfo: GoalModel) => {
@@ -69,10 +118,6 @@ export const getFinancialInfo = (uid: string | undefined) => {
       return null;
     }
   });
-};
-
-export const addTransaction = (uid: string, transaction: Transaction) => {
-  const userDataRef = doc(firestoreDB, "users", uid);
 };
 
 export const addBudgetInfo = (uid: string, budgetInfo: BudgetModel) => {

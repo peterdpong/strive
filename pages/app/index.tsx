@@ -44,7 +44,7 @@ import {
 } from "chart.js";
 import { useRouter } from "next/router";
 import { Bar } from "react-chartjs-2";
-import ProtectedPage from "../../components/ProtectedPage";
+import ProtectedRoute from "../../src/auth/ProtectedRoute";
 
 // Boilerplate data
 const labels = ["January", "February", "March", "April", "May", "June"];
@@ -95,7 +95,7 @@ export default function Dashboard() {
   const router = useRouter();
 
   return (
-    <ProtectedPage whenSignedOut="login">
+    <ProtectedRoute>
       <Box>
         <Container maxW="container.lg" rounded={"5px"} px={"0px"} mt="60px">
           <HStack justifyContent="space-between">
@@ -365,6 +365,6 @@ export default function Dashboard() {
           </Box>
         </Container>
       </Box>
-    </ProtectedPage>
+    </ProtectedRoute>
   );
 }
