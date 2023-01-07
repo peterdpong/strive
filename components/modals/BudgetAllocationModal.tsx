@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { getTransactionCategoriesArray } from "../../src/models/BudgetModel";
 import { useAuth } from "../../src/auth/auth";
-import { addBudgetCategoryAllocation } from "../../src/firebase/UserActions";
+// import { addBudgetCategoryAllocation } from "../../src/firebase/UserActions";
 
 export default function BudgetAllocationModal(props: {
   isOpen: boolean;
@@ -47,7 +47,7 @@ export default function BudgetAllocationModal(props: {
     }
 
     if (userData) {
-      addBudgetCategoryAllocation(userData.uid, category, allocation);
+      // addBudgetCategoryAllocation(userData.uid, category, allocation);
     }
 
     setCategory(null);

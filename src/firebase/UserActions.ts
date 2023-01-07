@@ -181,8 +181,8 @@ export const deleteAccount = (
   });
 };
 
-export const addBudgetCategoryAllocation = (
-  uid: string,
-  categoryKey: string,
-  allocation: number
-) => {};
+// export const addBudgetCategoryAllocation = () =>
+//   uid: string,
+//   categoryKey: string,
+//   allocation: number
+//   {};
