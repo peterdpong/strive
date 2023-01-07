@@ -42,7 +42,7 @@ export const addNewUser = (
     },
     financialInfo: {
       incomeValue: 0,
-      incomeIsAnnual: true,
+      incomeIsAnnual: "true",
       hoursPerWeek: 0,
       monthlyTransactions: [],
       accounts: [],
