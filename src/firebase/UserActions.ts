@@ -6,11 +6,7 @@ import {
   DocumentData,
   updateDoc,
 } from "firebase/firestore";
-import {
-  BudgetModel,
-  MonthlyTransaction,
-  Transaction,
-} from "../models/BudgetModel";
+import { BudgetModel, Transaction } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
 import { Account, FinancialInfo, UserModel } from "../models/UserModel";
 import { firestoreDB } from "./firebase";
@@ -41,9 +37,7 @@ export const addNewUser = (
       stageNum: -1,
     },
     financialInfo: {
-      incomeValue: 0,
-      incomeIsAnnual: "true",
-      hoursPerWeek: 0,
+      monthlyIncome: 0,
       monthlyTransactions: [],
       accounts: [],
     },
@@ -125,6 +119,11 @@ export const getFinancialInfo = (uid: string | undefined) => {
   });
 };
 
+export const setMonthlyIncome = (uid: string, monthlyIncome: number) => {
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, { "financialInfo.monthlyIncome": monthlyIncome });
+};
+
 export const addBudgetInfo = (uid: string, budgetInfo: BudgetModel) => {
   const userDataRef = doc(firestoreDB, "users", uid);
   setDoc(userDataRef, { budgetInfo: budgetInfo }, { merge: true });
@@ -132,8 +131,8 @@ export const addBudgetInfo = (uid: string, budgetInfo: BudgetModel) => {
 
 export const addMonthlyTransaction = (
   uid: string,
-  monthlyTransactions: MonthlyTransaction[],
-  newTransaction: MonthlyTransaction
+  monthlyTransactions: Transaction[],
+  newTransaction: Transaction
 ) => {
   monthlyTransactions.push(newTransaction);
 
@@ -145,7 +144,7 @@ export const addMonthlyTransaction = (
 
 export const deleteMonthlyTransaction = (
   uid: string,
-  monthlyTransactions: MonthlyTransaction[],
+  monthlyTransactions: Transaction[],
   index: number
 ) => {
   monthlyTransactions.splice(index, 1);

@@ -27,12 +27,7 @@ export const getTransactionCategoriesArray = () => {
 
 export type Transaction = {
   date: Date;
-  name: string;
-  category: TransactionCategories;
-  amount: number;
-};
-
-export type MonthlyTransaction = {
+  isMonthly: boolean;
   name: string;
   category: TransactionCategories;
   amount: number;

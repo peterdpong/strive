@@ -20,7 +20,7 @@ import {
 import { addMonthlyTransaction } from "../../src/firebase/UserActions";
 import { useAuth } from "../../src/auth/auth";
 
-export default function MonthlyTransactionsModal(props: {
+export default function RecurringExpenseModal(props: {
   isOpen: boolean;
   onClose: () => void;
   uid: string | undefined;
@@ -29,6 +29,7 @@ export default function MonthlyTransactionsModal(props: {
   const [name, setName] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [amount, setAmount] = useState<number | null>(null);
+  const [date, setDate] = useState<Date | null>(null);
   const transactionCategories = getTransactionCategoriesArray();
 
   const { useRequiredAuth } = useAuth();
@@ -42,6 +43,10 @@ export default function MonthlyTransactionsModal(props: {
     setCategory(e.target.value);
   };
 
+  const dateHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDate(new Date(e.target.value));
+  };
+
   const amountHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(parseFloat(e.target.value));
   };
@@ -49,7 +54,12 @@ export default function MonthlyTransactionsModal(props: {
   const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
 
-    if (name === null || category === null || amount === null) {
+    if (
+      name === null ||
+      category === null ||
+      amount === null ||
+      date === null
+    ) {
       setError("A field is missing");
       return;
     }
@@ -60,6 +70,8 @@ export default function MonthlyTransactionsModal(props: {
         userData.financialInfo.monthlyTransactions,
         {
           name: name,
+          date: date,
+          isMonthly: true,
           category: category as TransactionCategories,
           amount: amount,
         }
@@ -68,6 +80,7 @@ export default function MonthlyTransactionsModal(props: {
 
     setName(null);
     setCategory(null);
+    setDate(null);
     setAmount(null);
     props.onClose();
   };
@@ -79,11 +92,11 @@ export default function MonthlyTransactionsModal(props: {
         <ModalHeader>Add a monthly transaction</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl id="transaction-name" isRequired>
-            <FormLabel>Transaction Name</FormLabel>
+          <FormControl id="recurring-expense-name" isRequired>
+            <FormLabel>Recurring Expense Name</FormLabel>
             <Input onChange={nameHandler} />
           </FormControl>
-          <FormControl id="transaction-category" isRequired>
+          <FormControl id="recurring-expense-category" isRequired>
             <FormLabel>Category</FormLabel>
             <Select onChange={categoryHandler} placeholder="Select category">
               {transactionCategories.map((category) => {
@@ -95,7 +108,11 @@ export default function MonthlyTransactionsModal(props: {
               })}
             </Select>
           </FormControl>
-          <FormControl id="transaction-value" isRequired>
+          <FormControl id="recurring-expense-date" isRequired>
+            <FormLabel>Expense Date</FormLabel>
+            <Input type="date" onChange={dateHandler} />
+          </FormControl>
+          <FormControl id="recurring-expense-value" isRequired>
             <FormLabel>Monthly amount</FormLabel>
             <Input type="number" placeholder="$125" onChange={amountHandler} />
           </FormControl>
@@ -103,7 +120,7 @@ export default function MonthlyTransactionsModal(props: {
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={submitHandler}>
+          <Button colorScheme="green" mr={3} onClick={submitHandler}>
             Add transaction
           </Button>
         </ModalFooter>

@@ -96,7 +96,7 @@ export default function AddAccountModal(props: {
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={submitHandler}>
+          <Button colorScheme="green" mr={3} onClick={submitHandler}>
             Add account
           </Button>
         </ModalFooter>

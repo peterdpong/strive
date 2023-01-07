@@ -1,4 +1,4 @@
-import { BudgetModel, MonthlyTransaction, Transaction } from "./BudgetModel";
+import { BudgetModel, Transaction } from "./BudgetModel";
 import { GoalModel } from "./GoalModel";
 
 export type UserModel = {
@@ -19,10 +19,8 @@ export type OnboardingStatus = {
 };
 
 export type FinancialInfo = {
-  incomeValue: number;
-  incomeIsAnnual: string;
-  hoursPerWeek: number;
-  monthlyTransactions: MonthlyTransaction[];
+  monthlyIncome: number;
+  monthlyTransactions: Transaction[];
   accounts: Account[];
 };
 

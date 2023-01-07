@@ -6,11 +6,8 @@ import {
   CardBody,
   CardFooter,
   Container,
-  Divider,
-  FormLabel,
   Heading,
   HStack,
-  Radio,
   SimpleGrid,
   Stat,
   StatLabel,
@@ -26,20 +23,16 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Formik } from "formik";
-import {
-  NumberInputControl,
-  RadioGroupControl,
-  SubmitButton,
-} from "formik-chakra-ui";
+import { NumberInputControl, SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
 import AddAccountModal from "../../components/modals/AddAccountModal";
-import MonthlyTransactionsModal from "../../components/modals/MonthlyTransactionsModal";
+import RecurringExpenseModal from "../../components/modals/RecurringExpenseModal";
 import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import {
-  addFinancialInfo,
   deleteAccount,
   deleteMonthlyTransaction,
+  setMonthlyIncome,
 } from "../../src/firebase/UserActions";
 
 export default function FinancesPages() {
@@ -49,7 +42,7 @@ export default function FinancesPages() {
   const userData = useRequiredAuth();
 
   const accountsModalProps = useDisclosure();
-  const transactionsModalProps = useDisclosure();
+  const recurringExpensesModalProps = useDisclosure();
 
   const onDeleteMonthlyTransaction = (index: number) => {
     if (userData) {
@@ -69,199 +62,175 @@ export default function FinancesPages() {
 
   return (
     <ProtectedRoute>
-      <Formik
-        initialValues={{
-          incomeValue: 0,
-          incomeIsAnnual: "true",
-          hoursPerWeek: 0,
-          monthlyTransactions: [],
-          accounts: [],
-        }}
-        onSubmit={(values, actions) => {
-          if (userData) {
-            addFinancialInfo(userData.uid, values);
-            actions.resetForm;
-            console.log(values);
-            router.push("/onboarding/variable");
-          } else {
-            alert("Error: User not logged in...");
-            router.push("/login");
-          }
-        }}
-      >
-        {({ handleSubmit, values }) => (
-          <Container
-            bg={"gray.300"}
-            maxW="container.lg"
-            rounded={"5px"}
-            my={"25px"}
-            p={"25px"}
-            as="form"
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onSubmit={handleSubmit as any}
-          >
-            <Button size="sm" onClick={() => router.push("/onboarding/goal")}>
-              Back
-            </Button>
-            <Heading>Your Finances</Heading>
-            <Text fontSize={"lg"}>What does you finances look like?</Text>
+      <Container maxW="container.xl" my={"25px"}>
+        <Button size="sm" onClick={() => router.push("/onboarding/")}>
+          Back
+        </Button>
+        <Heading>Your Finances</Heading>
+        <Text fontSize={"md"}>What do you finances look like?</Text>
 
-            <Divider borderColor={"currentcolor"} py={"10px"} />
-
-            <FormLabel fontSize={"xl"}>What&apos;s your income?</FormLabel>
-            <RadioGroupControl
-              name="incomeIsAnnual"
-              label="Income annual or hourly"
-              defaultValue="true"
+        <Formik
+          initialValues={{
+            monthlyIncome: 2500,
+          }}
+          onSubmit={(values, actions) => {
+            if (userData) {
+              setMonthlyIncome(userData.uid, values.monthlyIncome);
+              actions.resetForm;
+              router.push("/onboarding/budget");
+            } else {
+              alert("Error: User not logged in...");
+              router.push("/login");
+            }
+          }}
+        >
+          {({ handleSubmit, values }) => (
+            <Container
+              maxW="container.xl"
+              as="form"
+              p={"0px"}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              onSubmit={handleSubmit as any}
             >
-              <Radio value="true">Annual</Radio>
-              <Radio value="false">Hourly</Radio>
-            </RadioGroupControl>
-
-            <Divider borderColor={"currentcolor"} py={"10px"} />
-            {values.incomeIsAnnual === "true" ? (
-              <>
-                <FormLabel fontSize={"xl"}>Annual Income - $/year</FormLabel>
+              <Box
+                bg={"gray.100"}
+                rounded={"5px"}
+                my={"25px"}
+                p={"20px"}
+                border={"1px"}
+                borderColor={"gray.300"}
+              >
+                <Heading mb={"5px"} fontSize={"xl"}>
+                  Monthly Income ($)
+                </Heading>
                 <NumberInputControl
-                  name="incomeValue"
+                  name="monthlyIncome"
                   numberInputProps={{
                     min: 1,
-                    max: 10000000,
-                    value: values.incomeValue,
+                    max: 1000000000,
+                    step: 50,
+                    precision: 2,
+                    value: values.monthlyIncome,
                   }}
                 />
-              </>
-            ) : (
-              <>
-                <FormLabel fontSize={"xl"}>Hourly Income</FormLabel>
-                <HStack justifyContent={"space-evenly"}>
-                  <NumberInputControl
-                    name="incomeValue"
-                    label="Hourly Salary - $/hr"
-                    numberInputProps={{
-                      min: 1,
-                      max: 250,
-                      value: values.incomeValue,
-                    }}
-                  />
-                  <NumberInputControl
-                    name="hoursPerWeek"
-                    label="Hours worked a week"
-                    numberInputProps={{
-                      step: 1,
-                      min: 1,
-                      max: 48,
-                      value: values.hoursPerWeek,
-                    }}
-                  />
-                </HStack>
-              </>
-            )}
+              </Box>
 
-            <Divider borderColor={"currentcolor"} my={2} />
-
-            <Box>
-              <HStack justifyContent="space-between" my={2}>
-                <FormLabel fontSize={"xl"}>
-                  Fixed monthly payments: Rent, loans, and subscriptions
-                </FormLabel>
-                <Button onClick={transactionsModalProps.onOpen} size="sm">
-                  Add monthly payments
-                </Button>
-              </HStack>
-
-              <TableContainer>
-                <Table size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th>Category</Th>
-                      <Th>Name</Th>
-                      <Th isNumeric>Amount per month</Th>
-                      <Th></Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {userData?.financialInfo.monthlyTransactions.map(
-                      (transaction, index) => {
-                        return (
-                          <Tr key={index}>
-                            <Td>{transaction.category}</Td>
-                            <Td>{transaction.name}</Td>
-                            <Td isNumeric>{-transaction.amount}</Td>
-                            <Td>
-                              <Button
-                                size="sm"
-                                onClick={() => {
-                                  onDeleteMonthlyTransaction(index);
-                                }}
-                              >
-                                Delete
-                              </Button>
-                            </Td>
-                          </Tr>
-                        );
-                      }
-                    )}
-                  </Tbody>
-                </Table>
-              </TableContainer>
-            </Box>
-
-            <Divider borderColor={"currentcolor"} my={2} />
-
-            <Box>
-              <HStack justifyContent="space-between" my={2}>
-                <FormLabel fontSize={"xl"}>Accounts</FormLabel>
-                <Button onClick={accountsModalProps.onOpen} size="sm">
-                  Add account
-                </Button>
-              </HStack>
-              <SimpleGrid
-                spacing={4}
-                templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+              <Box
+                bg={"gray.100"}
+                rounded={"5px"}
+                my={"25px"}
+                p={"20px"}
+                border={"1px"}
+                borderColor={"gray.300"}
               >
-                {userData?.financialInfo.accounts.map((account, index) => {
-                  return (
-                    <Card key={index} justify="space-between">
-                      <CardBody>
-                        <Badge>{account.type}</Badge>
-                        <Heading size="sm"> {account.name} </Heading>
-                        <Stat>
-                          <StatLabel>Value</StatLabel>
-                          <StatNumber>${account.value}</StatNumber>
-                        </Stat>
-                      </CardBody>
-                      <CardFooter>
-                        <Button
-                          onClick={() => {
-                            onDeleteAccount(index);
-                          }}
-                          size="xs"
-                          variant="link"
-                        >
-                          Delete
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  );
-                })}
-              </SimpleGrid>
-            </Box>
+                <HStack justifyContent="space-between" my={2}>
+                  <Heading fontSize={"xl"}>Reccurring Expenses</Heading>
+                  <Button
+                    colorScheme={"green"}
+                    onClick={recurringExpensesModalProps.onOpen}
+                    size="sm"
+                  >
+                    Add reccurring expenses
+                  </Button>
+                </HStack>
 
-            <Divider borderColor={"currentcolor"} my={2} />
+                <TableContainer>
+                  <Table size="sm">
+                    <Thead>
+                      <Tr>
+                        <Th>Category</Th>
+                        <Th>Name</Th>
+                        <Th isNumeric>Amount per month</Th>
+                        <Th></Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {userData?.financialInfo.monthlyTransactions.map(
+                        (transaction, index) => {
+                          return (
+                            <Tr key={index}>
+                              <Td>{transaction.category}</Td>
+                              <Td>{transaction.name}</Td>
+                              <Td isNumeric>{-transaction.amount}</Td>
+                              <Td>
+                                <Button
+                                  colorScheme={"red"}
+                                  size="sm"
+                                  onClick={() => {
+                                    onDeleteMonthlyTransaction(index);
+                                  }}
+                                >
+                                  Delete
+                                </Button>
+                              </Td>
+                            </Tr>
+                          );
+                        }
+                      )}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              </Box>
 
-            <SubmitButton>Next Step</SubmitButton>
-            <Box as="pre" marginY={10}>
-              {JSON.stringify(values, null, 2)}
-              <br />
-            </Box>
-          </Container>
-        )}
-      </Formik>
+              <Box
+                bg={"gray.100"}
+                rounded={"5px"}
+                my={"25px"}
+                p={"20px"}
+                border={"1px"}
+                borderColor={"gray.300"}
+              >
+                <HStack justifyContent="space-between" my={2}>
+                  <Heading fontSize={"xl"}>Accounts</Heading>
+                  <Button
+                    colorScheme={"green"}
+                    onClick={accountsModalProps.onOpen}
+                    size="sm"
+                  >
+                    Add account
+                  </Button>
+                </HStack>
+                <SimpleGrid
+                  spacing={4}
+                  templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+                >
+                  {userData?.financialInfo.accounts.map((account, index) => {
+                    return (
+                      <Card key={index} justify="space-between">
+                        <CardBody>
+                          <Badge>{account.type}</Badge>
+                          <Heading size="sm"> {account.name} </Heading>
+                          <Stat>
+                            <StatLabel>Value</StatLabel>
+                            <StatNumber>${account.value}</StatNumber>
+                          </Stat>
+                        </CardBody>
+                        <CardFooter>
+                          <Button
+                            onClick={() => {
+                              onDeleteAccount(index);
+                            }}
+                            size="xs"
+                            variant="link"
+                          >
+                            Delete
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    );
+                  })}
+                </SimpleGrid>
+              </Box>
 
-      <MonthlyTransactionsModal
-        isOpen={transactionsModalProps.isOpen}
-        onClose={transactionsModalProps.onClose}
+              <SubmitButton colorScheme={"green"}>Next Step</SubmitButton>
+            </Container>
+          )}
+        </Formik>
+      </Container>
+
+      <RecurringExpenseModal
+        isOpen={recurringExpensesModalProps.isOpen}
+        onClose={recurringExpensesModalProps.onClose}
         uid={userData?.uid}
       />
 

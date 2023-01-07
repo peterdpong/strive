@@ -8,16 +8,22 @@ export default function OnboardingIndex() {
   return (
     <ProtectedRoute>
       <Container
-        bg={"gray.300"}
-        maxW="container.md"
+        maxW="container.xl"
         rounded={"5px"}
+        bg={"gray.100"}
         my={"25px"}
-        p={"25px"}
+        p={"20px"}
+        border={"1px"}
+        borderColor={"gray.300"}
         centerContent
       >
-        <Heading textAlign={"center"}>Welcome to Circulation.</Heading>
-        <Text fontSize={"xl"}>Your personal finance manager.</Text>
-        <Button onClick={() => router.push("onboarding/goal")}>
+        <Heading textAlign={"center"}>Welcome to Strive.</Heading>
+        <Text fontSize={"md"}>Your personal finance and budget manager.</Text>
+        <Button
+          mt={"15px"}
+          colorScheme={"green"}
+          onClick={() => router.push("onboarding/financials")}
+        >
           Get Started
         </Button>
       </Container>

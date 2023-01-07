@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  HStack,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, VStack } from "@chakra-ui/react";
 
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import Sidebar from "../../components/app/Sidebar";

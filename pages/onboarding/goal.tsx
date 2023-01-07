@@ -1,157 +1,282 @@
 import {
+  Box,
+  Button,
+  Card,
+  CardBody,
   Container,
-  Divider,
-  FormLabel,
   Heading,
-  HStack,
-  Radio,
+  SimpleGrid,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  Stat,
+  StatLabel,
+  StatNumber,
   Text,
 } from "@chakra-ui/react";
 import { Formik } from "formik";
-import {
-  NumberInputControl,
-  RadioGroupControl,
-  SliderControl,
-  SubmitButton,
-} from "formik-chakra-ui";
+import { SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
-import { useAuth } from "../../src/auth/auth";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Filler,
+  ScriptableContext,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import { addUserGoal, getFinancialInfo } from "../../src/firebase/UserActions";
+import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
+import { useAuth } from "../../src/auth/auth";
 
-const format = (val: number) => `$` + val;
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function GoalPage() {
+// Boilerplate data
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend
+);
+
+const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+    title: {
+      display: true,
+      text: "Path to Goal",
+    },
+  },
+};
+
+const labels = ["January", "February", "March", "April", "May", "June", "July"];
+
+const data = {
+  labels,
+  datasets: [
+    {
+      fill: true,
+      label: "Net Worth",
+      data: [1, 2, 4, 16, 32, 64, 128],
+      borderColor: "rgb(30, 159, 92)",
+      backgroundColor: (context: ScriptableContext<"line">) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+        gradient.addColorStop(0, "rgba(45,216,129,1)");
+        gradient.addColorStop(1, "rgba(45,216,129,0)");
+        return gradient;
+      },
+    },
+  ],
+};
+export default function SuggestionsPage() {
   const router = useRouter();
 
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
-  console.log(userData);
-
-  console.log(getFinancialInfo(userData?.uid));
 
   return (
     <ProtectedRoute>
-      <Formik
-        initialValues={{
-          goalType: "timeframe",
-          goalValue: 25000,
-          monthlyAmount: 500,
-          timeframeValue: 5,
-        }}
-        onSubmit={(values, actions) => {
-          if (userData) {
-            if (values.goalType === "timeframe") {
-              // Get monthly savings value required to meet goal.
-              values.monthlyAmount =
-                values.goalValue / (values.timeframeValue * 12);
+      <Container maxW="container.xl" my={"25px"}>
+        <Button size="sm" onClick={() => router.push("/onboarding/budget")}>
+          Back
+        </Button>
+        <Heading>Choose your goal</Heading>
+        <Text fontSize={"md"}>
+          Choose one of the generated goals based on your finances or change it
+          just the way you like it!
+        </Text>
+        <Formik
+          initialValues={{
+            selectedGoalInfo: userData ? getUserGoal(userData?.uid) : null,
+          }}
+          onSubmit={(values, actions) => {
+            if (userData) {
+              if (
+                values.selectedGoalInfo &&
+                getUserGoal(userData.uid) !== values.selectedGoalInfo
+              ) {
+                addUserGoal(userData.uid, values.selectedGoalInfo);
+              }
+              actions.resetForm;
+              console.log(values);
+              router.push("/app");
+            } else {
+              alert("Error: User not logged in...");
+              router.push("/login");
             }
-
-            addUserGoal(userData.uid, values);
-            actions.resetForm;
-            console.log(values);
-            router.push("/onboarding/financials");
-          } else {
-            alert("Error: User not logged in...");
-            router.push("/login");
-          }
-        }}
-      >
-        {({ handleSubmit, values }) => (
-          <Container
-            bg={"gray.300"}
-            maxW="container.lg"
-            rounded={"5px"}
-            my={"25px"}
-            p={"25px"}
-            as="form"
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onSubmit={handleSubmit as any}
-          >
-            <Heading>Goal Creation</Heading>
-            <Text fontSize={"lg"}>Where do you want to be financially?</Text>
-
-            <Divider borderColor={"currentcolor"} py={"10px"} />
-
-            <FormLabel fontSize={"xl"}>
-              What&apos;s you net worth goal?
-            </FormLabel>
-            <HStack spacing={"8px"}>
-              <SliderControl
-                name="goalValue"
-                sliderProps={{ min: 5000, max: 1000000 }}
-              />
-
-              <NumberInputControl
-                name="goalValue"
-                numberInputProps={{
-                  step: 1000,
-                  min: 5000,
-                  max: 1000000,
-                  value: format(values.goalValue),
-                }}
-              />
-            </HStack>
-
-            <Divider borderColor={"currentcolor"} py={"10px"} />
-            <RadioGroupControl
-              name="goalType"
-              label="Time or Monthly Savings goal? "
+          }}
+        >
+          {({ handleSubmit }) => (
+            <Container
+              maxW="container.xl"
+              as="form"
+              p={"0px"}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              onSubmit={handleSubmit as any}
             >
-              <Radio value="timeframe">Timeframe</Radio>
-              <Radio value="monthly">Monthly Savings</Radio>
-            </RadioGroupControl>
+              <Box
+                bg={"gray.100"}
+                rounded={"5px"}
+                my={"25px"}
+                p={"20px"}
+                border={"1px"}
+                borderColor={"gray.300"}
+              >
+                <Heading mb={"8px"} fontSize={"xl"}>
+                  Selected Goal
+                </Heading>
+                <Line options={options} data={data} />
+              </Box>
 
-            <Divider borderColor={"currentcolor"} py={"10px"} />
-            {values.goalType === "timeframe" ? (
-              <>
-                <FormLabel fontSize={"xl"}>
-                  By when do you want to achieve your goal?
-                </FormLabel>
-                <HStack spacing={"8px"}>
-                  <SliderControl
-                    name="timeframeValue"
-                    sliderProps={{ min: 1, max: 20 }}
-                  />
+              <Heading fontSize={"xl"}>Adjust goal</Heading>
 
-                  <NumberInputControl
-                    name="timeframeValue"
-                    numberInputProps={{
-                      min: 1,
-                      max: 20,
-                      value: values.timeframeValue,
-                    }}
-                  />
-                </HStack>
-              </>
-            ) : (
-              <HStack justifyContent={"space-evenly"}>
-                <RadioGroupControl
-                  name="monthlyAmount"
-                  label="How much would you like to save every month?"
+              <SimpleGrid columns={3} spacing={5}>
+                <Box
+                  bg={"gray.100"}
+                  rounded={"5px"}
+                  my={"25px"}
+                  p={"20px"}
+                  border={"1px"}
+                  borderColor={"gray.300"}
                 >
-                  <Radio value="1000">$1000</Radio>
-                  <Radio value="2000">$2000</Radio>
-                  <Radio value="3000">$3000</Radio>
-                  <Radio value="4000">$4000</Radio>
-                  <Radio value="5000">$5000</Radio>
-                </RadioGroupControl>
-                <NumberInputControl
-                  name="monthlyAmount"
-                  numberInputProps={{
-                    step: 100,
-                    min: 1,
-                    max: 25000,
-                    value: format(values.monthlyAmount),
-                  }}
-                />
-              </HStack>
-            )}
-            <Divider borderColor={"currentcolor"} my={2} />
-            <SubmitButton>Next Step</SubmitButton>
-          </Container>
-        )}
-      </Formik>
+                  <Heading fontSize={"xl"}>Net Worth Goal</Heading>
+                  <Text fontSize={"xl"}>$65,000</Text>
+                  <Slider
+                    colorScheme={"green"}
+                    aria-label="slider-ex-1"
+                    defaultValue={30}
+                  >
+                    <SliderTrack>
+                      <SliderFilledTrack />
+                    </SliderTrack>
+                    <SliderThumb />
+                  </Slider>
+                </Box>
+                <Box
+                  bg={"gray.100"}
+                  rounded={"5px"}
+                  my={"25px"}
+                  p={"20px"}
+                  border={"1px"}
+                  borderColor={"gray.300"}
+                >
+                  <Heading fontSize={"xl"}>Monthly Savings Goal</Heading>
+                  <Text fontSize={"xl"}>$500</Text>
+                  <Slider
+                    colorScheme={"green"}
+                    aria-label="slider-ex-1"
+                    defaultValue={30}
+                  >
+                    <SliderTrack>
+                      <SliderFilledTrack />
+                    </SliderTrack>
+                    <SliderThumb />
+                  </Slider>
+                </Box>
+                <Box
+                  bg={"gray.100"}
+                  rounded={"5px"}
+                  my={"25px"}
+                  p={"20px"}
+                  border={"1px"}
+                  borderColor={"gray.300"}
+                >
+                  <Heading fontSize={"xl"}>Timeline</Heading>
+                  <Text fontSize={"xl"}>5 Years</Text>
+                  <Slider
+                    colorScheme={"green"}
+                    aria-label="slider-ex-1"
+                    defaultValue={30}
+                  >
+                    <SliderTrack>
+                      <SliderFilledTrack />
+                    </SliderTrack>
+                    <SliderThumb />
+                  </Slider>
+                </Box>
+              </SimpleGrid>
+
+              <Box
+                bg={"gray.100"}
+                rounded={"5px"}
+                my={"25px"}
+                p={"20px"}
+                border={"1px"}
+                borderColor={"gray.300"}
+              >
+                <Heading mb={"8px"} fontSize={"xl"}>
+                  Suggested goals
+                </Heading>
+                <SimpleGrid columns={3} spacing={3}>
+                  <Card>
+                    <CardBody>
+                      <Heading size="sm"> Passive Goal </Heading>
+                      <Stat>
+                        <StatLabel>Monthly Savings</StatLabel>
+                        <StatNumber>$250</StatNumber>
+                        <StatLabel>Net Worth Goal in 5 years</StatLabel>
+                        <StatNumber fontSize="md">$50,000</StatNumber>
+                      </Stat>
+                      <Button my={"4px"} size={"sm"} colorScheme={"green"}>
+                        Select
+                      </Button>
+                    </CardBody>
+                  </Card>
+                  <Card>
+                    <CardBody>
+                      <Box>
+                        <Heading size="sm">Neutral Goal</Heading>
+                        <Stat>
+                          <StatLabel>Monthly Savings</StatLabel>
+                          <StatNumber>$500</StatNumber>
+                          <StatLabel>Net Worth Goal in 5 years</StatLabel>
+                          <StatNumber fontSize="md">$65,000</StatNumber>
+                        </Stat>
+                        <Button my={"4px"} size={"sm"} colorScheme={"green"}>
+                          Select
+                        </Button>
+                      </Box>
+                    </CardBody>
+                  </Card>
+                  <Card>
+                    <CardBody>
+                      <Box>
+                        <Heading size="sm"> Aggresive Goal </Heading>
+                        <Stat>
+                          <StatLabel>Monthly Savings</StatLabel>
+                          <StatNumber>$1000</StatNumber>
+                          <StatLabel>Net Worth Goal in 5 years</StatLabel>
+                          <StatNumber fontSize="md">$85,000</StatNumber>
+                        </Stat>
+                        <Button my={"4px"} size={"sm"} colorScheme={"green"}>
+                          Select
+                        </Button>
+                      </Box>
+                    </CardBody>
+                  </Card>
+                </SimpleGrid>
+              </Box>
+
+              <SubmitButton colorScheme={"green"}>Finish</SubmitButton>
+            </Container>
+          )}
+        </Formik>
+      </Container>
     </ProtectedRoute>
   );
 }
