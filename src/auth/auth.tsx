@@ -35,9 +35,6 @@ interface AuthContext {
   signOutAuth: () => Promise<void>;
 }
 
-// const authContext: Context<AuthContext | null> =
-//   createContext<AuthContext | null>(null);
-
 const authContext: Context<AuthContext> = createContext<AuthContext>({
   useRequiredAuth: () => {
     return null;

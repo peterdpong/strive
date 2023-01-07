@@ -25,20 +25,32 @@ import {
 } from "formik-chakra-ui";
 import { useRouter } from "next/router";
 import AddAccountModal from "../../components/modals/AddAccountModal";
-import TransactionsModal from "../../components/modals/TransactionsModal";
+import MonthlyTransactionsModal from "../../components/modals/MonthlyTransactionsModal";
 import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import { addFinancialInfo } from "../../src/firebase/UserActions";
+import {
+  addFinancialInfo,
+  deleteMonthlyTransaction,
+} from "../../src/firebase/UserActions";
 
 export default function FinancesPages() {
   const router = useRouter();
 
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
-  console.log(userData);
 
   const accountsModalProps = useDisclosure();
   const transactionsModalProps = useDisclosure();
+
+  const onDeleteMonthlyTransaction = (index: number) => {
+    if (userData) {
+      deleteMonthlyTransaction(
+        userData?.uid,
+        userData?.financialInfo.monthlyTransactions,
+        index
+      );
+    }
+  };
 
   return (
     <ProtectedRoute>
@@ -136,11 +148,10 @@ export default function FinancesPages() {
             <Box>
               <HStack justifyContent="space-between" my={2}>
                 <FormLabel fontSize={"xl"}>
-                  Fixed Monthly Transactions: Rent, Loan payments, and
-                  subscriptions
+                  Fixed monthly payments: Rent, loans, and subscriptions
                 </FormLabel>
                 <Button onClick={transactionsModalProps.onOpen} size="sm">
-                  Add monthly transactions
+                  Add monthly payments
                 </Button>
               </HStack>
 
@@ -151,24 +162,31 @@ export default function FinancesPages() {
                       <Th>Category</Th>
                       <Th>Name</Th>
                       <Th isNumeric>Amount per month</Th>
+                      <Th></Th>
                     </Tr>
                   </Thead>
                   <Tbody>
-                    <Tr>
-                      <Td>Credit Card</Td>
-                      <Td>Payment</Td>
-                      <Td isNumeric>-$15.32</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Savings account</Td>
-                      <Td>Deposit</Td>
-                      <Td isNumeric>+$30.48</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Student Loan</Td>
-                      <Td>Monthly Student Loan Payment</Td>
-                      <Td isNumeric>-$200</Td>
-                    </Tr>
+                    {userData?.financialInfo.monthlyTransactions.map(
+                      (transaction, index) => {
+                        return (
+                          <Tr key={index}>
+                            <Td>{transaction.category}</Td>
+                            <Td>{transaction.name}</Td>
+                            <Td isNumeric>{-transaction.amount}</Td>
+                            <Td>
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  onDeleteMonthlyTransaction(index);
+                                }}
+                              >
+                                Delete
+                              </Button>
+                            </Td>
+                          </Tr>
+                        );
+                      }
+                    )}
                   </Tbody>
                 </Table>
               </TableContainer>
@@ -183,35 +201,6 @@ export default function FinancesPages() {
                   Add account
                 </Button>
               </HStack>
-
-              <TableContainer>
-                <Table size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th>Category</Th>
-                      <Th>Name</Th>
-                      <Th isNumeric>Amount per month</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    <Tr>
-                      <Td>Credit Card</Td>
-                      <Td>Payment</Td>
-                      <Td isNumeric>-$15.32</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Savings account</Td>
-                      <Td>Deposit</Td>
-                      <Td isNumeric>+$30.48</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Student Loan</Td>
-                      <Td>Monthly Student Loan Payment</Td>
-                      <Td isNumeric>-$200</Td>
-                    </Tr>
-                  </Tbody>
-                </Table>
-              </TableContainer>
             </Box>
 
             <Divider borderColor={"currentcolor"} my={2} />
@@ -225,7 +214,7 @@ export default function FinancesPages() {
         )}
       </Formik>
 
-      <TransactionsModal
+      <MonthlyTransactionsModal
         isOpen={transactionsModalProps.isOpen}
         onClose={transactionsModalProps.onClose}
         uid={userData?.uid}

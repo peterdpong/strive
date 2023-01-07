@@ -4,14 +4,36 @@ export type BudgetModel = {
 };
 
 export enum TransactionCategories {
-  TRANSPORTATION,
-  FOODANDDRINK,
-  ENTERTAINMENT,
-  UTILITIES,
+  TRANSPORTATION = "Transportation",
+  FOODANDDRINK = "Food and drinks",
+  ENTERTAINMENT = "Entertainment",
+  UTILITIES = "Utilities",
+  RENT = "Rent",
 }
+
+export const getTransactionCategoriesArray = () => {
+  const transactionCategories = [];
+  for (const value of Object.values(TransactionCategories)) {
+    transactionCategories.push({
+      value: value,
+      key: Object.keys(TransactionCategories)[
+        Object.values(TransactionCategories).indexOf(value)
+      ],
+    });
+  }
+
+  return transactionCategories;
+};
 
 export type Transaction = {
   date: Date;
+  name: string;
+  category: TransactionCategories;
+  amount: number;
+};
+
+export type MonthlyTransaction = {
+  name: string;
   category: TransactionCategories;
   amount: number;
 };

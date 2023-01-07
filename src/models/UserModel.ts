@@ -1,4 +1,4 @@
-import { BudgetModel, Transaction } from "./BudgetModel";
+import { BudgetModel, MonthlyTransaction, Transaction } from "./BudgetModel";
 import { GoalModel } from "./GoalModel";
 
 export type UserModel = {
@@ -22,18 +22,20 @@ export type FinancialInfo = {
   incomeValue: number;
   incomeIsAnnual: boolean;
   hoursPerWeek: number;
-  monthlyTransactions: Transaction[];
+  monthlyTransactions: MonthlyTransaction[];
   accounts: Account[];
 };
 
 export enum AccountType {
-  SAVINGS,
-  CHEQUINGS,
-  TFSA,
-  RRSP,
-  GIC,
+  SAVINGS = "Savings",
+  CHEQUINGS = "Chequings",
+  CREDITCARD = "Credit Card",
+  // TFSA,
+  // RRSP,
+  // GIC,
 }
 
 export type Account = {
   type: AccountType;
+  value: number;
 };

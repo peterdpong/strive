@@ -4,8 +4,13 @@ import {
   getDoc,
   DocumentSnapshot,
   DocumentData,
+  updateDoc,
 } from "firebase/firestore";
-import { BudgetModel, Transaction } from "../models/BudgetModel";
+import {
+  BudgetModel,
+  MonthlyTransaction,
+  Transaction,
+} from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
 import { FinancialInfo, UserModel } from "../models/UserModel";
 import { firestoreDB } from "./firebase";
@@ -123,4 +128,30 @@ export const getFinancialInfo = (uid: string | undefined) => {
 export const addBudgetInfo = (uid: string, budgetInfo: BudgetModel) => {
   const userDataRef = doc(firestoreDB, "users", uid);
   setDoc(userDataRef, { budgetInfo: budgetInfo }, { merge: true });
+};
+
+export const addMonthlyTransaction = (
+  uid: string,
+  monthlyTransactions: MonthlyTransaction[],
+  newTransaction: MonthlyTransaction
+) => {
+  monthlyTransactions.push(newTransaction);
+
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, {
+    "financialInfo.monthlyTransactions": monthlyTransactions,
+  });
+};
+
+export const deleteMonthlyTransaction = (
+  uid: string,
+  monthlyTransactions: MonthlyTransaction[],
+  index: number
+) => {
+  monthlyTransactions.splice(index, 1);
+
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, {
+    "financialInfo.monthlyTransactions": monthlyTransactions,
+  });
 };
