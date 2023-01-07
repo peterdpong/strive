@@ -8,6 +8,7 @@ import {
   Spacer,
   HStack,
 } from "@chakra-ui/react";
+import ProtectedRoute from "../../../src/auth/ProtectedRoute";
 
 const expenses = [
   {
@@ -85,75 +86,77 @@ export default function BudgetUI() {
   };
 
   return (
-    <Box>
-      <Container maxW="container.md" rounded={"5px"} px={"0px"} mt="60px">
-        <Heading size="md">May</Heading>
-        <Heading size="xl">${totalSpent} spent</Heading>
-        <Heading size="md">${monthlyBudget - totalSpent} remaining</Heading>
-        <Box mt="20px">
-          <Flex width="100%" mb="8px">
-            <HStack spacing="6px">
-              {categories().map((category, i) => (
-                <Tag key={i} backgroundColor={tagColors[i]} color={colors[i]}>
-                  {category.name}
+    <ProtectedRoute>
+      <Box>
+        <Container maxW="container.md" rounded={"5px"} px={"0px"} mt="60px">
+          <Heading size="md">May</Heading>
+          <Heading size="xl">${totalSpent} spent</Heading>
+          <Heading size="md">${monthlyBudget - totalSpent} remaining</Heading>
+          <Box mt="20px">
+            <Flex width="100%" mb="8px">
+              <HStack spacing="6px">
+                {categories().map((category, i) => (
+                  <Tag key={i} backgroundColor={tagColors[i]} color={colors[i]}>
+                    {category.name}
+                  </Tag>
+                ))}
+              </HStack>
+              <Spacer />
+              <Box>
+                <Tag backgroundColor="#E7EAF0" color="#8898A9">
+                  remaining
                 </Tag>
+              </Box>
+            </Flex>
+            <Flex
+              h="40px"
+              w="100%"
+              backgroundColor="#E7EAF0"
+              borderRadius="5px"
+              overflow="hidden"
+            >
+              {categories().map((category, i) => (
+                <Box
+                  w={`${Math.round((category.amount / monthlyBudget) * 100)}%`}
+                  h="100%"
+                  backgroundColor={colors[i]}
+                  key={i}
+                />
               ))}
-            </HStack>
-            <Spacer />
-            <Box>
-              <Tag backgroundColor="#E7EAF0" color="#8898A9">
-                remaining
-              </Tag>
-            </Box>
-          </Flex>
-          <Flex
-            h="40px"
-            w="100%"
-            backgroundColor="#E7EAF0"
-            borderRadius="5px"
-            overflow="hidden"
-          >
-            {categories().map((category, i) => (
-              <Box
-                w={`${Math.round((category.amount / monthlyBudget) * 100)}%`}
-                h="100%"
-                backgroundColor={colors[i]}
-                key={i}
-              />
-            ))}
-          </Flex>
-        </Box>
-      </Container>
+            </Flex>
+          </Box>
+        </Container>
 
-      <Container
-        bg={"gray.300"}
-        maxW="container.md"
-        rounded={"5px"}
-        my={"25px"}
-        p={"25px"}
-      >
-        <Flex>
-          <Heading size="lg">56%</Heading>
-          <Text>Increase on food from last month</Text>
-        </Flex>
-      </Container>
-      <Container
-        bg={"gray.300"}
-        maxW="container.md"
-        rounded={"5px"}
-        my={"25px"}
-        p={"25px"}
-      >
-        <Heading size="md">Top expenses this month</Heading>
-        <Box width="100%">
-          {expenses.map((expense, i) => (
-            <HStack key={i} width="100%">
-              <Text>{expense.description}</Text>
-              <Text>${expense.amount}</Text>
-            </HStack>
-          ))}
-        </Box>
-      </Container>
-    </Box>
+        <Container
+          bg={"gray.300"}
+          maxW="container.md"
+          rounded={"5px"}
+          my={"25px"}
+          p={"25px"}
+        >
+          <Flex>
+            <Heading size="lg">56%</Heading>
+            <Text>Increase on food from last month</Text>
+          </Flex>
+        </Container>
+        <Container
+          bg={"gray.300"}
+          maxW="container.md"
+          rounded={"5px"}
+          my={"25px"}
+          p={"25px"}
+        >
+          <Heading size="md">Top expenses this month</Heading>
+          <Box width="100%">
+            {expenses.map((expense, i) => (
+              <HStack key={i} width="100%">
+                <Text>{expense.description}</Text>
+                <Text>${expense.amount}</Text>
+              </HStack>
+            ))}
+          </Box>
+        </Container>
+      </Box>
+    </ProtectedRoute>
   );
 }

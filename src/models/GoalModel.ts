@@ -6,8 +6,8 @@ export enum GoalType {
 
 // TODO(Peter): Model only for SAVINGS goal
 export type GoalModel = {
-  type: GoalType;
-  targetNetWorth: number;
-  isTimeframeGoal: boolean;
-  constriant: number; // Constraint here depends on isTimeframeGoal
+  goalType: string;
+  goalValue: number;
+  monthlyAmount: number;
+  timeframeValue: number;
 };

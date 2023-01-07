@@ -1,5 +1,4 @@
 import {
-  Box,
   Container,
   Divider,
   FormLabel,
@@ -16,123 +15,143 @@ import {
   SubmitButton,
 } from "formik-chakra-ui";
 import { useRouter } from "next/router";
+import { useAuth } from "../../src/auth/auth";
+import ProtectedRoute from "../../src/auth/ProtectedRoute";
+import { addUserGoal, getFinancialInfo } from "../../src/firebase/UserActions";
 
 const format = (val: number) => `$` + val;
 
 export default function GoalPage() {
   const router = useRouter();
 
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
+  console.log(userData);
+
+  console.log(getFinancialInfo(userData?.uid));
+
   return (
-    <Formik
-      initialValues={{
-        goalType: "timeframe",
-        goalValue: 25000,
-        monthlyAmount: 500,
-        timeframeValue: 5,
-      }}
-      onSubmit={(values, actions) => {
-        console.log(values);
-        //alert(JSON.stringify(values, null, 2));
-        actions.resetForm;
-        router.push("/onboarding/financials");
-      }}
-    >
-      {({ handleSubmit, values }) => (
-        <Container
-          bg={"gray.300"}
-          maxW="container.lg"
-          rounded={"5px"}
-          my={"25px"}
-          p={"25px"}
-          as="form"
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onSubmit={handleSubmit as any}
-        >
-          <Heading>Goal Creation</Heading>
-          <Text fontSize={"lg"}>Where do you want to be financially?</Text>
+    <ProtectedRoute>
+      <Formik
+        initialValues={{
+          goalType: "timeframe",
+          goalValue: 25000,
+          monthlyAmount: 500,
+          timeframeValue: 5,
+        }}
+        onSubmit={(values, actions) => {
+          if (userData) {
+            if (values.goalType === "timeframe") {
+              // Get monthly savings value required to meet goal.
+              values.monthlyAmount =
+                values.goalValue / (values.timeframeValue * 12);
+            }
 
-          <Divider borderColor={"currentcolor"} py={"10px"} />
-
-          <FormLabel fontSize={"xl"}>What&apos;s you net worth goal?</FormLabel>
-          <HStack spacing={"8px"}>
-            <SliderControl
-              name="goalValue"
-              sliderProps={{ min: 5000, max: 1000000 }}
-            />
-
-            <NumberInputControl
-              name="goalValue"
-              numberInputProps={{
-                step: 1000,
-                min: 5000,
-                max: 1000000,
-                value: format(values.goalValue),
-              }}
-            />
-          </HStack>
-
-          <Divider borderColor={"currentcolor"} py={"10px"} />
-          <RadioGroupControl
-            name="goalType"
-            label="Time or Monthly Savings goal? "
+            addUserGoal(userData.uid, values);
+            actions.resetForm;
+            console.log(values);
+            router.push("/onboarding/financials");
+          } else {
+            alert("Error: User not logged in...");
+            router.push("/login");
+          }
+        }}
+      >
+        {({ handleSubmit, values }) => (
+          <Container
+            bg={"gray.300"}
+            maxW="container.lg"
+            rounded={"5px"}
+            my={"25px"}
+            p={"25px"}
+            as="form"
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onSubmit={handleSubmit as any}
           >
-            <Radio value="timeframe">Timeframe</Radio>
-            <Radio value="monthly">Monthly Savings</Radio>
-          </RadioGroupControl>
+            <Heading>Goal Creation</Heading>
+            <Text fontSize={"lg"}>Where do you want to be financially?</Text>
 
-          <Divider borderColor={"currentcolor"} py={"10px"} />
-          {values.goalType === "timeframe" ? (
-            <>
-              <FormLabel fontSize={"xl"}>
-                By when do you want to achieve your goal?
-              </FormLabel>
-              <HStack spacing={"8px"}>
-                <SliderControl
-                  name="timeframeValue"
-                  sliderProps={{ min: 1, max: 20 }}
-                />
+            <Divider borderColor={"currentcolor"} py={"10px"} />
 
-                <NumberInputControl
-                  name="timeframeValue"
-                  numberInputProps={{
-                    min: 1,
-                    max: 20,
-                    value: values.timeframeValue,
-                  }}
-                />
-              </HStack>
-            </>
-          ) : (
-            <HStack justifyContent={"space-evenly"}>
-              <RadioGroupControl
-                name="monthlyAmount"
-                label="How much would you like to save every month?"
-              >
-                <Radio value="1000">$1000</Radio>
-                <Radio value="2000">$2000</Radio>
-                <Radio value="3000">$3000</Radio>
-                <Radio value="4000">$4000</Radio>
-                <Radio value="5000">$5000</Radio>
-              </RadioGroupControl>
+            <FormLabel fontSize={"xl"}>
+              What&apos;s you net worth goal?
+            </FormLabel>
+            <HStack spacing={"8px"}>
+              <SliderControl
+                name="goalValue"
+                sliderProps={{ min: 5000, max: 1000000 }}
+              />
+
               <NumberInputControl
-                name="monthlyAmount"
+                name="goalValue"
                 numberInputProps={{
-                  step: 100,
-                  min: 1,
-                  max: 25000,
-                  value: format(values.monthlyAmount),
+                  step: 1000,
+                  min: 5000,
+                  max: 1000000,
+                  value: format(values.goalValue),
                 }}
               />
             </HStack>
-          )}
-          <Divider borderColor={"currentcolor"} my={2} />
-          <SubmitButton>Next Step</SubmitButton>
-          <Box as="pre" marginY={10}>
-            {JSON.stringify(values, null, 2)}
-            <br />
-          </Box>
-        </Container>
-      )}
-    </Formik>
+
+            <Divider borderColor={"currentcolor"} py={"10px"} />
+            <RadioGroupControl
+              name="goalType"
+              label="Time or Monthly Savings goal? "
+            >
+              <Radio value="timeframe">Timeframe</Radio>
+              <Radio value="monthly">Monthly Savings</Radio>
+            </RadioGroupControl>
+
+            <Divider borderColor={"currentcolor"} py={"10px"} />
+            {values.goalType === "timeframe" ? (
+              <>
+                <FormLabel fontSize={"xl"}>
+                  By when do you want to achieve your goal?
+                </FormLabel>
+                <HStack spacing={"8px"}>
+                  <SliderControl
+                    name="timeframeValue"
+                    sliderProps={{ min: 1, max: 20 }}
+                  />
+
+                  <NumberInputControl
+                    name="timeframeValue"
+                    numberInputProps={{
+                      min: 1,
+                      max: 20,
+                      value: values.timeframeValue,
+                    }}
+                  />
+                </HStack>
+              </>
+            ) : (
+              <HStack justifyContent={"space-evenly"}>
+                <RadioGroupControl
+                  name="monthlyAmount"
+                  label="How much would you like to save every month?"
+                >
+                  <Radio value="1000">$1000</Radio>
+                  <Radio value="2000">$2000</Radio>
+                  <Radio value="3000">$3000</Radio>
+                  <Radio value="4000">$4000</Radio>
+                  <Radio value="5000">$5000</Radio>
+                </RadioGroupControl>
+                <NumberInputControl
+                  name="monthlyAmount"
+                  numberInputProps={{
+                    step: 100,
+                    min: 1,
+                    max: 25000,
+                    value: format(values.monthlyAmount),
+                  }}
+                />
+              </HStack>
+            )}
+            <Divider borderColor={"currentcolor"} my={2} />
+            <SubmitButton>Next Step</SubmitButton>
+          </Container>
+        )}
+      </Formik>
+    </ProtectedRoute>
   );
 }

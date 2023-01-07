@@ -1,34 +1,35 @@
-import React, { FormEvent, useCallback, useEffect } from "react";
-import { useSignInWithEmailAndPassword } from "../src/hooks/auth/useSignInWithEmailAndPassword";
+import React, { FormEvent, useCallback, useState } from "react";
+import { useAuth } from "../src/auth/auth";
 
 function EmailSignInForm(
   props: React.PropsWithChildren<{
     onSignUp: () => void;
   }>
 ) {
-  const [signIn, state] = useSignInWithEmailAndPassword();
+  const [error, setError] = useState<string | null>(null);
 
-  // useEffect hook to trigger once auth state is set to success
-  useEffect(() => {
-    if (state.success) {
-      props.onSignUp();
-    }
-  }, [props, state.success]);
-
+  const auth = useAuth();
   const onSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-
-      if (state.loading) return;
+      if (auth.loading) return;
+      setError(null);
 
       const data = new FormData(event.currentTarget);
 
       const email = data.get("email") as string;
       const password = data.get("password") as string;
 
-      return signIn(email, password);
+      return auth
+        .signinEmail(email, password)
+        .then(() => {
+          props.onSignUp();
+        })
+        .catch((error) => {
+          setError(error.message);
+        });
     },
-    [state.loading, signIn]
+    [auth, props]
   );
 
   // TODO(Peter): Styling and use CharkaUI components
@@ -52,9 +53,9 @@ function EmailSignInForm(
           className="TextField"
         />
 
-        {state.error ? <span>{state.error.message}</span> : null}
+        {error ? <span>{error}</span> : null}
 
-        <button disabled={state.loading}>Sign In</button>
+        <button disabled={auth.loading}>Sign In</button>
       </div>
     </form>
   );

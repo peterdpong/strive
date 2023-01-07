@@ -1,25 +1,20 @@
-import React, { FormEvent, useCallback, useEffect } from "react";
-import { useSignUpWithEmailAndPassword } from "../src/hooks/auth/useSignUpWithEmailAndPassword";
+import React, { FormEvent, useCallback, useState } from "react";
+import { useAuth } from "../src/auth/auth";
 
 function EmailSignUpForm(
   props: React.PropsWithChildren<{
     onSignUp: () => void;
   }>
 ) {
-  const [signUp, state] = useSignUpWithEmailAndPassword();
-
-  // useEffect hook to trigger once auth state is set to success
-  useEffect(() => {
-    if (state.success) {
-      props.onSignUp();
-    }
-  }, [props, state.success]);
+  const [error, setError] = useState<string | null>(null);
+  const auth = useAuth();
 
   const onSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
-      if (state.loading) return;
+      if (auth.loading) return;
+      setError(null);
 
       const data = new FormData(event.currentTarget);
 
@@ -28,9 +23,16 @@ function EmailSignUpForm(
       const firstName = data.get("firstName") as string;
       const lastName = data.get("lastName") as string;
 
-      return signUp(email, password, firstName, lastName);
+      return auth
+        .createUserEmail(email, password, firstName, lastName)
+        .then(() => {
+          props.onSignUp();
+        })
+        .catch((error) => {
+          setError(error.message);
+        });
     },
-    [state.loading, signUp]
+    [auth, props]
   );
 
   // TODO(Peter): Styling and use CharkaUI components
@@ -70,9 +72,9 @@ function EmailSignUpForm(
           className="TextField"
         />
 
-        {state.error ? <span>{state.error.message}</span> : null}
+        {error ? <span>{error}</span> : null}
 
-        <button disabled={state.loading}>Sign Up</button>
+        <button disabled={auth.loading}>Sign Up</button>
       </div>
     </form>
   );

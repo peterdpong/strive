@@ -1,4 +1,4 @@
-import { Transaction } from "./BudgetModel";
+import { BudgetModel, MonthlyTransaction, Transaction } from "./BudgetModel";
 import { GoalModel } from "./GoalModel";
 
 export type UserModel = {
@@ -6,42 +6,50 @@ export type UserModel = {
   email: string;
   firstName: string;
   lastName: string;
-  financialInfo: UserFinancialInfo;
+  onboardingStatus: OnboardingStatus;
+  financialInfo: FinancialInfo;
+  budgetInfo: BudgetModel;
   goalInfo: GoalModel;
   monthTransactionsMap: { [key: string]: Transaction[] };
 };
 
-export type UserFinancialInfo = {
-  income: number;
-  fixedCosts: number;
+export type OnboardingStatus = {
+  finished: boolean;
+  stageNum: number;
+};
+
+export type FinancialInfo = {
+  incomeValue: number;
+  incomeIsAnnual: string;
+  hoursPerWeek: number;
+  monthlyTransactions: MonthlyTransaction[];
   accounts: Account[];
 };
 
 export enum AccountType {
-  SAVINGS,
-  CHEQUINGS,
-  TFSA,
-  RRSP,
-  GIC,
+  SAVINGS = "Savings",
+  CHEQUINGS = "Chequings",
+  CREDITCARD = "Credit Card",
+  LOAN = "Loan",
+  // TFSA,
+  // RRSP,
+  // GIC,
 }
 
-export type Account = {
-  type: AccountType;
+export const getAccountTypeArray = () => {
+  const accountTypes = [];
+  for (const value of Object.values(AccountType)) {
+    accountTypes.push({
+      value: value,
+      key: Object.keys(AccountType)[Object.values(AccountType).indexOf(value)],
+    });
+  }
+
+  return accountTypes;
 };
 
-// TODO(Peter): Clean up once sure we do no need this.
-// export const createUserModel = (
-//   uid: string,
-//   email: string,
-//   firstName: string,
-//   lastName: string
-// ) => {
-//   const newUserModel: UserModel = {
-//     uid,
-//     email,
-//     firstName,
-//     lastName,
-//   };
-
-//   return newUserModel;
-// };
+export type Account = {
+  name: string;
+  type: AccountType;
+  value: number;
+};

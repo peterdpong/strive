@@ -1,15 +1,8 @@
-import { signOut } from "firebase/auth";
-import { useCallback } from "react";
-import { useAuth } from "reactfire";
-
+import { useAuth } from "../src/auth/auth";
 const SignOutButton = () => {
-  const auth = useAuth();
+  const { signOutAuth } = useAuth();
 
-  const onSignOutRequest = useCallback(() => {
-    return signOut(auth);
-  }, [auth]);
-
-  return <button onClick={onSignOutRequest}>Sign Out</button>;
+  return <button onClick={signOutAuth}>Sign Out</button>;
 };
 
 export default SignOutButton;
