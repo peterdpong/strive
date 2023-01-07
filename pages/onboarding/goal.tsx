@@ -150,10 +150,6 @@ export default function GoalPage() {
             )}
             <Divider borderColor={"currentcolor"} my={2} />
             <SubmitButton>Next Step</SubmitButton>
-            <Box as="pre" marginY={10}>
-              {JSON.stringify(values, null, 2)}
-              <br />
-            </Box>
           </Container>
         )}
       </Formik>

@@ -12,7 +12,7 @@ import {
   Transaction,
 } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
-import { FinancialInfo, UserModel } from "../models/UserModel";
+import { Account, FinancialInfo, UserModel } from "../models/UserModel";
 import { firestoreDB } from "./firebase";
 
 export const addNewUser = (
@@ -153,5 +153,31 @@ export const deleteMonthlyTransaction = (
   const userDataRef = doc(firestoreDB, "users", uid);
   updateDoc(userDataRef, {
     "financialInfo.monthlyTransactions": monthlyTransactions,
+  });
+};
+
+export const addAccount = (
+  uid: string,
+  accounts: Account[],
+  newAccount: Account
+) => {
+  accounts.push(newAccount);
+
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, {
+    "financialInfo.accounts": accounts,
+  });
+};
+
+export const deleteAccount = (
+  uid: string,
+  accounts: Account[],
+  index: number
+) => {
+  accounts.splice(index, 1);
+
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, {
+    "financialInfo.accounts": accounts,
   });
 };

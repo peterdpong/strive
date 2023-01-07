@@ -11,66 +11,93 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Select,
 } from "@chakra-ui/react";
+import { addAccount } from "../../src/firebase/UserActions";
+import { useAuth } from "../../src/auth/auth";
+import { AccountType, getAccountTypeArray } from "../../src/models/UserModel";
 
 export default function AddAccountModal(props: {
   isOpen: boolean;
   onClose: () => void;
   uid: string | undefined;
 }) {
-  const [name, setName] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [name, setName] = useState<string | null>(null);
+  const [type, setType] = useState<string | null>(null);
+  const [value, setValue] = useState<number | null>(null);
+  const accountTypes = getAccountTypeArray();
+
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
 
   const nameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
+  const typeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setType(e.target.value);
+  };
+
+  const valueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(parseFloat(e.target.value));
+  };
+
   const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
 
-    if (name.length === 0) {
-      alert("Please enter a name");
+    if (name === null || type === null || value === null) {
+      setError("A field is missing");
       return;
     }
 
-    // const checkOverlap = props.classes.filter(
-    //   (c: ClassModel) => c.name === name
-    // );
+    if (userData) {
+      addAccount(userData.uid, userData.financialInfo.accounts, {
+        name: name,
+        type: type as AccountType,
+        value: value,
+      });
+    }
 
-    // if (checkOverlap[0]) {
-    //   alert("This class already exists!");
-    //   return;
-    // }
-
-    // const updatedClasses = props.classes.concat(classObject);
-    // addClass(props.uid, updatedClasses);
-    // setName("");
-    // props.onClose();
+    setName(null);
+    setType(null);
+    setValue(null);
+    props.onClose();
   };
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add Class</ModalHeader>
+        <ModalHeader>Add an account</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl id="assignment-name" isRequired>
-            <FormLabel>Name</FormLabel>
-            <Input placeholder="Class name" onChange={nameHandler} />
+          <FormControl id="account-name" isRequired>
+            <FormLabel>Account Name</FormLabel>
+            <Input onChange={nameHandler} />
           </FormControl>
+          <FormControl id="account-type" isRequired>
+            <FormLabel>Account Type</FormLabel>
+            <Select onChange={typeHandler} placeholder="Select account type">
+              {accountTypes.map((type) => {
+                return (
+                  <option key={type.key} value={type.key}>
+                    {type.value}
+                  </option>
+                );
+              })}
+            </Select>
+          </FormControl>
+          <FormControl id="account-value" isRequired>
+            <FormLabel>Account Value</FormLabel>
+            <Input type="number" placeholder="$125" onChange={valueHandler} />
+          </FormControl>
+          {error !== null ? <div>Error: {error}</div> : <></>}
         </ModalBody>
 
         <ModalFooter>
           <Button colorScheme="blue" mr={3} onClick={submitHandler}>
-            Submit
-          </Button>
-          <Button
-            colorScheme="blue"
-            variant="outline"
-            mr={3}
-            onClick={props.onClose}
-          >
-            Close
+            Add account
           </Button>
         </ModalFooter>
       </ModalContent>

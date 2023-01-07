@@ -1,12 +1,20 @@
 import {
+  Badge,
   Box,
   Button,
+  Card,
+  CardBody,
+  CardFooter,
   Container,
   Divider,
   FormLabel,
   Heading,
   HStack,
   Radio,
+  SimpleGrid,
+  Stat,
+  StatLabel,
+  StatNumber,
   Table,
   TableContainer,
   Tbody,
@@ -30,6 +38,7 @@ import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import {
   addFinancialInfo,
+  deleteAccount,
   deleteMonthlyTransaction,
 } from "../../src/firebase/UserActions";
 
@@ -52,12 +61,18 @@ export default function FinancesPages() {
     }
   };
 
+  const onDeleteAccount = (index: number) => {
+    if (userData) {
+      deleteAccount(userData?.uid, userData?.financialInfo.accounts, index);
+    }
+  };
+
   return (
     <ProtectedRoute>
       <Formik
         initialValues={{
           incomeValue: 0,
-          incomeIsAnnual: true,
+          incomeIsAnnual: "true",
           hoursPerWeek: 0,
           monthlyTransactions: [],
           accounts: [],
@@ -104,7 +119,7 @@ export default function FinancesPages() {
             </RadioGroupControl>
 
             <Divider borderColor={"currentcolor"} py={"10px"} />
-            {values.incomeIsAnnual === true ? (
+            {values.incomeIsAnnual === "true" ? (
               <>
                 <FormLabel fontSize={"xl"}>Annual Income - $/year</FormLabel>
                 <NumberInputControl
@@ -201,6 +216,36 @@ export default function FinancesPages() {
                   Add account
                 </Button>
               </HStack>
+              <SimpleGrid
+                spacing={4}
+                templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+              >
+                {userData?.financialInfo.accounts.map((account, index) => {
+                  return (
+                    <Card key={index} justify="space-between">
+                      <CardBody>
+                        <Badge>{account.type}</Badge>
+                        <Heading size="sm"> {account.name} </Heading>
+                        <Stat>
+                          <StatLabel>Value</StatLabel>
+                          <StatNumber>${account.value}</StatNumber>
+                        </Stat>
+                      </CardBody>
+                      <CardFooter>
+                        <Button
+                          onClick={() => {
+                            onDeleteAccount(index);
+                          }}
+                          size="xs"
+                          variant="link"
+                        >
+                          Delete
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  );
+                })}
+              </SimpleGrid>
             </Box>
 
             <Divider borderColor={"currentcolor"} my={2} />
