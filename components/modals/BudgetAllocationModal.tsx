@@ -13,75 +13,45 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import {
-  getTransactionCategoriesArray,
-  TransactionCategories,
-} from "../../src/models/BudgetModel";
-import { addMonthlyTransaction } from "../../src/firebase/UserActions";
+import { getTransactionCategoriesArray } from "../../src/models/BudgetModel";
 import { useAuth } from "../../src/auth/auth";
+import { addBudgetCategoryAllocation } from "../../src/firebase/UserActions";
 
-export default function RecurringExpenseModal(props: {
+export default function BudgetAllocationModal(props: {
   isOpen: boolean;
   onClose: () => void;
   uid: string | undefined;
 }) {
   const [error, setError] = useState<string | null>(null);
-  const [name, setName] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
-  const [amount, setAmount] = useState<number | null>(null);
-  const [date, setDate] = useState<Date | null>(null);
+  const [allocation, setAllocation] = useState<number | null>(null);
   const transactionCategories = getTransactionCategoriesArray();
 
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  const nameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  };
-
   const categoryHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value);
   };
 
-  const dateHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(new Date(e.target.value));
-  };
-
   const amountHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(parseFloat(e.target.value));
+    setAllocation(parseFloat(e.target.value));
   };
 
   const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
 
-    if (
-      name === null ||
-      category === null ||
-      amount === null ||
-      date === null
-    ) {
+    if (category === null || allocation === null) {
       setError("A field is missing");
       return;
     }
 
     if (userData) {
-      addMonthlyTransaction(
-        userData.uid,
-        userData.financialInfo.monthlyTransactions,
-        {
-          name: name,
-          date: date,
-          isMonthly: true,
-          category: category as TransactionCategories,
-          amount: amount,
-        }
-      );
+      addBudgetCategoryAllocation(userData.uid, category, allocation);
     }
 
-    setName(null);
     setCategory(null);
-    setDate(null);
-    setAmount(null);
+    setAllocation(null);
     props.onClose();
   };
 
@@ -89,13 +59,9 @@ export default function RecurringExpenseModal(props: {
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add a recurring expense</ModalHeader>
+        <ModalHeader>Add category allocation</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl id="recurring-expense-name" isRequired>
-            <FormLabel>Recurring Expense Name</FormLabel>
-            <Input onChange={nameHandler} />
-          </FormControl>
           <FormControl id="recurring-expense-category" isRequired>
             <FormLabel>Category</FormLabel>
             <Select onChange={categoryHandler} placeholder="Select category">
@@ -108,10 +74,6 @@ export default function RecurringExpenseModal(props: {
               })}
             </Select>
           </FormControl>
-          <FormControl id="recurring-expense-date" isRequired>
-            <FormLabel>Expense Date</FormLabel>
-            <Input type="date" onChange={dateHandler} />
-          </FormControl>
           <FormControl id="recurring-expense-value" isRequired>
             <FormLabel>Monthly amount</FormLabel>
             <Input type="number" placeholder="$125" onChange={amountHandler} />
@@ -121,7 +83,7 @@ export default function RecurringExpenseModal(props: {
 
         <ModalFooter>
           <Button colorScheme="green" mr={3} onClick={submitHandler}>
-            Add transaction
+            Add allocation
           </Button>
         </ModalFooter>
       </ModalContent>

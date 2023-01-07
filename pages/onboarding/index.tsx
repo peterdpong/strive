@@ -18,11 +18,13 @@ export default function OnboardingIndex() {
         centerContent
       >
         <Heading textAlign={"center"}>Welcome to Strive.</Heading>
-        <Text fontSize={"md"}>Your personal finance and budget manager.</Text>
+        <Text fontSize={"md"}>
+          The financial budget tool that helps you to reach your goals.
+        </Text>
         <Button
           mt={"15px"}
           colorScheme={"green"}
-          onClick={() => router.push("onboarding/financials")}
+          onClick={() => router.push("onboarding/finances")}
         >
           Get Started
         </Button>

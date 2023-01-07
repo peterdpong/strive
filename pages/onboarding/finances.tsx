@@ -5,6 +5,7 @@ import {
   Card,
   CardBody,
   CardFooter,
+  Center,
   Container,
   Heading,
   HStack,
@@ -66,7 +67,7 @@ export default function FinancesPages() {
         <Button size="sm" onClick={() => router.push("/onboarding/")}>
           Back
         </Button>
-        <Heading>Your Finances</Heading>
+        <Heading>Your Monthly Finances</Heading>
         <Text fontSize={"md"}>What do you finances look like?</Text>
 
         <Formik
@@ -134,42 +135,62 @@ export default function FinancesPages() {
                   </Button>
                 </HStack>
 
-                <TableContainer>
-                  <Table size="sm">
-                    <Thead>
-                      <Tr>
-                        <Th>Category</Th>
-                        <Th>Name</Th>
-                        <Th isNumeric>Amount per month</Th>
-                        <Th></Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {userData?.financialInfo.monthlyTransactions.map(
-                        (transaction, index) => {
-                          return (
-                            <Tr key={index}>
-                              <Td>{transaction.category}</Td>
-                              <Td>{transaction.name}</Td>
-                              <Td isNumeric>{-transaction.amount}</Td>
-                              <Td>
-                                <Button
-                                  colorScheme={"red"}
-                                  size="sm"
-                                  onClick={() => {
-                                    onDeleteMonthlyTransaction(index);
-                                  }}
-                                >
-                                  Delete
-                                </Button>
-                              </Td>
-                            </Tr>
-                          );
-                        }
-                      )}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
+                {userData &&
+                userData.financialInfo.monthlyTransactions.length === 0 ? (
+                  <Center
+                    onClick={recurringExpensesModalProps.onOpen}
+                    bg={"gray.50"}
+                    width={"200px"}
+                    height={"100px"}
+                    rounded={"5px"}
+                    my={"25px"}
+                    p={"20px"}
+                    border={"1px"}
+                    borderStyle={"dashed"}
+                    borderColor={"gray.300"}
+                  >
+                    <Text color={"gray.800"} align={"center"}>
+                      Add a recurring expenses
+                    </Text>
+                  </Center>
+                ) : (
+                  <TableContainer>
+                    <Table size="sm">
+                      <Thead>
+                        <Tr>
+                          <Th>Category</Th>
+                          <Th>Name</Th>
+                          <Th isNumeric>Amount per month</Th>
+                          <Th></Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {userData?.financialInfo.monthlyTransactions.map(
+                          (transaction, index) => {
+                            return (
+                              <Tr key={index}>
+                                <Td>{transaction.category}</Td>
+                                <Td>{transaction.name}</Td>
+                                <Td isNumeric>{-transaction.amount}</Td>
+                                <Td>
+                                  <Button
+                                    colorScheme={"red"}
+                                    size="sm"
+                                    onClick={() => {
+                                      onDeleteMonthlyTransaction(index);
+                                    }}
+                                  >
+                                    Delete
+                                  </Button>
+                                </Td>
+                              </Tr>
+                            );
+                          }
+                        )}
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
+                )}
               </Box>
 
               <Box
@@ -190,6 +211,28 @@ export default function FinancesPages() {
                     Add account
                   </Button>
                 </HStack>
+
+                {userData && userData.financialInfo.accounts.length === 0 ? (
+                  <Center
+                    onClick={accountsModalProps.onOpen}
+                    bg={"gray.50"}
+                    width={"200px"}
+                    height={"200px"}
+                    rounded={"5px"}
+                    my={"25px"}
+                    p={"20px"}
+                    border={"1px"}
+                    borderStyle={"dashed"}
+                    borderColor={"gray.300"}
+                  >
+                    <Text color={"gray.800"} align={"center"}>
+                      Add a financial accounts
+                    </Text>
+                  </Center>
+                ) : (
+                  <></>
+                )}
+
                 <SimpleGrid
                   spacing={4}
                   templateColumns="repeat(auto-fill, minmax(200px, 1fr))"

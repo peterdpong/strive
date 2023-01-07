@@ -1,14 +1,21 @@
 export type BudgetModel = {
-  monthlyAllocations: { [category: string]: Transaction[] };
+  monthlyAllocations: { [categoryKey: string]: number };
   totalVariableBudget: number;
 };
 
 export enum TransactionCategories {
-  TRANSPORTATION = "Transportation",
-  FOODANDDRINK = "Food and drinks",
+  GROCERIES = "Groceries",
   ENTERTAINMENT = "Entertainment",
   UTILITIES = "Utilities",
+  MOBILEPLAN = "Mobile Plan",
   RENT = "Rent",
+  TRANSPORTATION = "Transportation",
+  DININGOUT = "Dining Out",
+  CLOTHING = "Clothing",
+  TRAVEL = "Travel",
+  EDUCATION = "Education",
+  INTEREST = "Interest",
+  SAVINGS = "Savings",
 }
 
 export const getTransactionCategoriesArray = () => {

@@ -180,3 +180,9 @@ export const deleteAccount = (
     "financialInfo.accounts": accounts,
   });
 };
+
+export const addBudgetCategoryAllocation = (
+  uid: string,
+  categoryKey: string,
+  allocation: number
+) => {};

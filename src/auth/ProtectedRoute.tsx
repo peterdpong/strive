@@ -11,13 +11,21 @@ export default function ProtectedRoute({ children }: React.PropsWithChildren) {
   if (typeof window !== "undefined") {
     if (!auth && !loading) {
       router.replace("/login");
-      return <FullPageLoading />;
+      return (
+        <div>
+          <FullPageLoading />
+        </div>
+      );
     } else if (loading) {
-      return <FullPageLoading />;
+      return (
+        <div>
+          <FullPageLoading />
+        </div>
+      );
     }
 
     return <>{children}</>;
   }
 
-  return null;
+  return <></>;
 }

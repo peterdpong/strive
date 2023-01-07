@@ -1,5 +1,4 @@
 import { Box, Center, Flex, Spinner } from "@chakra-ui/react";
-import * as React from "react";
 import { Card } from "./Card";
 
 export const FullPageLoading = () => (

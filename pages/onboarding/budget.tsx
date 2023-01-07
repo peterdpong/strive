@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   Container,
   Flex,
   FormLabel,
@@ -9,24 +10,26 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
+  useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { Formik } from "formik";
-import { SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import { addBudgetInfo } from "../../src/firebase/UserActions";
 import { useAuth } from "../../src/auth/auth";
+import BudgetAllocationModal from "../../components/modals/BudgetAllocationModal";
+import { BudgetEngineUtils } from "../../src/engine/BudgetEngineUtils";
+
+const getRandomColor = () => {
+  const letters = "0123456789ABCDEF".split("");
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -55,7 +58,7 @@ const data = {
 };
 
 const options = {
-  aspectRatio: 4,
+  aspectRatio: 2,
 };
 
 export default function BudgetPage() {
@@ -63,116 +66,124 @@ export default function BudgetPage() {
 
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
-  console.log(userData);
+  const budgetAllocationModalProps = useDisclosure();
+
+  let balanceAfterFixed = 0;
+  let balanceAfterAllocate = 0;
+  if (userData) {
+    balanceAfterFixed =
+      userData?.financialInfo.monthlyIncome -
+      BudgetEngineUtils.calculateFixedMonthlyExpenses(
+        userData?.financialInfo.monthlyTransactions
+      );
+
+    balanceAfterAllocate =
+      balanceAfterFixed -
+      BudgetEngineUtils.calculateBudgetExpenses(userData?.budgetInfo);
+  }
 
   return (
     <ProtectedRoute>
       <Container maxW="container.xl" my={"25px"}>
-        <Button size="sm" onClick={() => router.push("/onboarding/goal")}>
+        <Button size="sm" onClick={() => router.push("/onboarding/finances")}>
           Back
         </Button>
         <Heading>Create a budget</Heading>
         <Text fontSize={"md"}>
           Budget your variable expenses, no need to allocate it all!
         </Text>
-        <Formik
-          initialValues={{
-            monthlyAllocations: {},
-            totalVariableBudget: 0,
-          }}
-          onSubmit={(values, actions) => {
-            if (userData) {
-              addBudgetInfo(userData.uid, values);
-              actions.resetForm;
-              console.log(values);
-              router.push("/onboarding/goal");
-            } else {
-              alert("Error: User not logged in...");
-              router.push("/login");
-            }
-          }}
-        >
-          {({ handleSubmit }) => (
-            <Container
-              maxW="container.xl"
-              as="form"
-              p={"0px"}
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              onSubmit={handleSubmit as any}
-            >
-              <Flex
-                bg={"gray.100"}
+
+        <Container maxW="container.xl" as="form" p={"0px"}>
+          <Flex
+            bg={"gray.100"}
+            rounded={"5px"}
+            my={"25px"}
+            p={"20px"}
+            border={"1px"}
+            borderColor={"gray.300"}
+          >
+            <Box flex="2">
+              <VStack align="flex-start">
+                <Stat>
+                  <StatLabel fontSize="xl">
+                    Balance for after monthly expenses
+                  </StatLabel>
+                  <StatNumber fontSize="3xl">${balanceAfterFixed}</StatNumber>
+                  <StatLabel fontSize="xl">Balance left to allocate</StatLabel>
+                  <StatNumber fontSize="3xl">
+                    ${balanceAfterAllocate}
+                  </StatNumber>
+                </Stat>
+              </VStack>
+            </Box>
+            <Box flex="3">
+              <Doughnut data={data} options={options} />
+            </Box>
+          </Flex>
+
+          <Box
+            bg={"gray.100"}
+            rounded={"5px"}
+            my={"25px"}
+            p={"20px"}
+            border={"1px"}
+            borderColor={"gray.300"}
+          >
+            <HStack justifyContent="space-between" my={2}>
+              <FormLabel fontSize={"xl"}>Category allocations</FormLabel>
+              <Button
+                onClick={budgetAllocationModalProps.onOpen}
+                colorScheme={"green"}
+                size="sm"
+              >
+                Add a category
+              </Button>
+            </HStack>
+            {userData && Object.keys(userData.budgetInfo.monthlyAllocations) ? (
+              <Center
+                onClick={budgetAllocationModalProps.onOpen}
+                bg={"gray.50"}
+                width={"200px"}
+                height={"200px"}
                 rounded={"5px"}
                 my={"25px"}
                 p={"20px"}
                 border={"1px"}
+                borderStyle={"dashed"}
                 borderColor={"gray.300"}
               >
-                <Box flex="2">
-                  <VStack align="flex-start">
-                    <Stat>
-                      <StatLabel fontSize="xl">
-                        Remaining monthly budget
-                      </StatLabel>
-                      <StatNumber fontSize="3xl">$123.56</StatNumber>
-                    </Stat>
-                  </VStack>
-                </Box>
-                <Box flex="3">
-                  <Doughnut data={data} options={options} />
-                </Box>
-              </Flex>
+                <Text color={"gray.800"} align={"center"}>
+                  Add your monthly allocation for a category
+                </Text>
+              </Center>
+            ) : (
+              <></>
+            )}
+          </Box>
 
-              <Box
-                bg={"gray.100"}
-                rounded={"5px"}
-                my={"25px"}
-                p={"20px"}
-                border={"1px"}
-                borderColor={"gray.300"}
-              >
-                <HStack justifyContent="space-between" my={2}>
-                  <FormLabel fontSize={"xl"}>Category allocations</FormLabel>
-                  <Button colorScheme={"green"} size="sm">
-                    Add a category
-                  </Button>
-                </HStack>
-
-                <TableContainer>
-                  <Table size="sm">
-                    <Thead>
-                      <Tr>
-                        <Th>Category</Th>
-                        <Th>Name</Th>
-                        <Th isNumeric>Allocation per month</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      <Tr>
-                        <Td>Food</Td>
-                        <Td>Payment</Td>
-                        <Td isNumeric>$15.32</Td>
-                      </Tr>
-                      <Tr>
-                        <Td>Entertainment</Td>
-                        <Td>Deposit</Td>
-                        <Td isNumeric>$30.48</Td>
-                      </Tr>
-                      <Tr>
-                        <Td>Savings</Td>
-                        <Td>Monthly Student Loan Payment</Td>
-                        <Td isNumeric>$200</Td>
-                      </Tr>
-                    </Tbody>
-                  </Table>
-                </TableContainer>
-              </Box>
-
-              <SubmitButton colorScheme={"green"}>Next Step</SubmitButton>
-            </Container>
-          )}
-        </Formik>
+          <Button
+            onClick={() => {
+              if (userData) {
+                // addBudgetInfo(userData.uid, values);
+                // console.log(values);
+                router.push("/onboarding/goal");
+              } else {
+                alert("Error: User not logged in...");
+                router.push("/login");
+              }
+            }}
+            colorScheme={"green"}
+          >
+            Next Step
+          </Button>
+        </Container>
       </Container>
+
+      <BudgetAllocationModal
+        isOpen={budgetAllocationModalProps.isOpen}
+        onClose={budgetAllocationModalProps.onClose}
+        uid={userData?.uid}
+      />
     </ProtectedRoute>
   );
 }
