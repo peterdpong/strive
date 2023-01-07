@@ -7,7 +7,6 @@ import {
   Badge,
   Box,
   Button,
-  Container,
   Divider,
   Grid,
   GridItem,
@@ -45,6 +44,7 @@ import {
 import { useRouter } from "next/router";
 import { Bar } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
+import Sidebar from "../../components/app/Sidebar";
 
 // Boilerplate data
 const labels = ["January", "February", "March", "April", "May", "June"];
@@ -96,21 +96,18 @@ export default function Dashboard() {
 
   return (
     <ProtectedRoute>
-      <Box>
-        <Container maxW="container.lg" rounded={"5px"} px={"0px"} mt="60px">
+      <Sidebar>
+        <Box bgColor="gray.100" padding="6" borderRadius="25">
           <HStack justifyContent="space-between">
             <VStack align="flex-start">
-              <Heading size="md" mr="2.5rem">
-                Circulation
+              <Heading size="lg" mr="2.5rem">
+                Dashboard
               </Heading>
-              <Text fontSize="lg" mr="2.5rem">
-                Good morning, John
-              </Text>
             </VStack>
-            <Box bgColor="gray.100" padding="4" borderRadius="75">
+            <Box bgColor="gray.200" padding="4" borderRadius="75">
               <HStack>
                 <Text
-                  fontSize="sm"
+                  fontSize="md"
                   as="b"
                   padding={2}
                   borderRight="2px"
@@ -118,19 +115,20 @@ export default function Dashboard() {
                 >
                   Quick Actions
                 </Text>
-                <Button colorScheme="black" variant="outline">
+                <Button size="sm" colorScheme="black" variant="outline">
                   New transaction
                 </Button>
-                <Button colorScheme="black" variant="outline">
+                <Button size="sm" colorScheme="black" variant="outline">
                   Create monthly budget
                 </Button>
-                <Button colorScheme="black" variant="outline">
+                <Button size="sm" colorScheme="black" variant="outline">
                   Add monthly goal
                 </Button>
               </HStack>
             </Box>
           </HStack>
-
+        </Box>
+        <Box rounded={"5px"} px={"0px"}>
           <Box py={2}>
             <HStack>
               <Heading size="lg">Your goals</Heading>
@@ -363,8 +361,8 @@ export default function Dashboard() {
               </GridItem>
             </Grid>
           </Box>
-        </Container>
-      </Box>
+        </Box>
+      </Sidebar>
     </ProtectedRoute>
   );
 }
