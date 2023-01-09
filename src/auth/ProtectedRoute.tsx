@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
 import { FullPageLoading } from "../../components/shared/FullPageLoading";
 import { useAuth } from "./auth";
 
@@ -8,24 +8,21 @@ export default function ProtectedRoute({ children }: React.PropsWithChildren) {
   const auth = useRequiredAuth();
   const router = useRouter();
 
-  if (typeof window !== "undefined") {
-    if (!auth && !loading) {
-      router.replace("/login");
-      return (
-        <div>
-          <FullPageLoading />
-        </div>
-      );
-    } else if (loading) {
-      return (
-        <div>
-          <FullPageLoading />
-        </div>
-      );
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (!auth && !loading) {
+        router.replace("/login");
+      }
     }
+  });
 
-    return <>{children}</>;
+  if ((!auth && !loading) || loading) {
+    return (
+      <div>
+        <FullPageLoading />
+      </div>
+    );
   }
 
-  return <></>;
+  return <>{children}</>;
 }
