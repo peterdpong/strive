@@ -62,6 +62,7 @@ export default function AddAccountModal(props: {
     setName(null);
     setType(null);
     setValue(null);
+    setError(null);
     props.onClose();
   };
 

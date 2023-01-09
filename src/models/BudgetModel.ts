@@ -2,7 +2,8 @@ export type BudgetModel = {
   monthlyAllocations: {
     [categoryKey: string]: { allocation: number; color: string };
   };
-  totalVariableBudget: number;
+  monthlyVariableBudget: number;
+  monthlyVariableBudgetUnallocated: number;
 };
 
 export enum TransactionCategories {
