@@ -26,6 +26,7 @@ export default function AddAccountModal(props: {
   const [name, setName] = useState<string | null>(null);
   const [type, setType] = useState<string | null>(null);
   const [value, setValue] = useState<number | null>(null);
+  // const [accountInfo, setAccountInfo] = useState({});
   const accountTypes = getAccountTypeArray();
 
   const { useRequiredAuth } = useAuth();
@@ -55,7 +56,8 @@ export default function AddAccountModal(props: {
       addAccount(userData.uid, userData.financialInfo.accounts, {
         name: name,
         type: type as AccountType,
-        value: value,
+        accountValue: value,
+        accountInfo: {},
       });
     }
 
@@ -73,10 +75,6 @@ export default function AddAccountModal(props: {
         <ModalHeader>Add an account</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl id="account-name" isRequired>
-            <FormLabel>Account Name</FormLabel>
-            <Input onChange={nameHandler} />
-          </FormControl>
           <FormControl id="account-type" isRequired>
             <FormLabel>Account Type</FormLabel>
             <Select onChange={typeHandler} placeholder="Select account type">
@@ -89,10 +87,63 @@ export default function AddAccountModal(props: {
               })}
             </Select>
           </FormControl>
+          <FormControl id="account-name" isRequired>
+            <FormLabel>Account Name</FormLabel>
+            <Input onChange={nameHandler} />
+          </FormControl>
           <FormControl id="account-value" isRequired>
             <FormLabel>Account Value</FormLabel>
             <Input type="number" placeholder="$125" onChange={valueHandler} />
           </FormControl>
+
+          {type === "SAVINGS" || type === "CHEQUINGS" ? (
+            <FormControl id="account-value" isRequired>
+              <FormLabel>Interest Rate (Annual %)</FormLabel>
+              <Input
+                type="number"
+                placeholder="2.50%"
+                // onChange={valueHandler}
+              />
+            </FormControl>
+          ) : (
+            <></>
+          )}
+
+          {type === "CREDITCARD" || type === "LOAN" ? (
+            <>
+              <FormControl isRequired>
+                <FormLabel>Interest Rate</FormLabel>
+                <Input
+                  type="number"
+                  placeholder="2.50%"
+                  // onChange={valueHandler}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Minimum payment</FormLabel>
+                <Input
+                  type="number"
+                  placeholder="$500"
+                  // onChange={valueHandler}
+                />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Next Payment date</FormLabel>
+                <Input type="date" />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Next payment value</FormLabel>
+                <Input
+                  type="number"
+                  placeholder="$500"
+                  // onChange={valueHandler}
+                />
+              </FormControl>
+            </>
+          ) : (
+            <></>
+          )}
+
           {error !== null ? <div>Error: {error}</div> : <></>}
         </ModalBody>
 

@@ -239,7 +239,7 @@ export default function FinancesPages() {
                             <Heading size="sm"> {account.name} </Heading>
                             <Stat>
                               <StatLabel>Account Value</StatLabel>
-                              <StatNumber>${account.value}</StatNumber>
+                              <StatNumber>${account.accountValue}</StatNumber>
                             </Stat>
                           </CardBody>
                           <CardFooter>
