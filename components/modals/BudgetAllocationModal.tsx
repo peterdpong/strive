@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { getTransactionCategoriesArray } from "../../src/models/BudgetModel";
 import { useAuth } from "../../src/auth/auth";
-// import { addBudgetCategoryAllocation } from "../../src/firebase/UserActions";
+import { addBudgetCategoryAllocation } from "../../src/firebase/UserActions";
 
 export default function BudgetAllocationModal(props: {
   isOpen: boolean;
@@ -24,6 +24,7 @@ export default function BudgetAllocationModal(props: {
 }) {
   const [error, setError] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
+  const [color, setColor] = useState<string>("#FF6384");
   const [allocation, setAllocation] = useState<number | null>(null);
   const transactionCategories = getTransactionCategoriesArray();
 
@@ -32,6 +33,10 @@ export default function BudgetAllocationModal(props: {
 
   const categoryHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value);
+  };
+
+  const colorHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setColor(e.target.value);
   };
 
   const amountHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +52,20 @@ export default function BudgetAllocationModal(props: {
     }
 
     if (userData) {
-      // addBudgetCategoryAllocation(userData.uid, category, allocation);
+      if (
+        Object.keys(userData.budgetInfo.monthlyAllocations).includes(category)
+      ) {
+        setError("Category already allocated");
+        return;
+      }
+
+      addBudgetCategoryAllocation(
+        userData.uid,
+        userData.budgetInfo.monthlyAllocations,
+        category,
+        color,
+        allocation
+      );
     }
 
     setCategory(null);
@@ -62,7 +80,7 @@ export default function BudgetAllocationModal(props: {
         <ModalHeader>Add category allocation</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl id="recurring-expense-category" isRequired>
+          <FormControl id="category" isRequired>
             <FormLabel>Category</FormLabel>
             <Select onChange={categoryHandler} placeholder="Select category">
               {transactionCategories.map((category) => {
@@ -74,7 +92,15 @@ export default function BudgetAllocationModal(props: {
               })}
             </Select>
           </FormControl>
-          <FormControl id="recurring-expense-value" isRequired>
+          <FormControl id="category-color" isRequired>
+            <FormLabel>Category Color</FormLabel>
+            <Input
+              type="color"
+              defaultValue={"#FF6384"}
+              onChange={colorHandler}
+            />
+          </FormControl>
+          <FormControl id="category-value" isRequired>
             <FormLabel>Monthly amount</FormLabel>
             <Input type="number" placeholder="$125" onChange={amountHandler} />
           </FormControl>

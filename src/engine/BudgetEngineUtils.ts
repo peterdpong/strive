@@ -6,7 +6,7 @@ export class BudgetEngineUtils {
     let expenseAmount = 0;
 
     for (const key of Object.keys(budgetInfo.monthlyAllocations)) {
-      expenseAmount += budgetInfo.monthlyAllocations[key];
+      expenseAmount += budgetInfo.monthlyAllocations[key].allocation;
     }
 
     return expenseAmount;

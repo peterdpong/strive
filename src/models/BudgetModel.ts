@@ -1,5 +1,7 @@
 export type BudgetModel = {
-  monthlyAllocations: { [categoryKey: string]: number };
+  monthlyAllocations: {
+    [categoryKey: string]: { allocation: number; color: string };
+  };
   totalVariableBudget: number;
 };
 

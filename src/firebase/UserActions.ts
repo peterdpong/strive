@@ -181,8 +181,19 @@ export const deleteAccount = (
   });
 };
 
-// export const addBudgetCategoryAllocation = () =>
-//   uid: string,
-//   categoryKey: string,
-//   allocation: number
-//   {};
+export const addBudgetCategoryAllocation = (
+  uid: string,
+  monthlyAllocations: {
+    [categoryKey: string]: { allocation: number; color: string };
+  },
+  categoryKey: string,
+  color: string,
+  allocation: number
+) => {
+  monthlyAllocations[categoryKey] = { allocation, color };
+
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, {
+    "budgetInfo.monthlyAllocations": monthlyAllocations,
+  });
+};
