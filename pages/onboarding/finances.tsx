@@ -19,7 +19,7 @@ import {
 import { Formik } from "formik";
 import { NumberInputControl, SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
-import AddAccountModal from "../../components/modals/AddAccountModal";
+import AddAccountModal from "../../components/modals/AccountModals";
 import RecurringExpenseModal from "../../components/modals/RecurringExpenseModal";
 import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
