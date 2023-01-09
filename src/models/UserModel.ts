@@ -49,5 +49,22 @@ export const getAccountTypeArray = () => {
 export type Account = {
   name: string;
   type: AccountType;
-  value: number;
+  accountValue: number;
+  accountInfo: {
+    depositAccountInfo?: { interestRate: number }; // Deposit account refers to savings or chequings
+    creditCardInfo?: {
+      interestRate: number;
+      nextPaymentDate: Date;
+      paymentValue: number;
+      minimumPayment: number;
+      paymentPaid: boolean;
+    };
+    loanInfo?: {
+      interestRate: number;
+      nextPaymentDate: Date;
+      paymentValue: number;
+      minimumPayment: number;
+      paymentPaid: boolean;
+    };
+  };
 };

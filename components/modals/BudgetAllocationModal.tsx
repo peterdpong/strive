@@ -70,6 +70,7 @@ export default function BudgetAllocationModal(props: {
 
     setCategory(null);
     setAllocation(null);
+    setError(null);
     props.onClose();
   };
 

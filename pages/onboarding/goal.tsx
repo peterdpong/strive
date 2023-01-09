@@ -36,10 +36,9 @@ import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
 import { useAuth } from "../../src/auth/auth";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
 // Boilerplate data
 ChartJS.register(
+  ArcElement,
   CategoryScale,
   LinearScale,
   PointElement,

@@ -13,14 +13,7 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Formik } from "formik";
@@ -154,42 +147,42 @@ export default function FinancesPages() {
                     </Text>
                   </Center>
                 ) : (
-                  <TableContainer>
-                    <Table size="sm">
-                      <Thead>
-                        <Tr>
-                          <Th>Category</Th>
-                          <Th>Name</Th>
-                          <Th isNumeric>Amount per month</Th>
-                          <Th></Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {userData?.financialInfo.monthlyTransactions.map(
-                          (transaction, index) => {
-                            return (
-                              <Tr key={index}>
-                                <Td>{transaction.category}</Td>
-                                <Td>{transaction.name}</Td>
-                                <Td isNumeric>{-transaction.amount}</Td>
-                                <Td>
-                                  <Button
-                                    colorScheme={"red"}
-                                    size="sm"
-                                    onClick={() => {
-                                      onDeleteMonthlyTransaction(index);
-                                    }}
-                                  >
-                                    Delete
-                                  </Button>
-                                </Td>
-                              </Tr>
-                            );
-                          }
-                        )}
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
+                  <SimpleGrid
+                    spacing={4}
+                    templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+                  >
+                    {userData?.financialInfo.monthlyTransactions.map(
+                      (transaction, index) => {
+                        return (
+                          <Card
+                            bgColor={"white"}
+                            key={index}
+                            justify="space-between"
+                          >
+                            <CardBody>
+                              <Badge>{transaction.category}</Badge>
+                              <Heading size="sm"> {transaction.name} </Heading>
+                              <Stat>
+                                <StatLabel>Expense per month</StatLabel>
+                                <StatNumber>-${transaction.amount}</StatNumber>
+                              </Stat>
+                            </CardBody>
+                            <CardFooter>
+                              <Button
+                                onClick={() => {
+                                  onDeleteMonthlyTransaction(index);
+                                }}
+                                size="xs"
+                                variant="link"
+                              >
+                                Delete
+                              </Button>
+                            </CardFooter>
+                          </Card>
+                        );
+                      }
+                    )}
+                  </SimpleGrid>
                 )}
               </Box>
 
@@ -230,39 +223,41 @@ export default function FinancesPages() {
                     </Text>
                   </Center>
                 ) : (
-                  <></>
+                  <SimpleGrid
+                    spacing={4}
+                    templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+                  >
+                    {userData?.financialInfo.accounts.map((account, index) => {
+                      return (
+                        <Card
+                          bgColor={"white"}
+                          key={index}
+                          justify="space-between"
+                        >
+                          <CardBody>
+                            <Badge>{account.type}</Badge>
+                            <Heading size="sm"> {account.name} </Heading>
+                            <Stat>
+                              <StatLabel>Account Value</StatLabel>
+                              <StatNumber>${account.accountValue}</StatNumber>
+                            </Stat>
+                          </CardBody>
+                          <CardFooter>
+                            <Button
+                              onClick={() => {
+                                onDeleteAccount(index);
+                              }}
+                              size="xs"
+                              variant="link"
+                            >
+                              Delete
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      );
+                    })}
+                  </SimpleGrid>
                 )}
-
-                <SimpleGrid
-                  spacing={4}
-                  templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
-                >
-                  {userData?.financialInfo.accounts.map((account, index) => {
-                    return (
-                      <Card key={index} justify="space-between">
-                        <CardBody>
-                          <Badge>{account.type}</Badge>
-                          <Heading size="sm"> {account.name} </Heading>
-                          <Stat>
-                            <StatLabel>Value</StatLabel>
-                            <StatNumber>${account.value}</StatNumber>
-                          </Stat>
-                        </CardBody>
-                        <CardFooter>
-                          <Button
-                            onClick={() => {
-                              onDeleteAccount(index);
-                            }}
-                            size="xs"
-                            variant="link"
-                          >
-                            Delete
-                          </Button>
-                        </CardFooter>
-                      </Card>
-                    );
-                  })}
-                </SimpleGrid>
               </Box>
 
               <SubmitButton colorScheme={"green"}>Next Step</SubmitButton>

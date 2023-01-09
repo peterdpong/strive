@@ -82,6 +82,7 @@ export default function RecurringExpenseModal(props: {
     setCategory(null);
     setDate(null);
     setAmount(null);
+    setError(null);
     props.onClose();
   };
 

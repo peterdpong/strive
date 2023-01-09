@@ -2,7 +2,8 @@ export type BudgetModel = {
   monthlyAllocations: {
     [categoryKey: string]: { allocation: number; color: string };
   };
-  totalVariableBudget: number;
+  monthlyVariableBudget: number;
+  monthlyVariableBudgetUnallocated: number;
 };
 
 export enum TransactionCategories {
@@ -35,6 +36,7 @@ export const getTransactionCategoriesArray = () => {
 };
 
 export type Transaction = {
+  accountIndex?: number; // Index associating to an Account in the user's account array.
   date: Date;
   isMonthly: boolean;
   name: string;

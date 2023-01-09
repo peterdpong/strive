@@ -1,12 +1,16 @@
 import {
   Box,
   Button,
+  Card,
+  CardBody,
+  CardFooter,
   Center,
   Container,
   Flex,
   FormLabel,
   Heading,
   HStack,
+  SimpleGrid,
   Stat,
   StatLabel,
   StatNumber,
@@ -20,46 +24,13 @@ import { Doughnut } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { useAuth } from "../../src/auth/auth";
 import BudgetAllocationModal from "../../components/modals/BudgetAllocationModal";
-import { BudgetEngineUtils } from "../../src/engine/BudgetEngineUtils";
-
-// const getRandomColor = () => {
-//   const letters = "0123456789ABCDEF".split("");
-//   let color = "#";
-//   for (let i = 0; i < 6; i++) {
-//     color += letters[Math.floor(Math.random() * 16)];
-//   }
-//   return color;
-// };
+import {
+  deleteBudgetAllocation,
+  updateMonthlyVariableBudget,
+} from "../../src/firebase/UserActions";
+import { buildDoughnutGraphData } from "../../src/visualization/BudgetVisualizationsHelpers";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-
-// Boilerplate data
-const data = {
-  labels: ["Food", "Entertainment", "Savings", "Unallocated"],
-  datasets: [
-    {
-      label: "$ Dollars",
-      data: [123, 23, 34, 45],
-      backgroundColor: [
-        "rgba(255, 99, 132, 0.2)",
-        "rgba(54, 162, 235, 0.2)",
-        "rgba(255, 206, 86, 0.2)",
-        "rgba(75, 192, 192, 0.2)",
-      ],
-      borderColor: [
-        "rgba(255, 99, 132, 1)",
-        "rgba(54, 162, 235, 1)",
-        "rgba(255, 206, 86, 1)",
-        "rgba(75, 192, 192, 1)",
-      ],
-      borderWidth: 1,
-    },
-  ],
-};
-
-const options = {
-  aspectRatio: 2,
-};
 
 export default function BudgetPage() {
   const router = useRouter();
@@ -68,18 +39,21 @@ export default function BudgetPage() {
   const userData = useRequiredAuth();
   const budgetAllocationModalProps = useDisclosure();
 
-  let balanceAfterFixed = 0;
-  let balanceAfterAllocate = 0;
-  if (userData) {
-    balanceAfterFixed =
-      userData?.financialInfo.monthlyIncome -
-      BudgetEngineUtils.calculateFixedMonthlyExpenses(
-        userData?.financialInfo.monthlyTransactions
+  const onDeleteAllocation = (key: string) => {
+    if (
+      userData &&
+      Object.keys(userData.budgetInfo.monthlyAllocations).includes(key)
+    ) {
+      deleteBudgetAllocation(
+        userData.uid,
+        userData.budgetInfo.monthlyAllocations,
+        key
       );
+    }
+  };
 
-    balanceAfterAllocate =
-      balanceAfterFixed -
-      BudgetEngineUtils.calculateBudgetExpenses(userData?.budgetInfo);
+  if (userData) {
+    updateMonthlyVariableBudget(userData);
   }
 
   return (
@@ -108,16 +82,23 @@ export default function BudgetPage() {
                   <StatLabel fontSize="xl">
                     Balance for after monthly expenses
                   </StatLabel>
-                  <StatNumber fontSize="3xl">${balanceAfterFixed}</StatNumber>
+                  <StatNumber fontSize="3xl">
+                    ${userData?.budgetInfo.monthlyVariableBudget}
+                  </StatNumber>
                   <StatLabel fontSize="xl">Balance left to allocate</StatLabel>
                   <StatNumber fontSize="3xl">
-                    ${balanceAfterAllocate}
+                    ${userData?.budgetInfo.monthlyVariableBudgetUnallocated}
                   </StatNumber>
                 </Stat>
               </VStack>
             </Box>
             <Box flex="3">
-              <Doughnut data={data} options={options} />
+              <Doughnut
+                data={buildDoughnutGraphData(userData?.budgetInfo)}
+                options={{
+                  aspectRatio: 2,
+                }}
+              />
             </Box>
           </Flex>
 
@@ -139,7 +120,9 @@ export default function BudgetPage() {
                 Add a category
               </Button>
             </HStack>
-            {userData && Object.keys(userData.budgetInfo.monthlyAllocations) ? (
+
+            {userData &&
+            Object.keys(userData.budgetInfo.monthlyAllocations).length === 0 ? (
               <Center
                 onClick={budgetAllocationModalProps.onOpen}
                 bg={"gray.50"}
@@ -157,15 +140,55 @@ export default function BudgetPage() {
                 </Text>
               </Center>
             ) : (
-              <></>
+              <SimpleGrid
+                spacing={4}
+                templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+              >
+                {userData &&
+                  Object.keys(userData.budgetInfo.monthlyAllocations).map(
+                    (key) => {
+                      const currentCategory =
+                        userData.budgetInfo.monthlyAllocations[key];
+
+                      return (
+                        <Card
+                          bgColor={"white"}
+                          key={key}
+                          justify="space-between"
+                        >
+                          <CardBody>
+                            <Heading color={currentCategory.color} size="sm">
+                              {key}
+                            </Heading>
+                            <Stat>
+                              <StatLabel>Monthly Allocation</StatLabel>
+                              <StatNumber>
+                                ${currentCategory.allocation}
+                              </StatNumber>
+                            </Stat>
+                          </CardBody>
+                          <CardFooter>
+                            <Button
+                              onClick={() => {
+                                onDeleteAllocation(key);
+                              }}
+                              size="xs"
+                              variant="link"
+                            >
+                              Delete
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      );
+                    }
+                  )}
+              </SimpleGrid>
             )}
           </Box>
 
           <Button
             onClick={() => {
               if (userData) {
-                // addBudgetInfo(userData.uid, values);
-                // console.log(values);
                 router.push("/onboarding/goal");
               } else {
                 alert("Error: User not logged in...");

@@ -8,8 +8,6 @@ import {
   Box,
   Button,
   Divider,
-  Grid,
-  GridItem,
   Heading,
   HStack,
   Stat,
@@ -29,6 +27,7 @@ import {
   TableContainer,
   SimpleGrid,
   CardFooter,
+  Flex,
 } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 
@@ -40,14 +39,25 @@ import {
   Title,
   Tooltip,
   Legend,
+  ScriptableContext,
+  PointElement,
+  LineElement,
+  Filler,
 } from "chart.js";
 import { useRouter } from "next/router";
-import { Bar } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import Sidebar from "../../components/app/Sidebar";
 
 // Boilerplate data
-const labels = ["January", "February", "March", "April", "May", "June"];
+const labels = [
+  "Groceries",
+  "Transportation",
+  "Entertainment",
+  "Rent",
+  "Travel",
+  "Gifts",
+];
 const horizontalOptions = {
   indexAxis: "y" as const,
   responsive: true,
@@ -57,7 +67,7 @@ const data = {
   labels: labels,
   datasets: [
     {
-      label: "Data",
+      label: "Categories",
       data: [65, 59, 80, 81, 56, 55, 40],
       backgroundColor: [
         "rgba(255, 99, 132, 0.2)",
@@ -82,13 +92,35 @@ const data = {
   ],
 };
 
+const dataLine = {
+  labels: ["January", "February", "March", "April", "May", "June", "July"],
+  datasets: [
+    {
+      fill: true,
+      label: "Net Worth",
+      data: [1, 2, 4, 16, 32, 64, 128],
+      borderColor: "rgb(30, 159, 92)",
+      backgroundColor: (context: ScriptableContext<"line">) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+        gradient.addColorStop(0, "rgba(45,216,129,1)");
+        gradient.addColorStop(1, "rgba(45,216,129,0)");
+        return gradient;
+      },
+    },
+  ],
+};
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  PointElement,
+  LineElement,
+  Filler
 );
 
 export default function Dashboard() {
@@ -97,7 +129,14 @@ export default function Dashboard() {
   return (
     <ProtectedRoute>
       <Sidebar>
-        <Box bgColor="gray.100" padding="6" borderRadius="25">
+        <Box
+          bgColor="gray.100"
+          padding="6"
+          rounded={"5px"}
+          border={"1px"}
+          borderColor={"gray.300"}
+          mx={"15px"}
+        >
           <HStack justifyContent="space-between">
             <VStack align="flex-start">
               <Heading size="lg" mr="2.5rem">
@@ -128,240 +167,292 @@ export default function Dashboard() {
             </Box>
           </HStack>
         </Box>
-        <Box rounded={"5px"} px={"0px"}>
-          <Box py={2}>
-            <HStack>
-              <Heading size="lg">Your goals</Heading>
-              <Button
-                onClick={() => router.push("app/goals")}
-                size="xs"
-                variant="outline"
-              >
-                See all goals
-              </Button>
-            </HStack>
-            <Divider my={1} />
-            <HStack justifyContent="space-between" align="flex-start">
-              <VStack align="flex-start">
-                <Heading size="md">Long-term goal</Heading>
-                <Stat>
-                  <StatLabel fontSize="xl">Net Worth</StatLabel>
-                  <StatNumber fontSize="3xl">$123.56</StatNumber>
-                  <StatHelpText fontSize="lg">
-                    <CheckIcon mr={2} />
-                    On track
-                  </StatHelpText>
-                </Stat>
-              </VStack>
-              <VStack align="flex-start">
-                <Heading size="md">Monthly goal</Heading>
-                <Stat>
-                  <StatLabel fontSize="xl">Lower food spending</StatLabel>
-                  <StatNumber fontSize="3xl">$123.56</StatNumber>
-                  <StatHelpText fontSize="lg">
-                    <CheckIcon mr={2} />
-                    On track
-                  </StatHelpText>
-                </Stat>
-              </VStack>
 
-              <Box>
-                <HStack>
-                  <Heading size="md">Goal Information</Heading>
-                  <Button size="sm" variant="outline">
-                    Adjust goals
-                  </Button>
-                </HStack>
-
-                <Text>Net worth of $xxxx in x years</Text>
-                <Text>Savings of $xxxx per month</Text>
-                <Text>Net worth of $xxxx saving $xxxx per month</Text>
-                <Text>x years and x months to reach goal</Text>
-              </Box>
-            </HStack>
-          </Box>
-
-          <Box py={2}>
-            <Card>
-              <CardBody>
-                <Heading my={2} size="lg">
-                  Your suggestions and alerts
-                </Heading>
-                <Accordion allowMultiple>
-                  <AccordionItem>
-                    <h2>
-                      <AccordionButton>
-                        <Box flex="1" textAlign="left">
-                          Unused TFSA Room
-                        </Box>
-                        <Badge colorScheme="green">Savings opportunity</Badge>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel pb={4}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                      ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
-                  </AccordionItem>
-
-                  <AccordionItem>
-                    <h2>
-                      <AccordionButton>
-                        <Box flex="1" textAlign="left">
-                          Spending on entertainment 15% greater than last month
-                        </Box>
-                        <Badge colorScheme="red">Increased spending</Badge>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel pb={4}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                      ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
-              </CardBody>
-            </Card>
-          </Box>
-
-          <Box py={2}>
-            <Grid
-              templateRows="repeat(2, 1fr)"
-              templateColumns="repeat(3, 1fr)"
-              gap={4}
+        <Flex my={"25px"}>
+          {/* Dashboard Column 1 */}
+          <VStack flex={1} mx={"15px"} spacing={"25px"}>
+            <Box
+              bg={"gray.100"}
+              rounded={"5px"}
+              p={"20px"}
+              width={"100%"}
+              border={"1px"}
+              borderColor={"gray.300"}
             >
-              <GridItem rowSpan={2} colSpan={1}>
-                <Heading size="lg">Fixed monthly</Heading>
-                <Bar data={data} options={horizontalOptions} />
-                <Button mt={2} size="sm">
-                  Adjust fixed monthly transactions
-                </Button>
-              </GridItem>
-              <GridItem colSpan={2}>
-                <HStack justifyContent="space-between">
-                  <Heading size="lg">Monthly Transactions</Heading>
-                  <Button size="sm" colorScheme="green">
-                    New transaction
-                  </Button>
-                </HStack>
-                <Text fontSize="md">November 2022</Text>
-                <TableContainer>
-                  <Table size="sm">
-                    <Thead>
-                      <Tr>
-                        <Th>Transaction Date</Th>
-                        <Th>Account</Th>
-                        <Th>Name</Th>
-                        <Th isNumeric>Amount</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      <Tr>
-                        <Td>Nov 12, 2022</Td>
-                        <Td>Credit Card</Td>
-                        <Td>Payment</Td>
-                        <Td isNumeric>-$15.32</Td>
-                      </Tr>
-                      <Tr>
-                        <Td>Nov 11, 2022</Td>
-                        <Td>Savings account</Td>
-                        <Td>Deposit</Td>
-                        <Td isNumeric>+$30.48</Td>
-                      </Tr>
-                      <Tr>
-                        <Td>Nov 10, 2022</Td>
-                        <Td>Student Loan</Td>
-                        <Td>Monthly Student Loan Payment</Td>
-                        <Td isNumeric>-$200</Td>
-                      </Tr>
-                    </Tbody>
-                  </Table>
-                </TableContainer>
+              <HStack>
+                <Heading size={"md"}>Your Goal</Heading>
                 <Button
-                  onClick={() => router.push("app/month/nov-2022")}
-                  mt={2}
-                  size="sm"
+                  colorScheme={"green"}
+                  onClick={() => router.push("app/goal")}
+                  size="xs"
                 >
-                  See monthly budget
+                  Explore goal
                 </Button>
-              </GridItem>
-              <GridItem colSpan={2}>
-                <HStack my={2} justifyContent="space-between">
-                  <Heading size="lg">Your accounts</Heading>
-                  <Button size="sm" colorScheme="green">
-                    New account
-                  </Button>
-                </HStack>
-                <SimpleGrid
-                  spacing={4}
-                  templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
-                >
-                  <Card justify="space-between">
-                    <CardBody>
-                      <Badge colorScheme="red">CREDIT CARD</Badge>
-                      <Heading size="sm"> American Express Cobalt </Heading>
+              </HStack>
+              <Divider my={1} />
+              <HStack justifyContent="space-between" align="flex-start">
+                <VStack align="flex-start">
+                  <Heading size="md">Long-term goal</Heading>
+                  <Stat>
+                    <StatLabel fontSize="xl">Net Worth</StatLabel>
+                    <StatNumber fontSize="3xl">$123.56</StatNumber>
+                    <StatHelpText fontSize="lg">
+                      <CheckIcon mr={2} />
+                      On track
+                    </StatHelpText>
+                  </Stat>
+                </VStack>
+                <VStack align="flex-start">
+                  <Heading size="md">Monthly goal</Heading>
+                  <Stat>
+                    <StatLabel fontSize="xl">Lower food spending</StatLabel>
+                    <StatNumber fontSize="3xl">$123.56</StatNumber>
+                    <StatHelpText fontSize="lg">
+                      <CheckIcon mr={2} />
+                      On track
+                    </StatHelpText>
+                  </Stat>
+                </VStack>
+
+                <Box>
+                  <HStack>
+                    <Heading size="md">Goal Information</Heading>
+                    <Button size="sm" variant="outline">
+                      Adjust goals
+                    </Button>
+                  </HStack>
+
+                  <Text>Net worth of $xxxx in x years</Text>
+                  <Text>Savings of $xxxx per month</Text>
+                  <Text>Net worth of $xxxx saving $xxxx per month</Text>
+                  <Text>x years and x months to reach goal</Text>
+                </Box>
+              </HStack>
+            </Box>
+            <Box
+              bg={"gray.100"}
+              rounded={"5px"}
+              p={"20px"}
+              width={"100%"}
+              border={"1px"}
+              borderColor={"gray.300"}
+            >
+              <HStack justifyContent="space-between" mb={"10px"}>
+                <Heading size={"md"}>Suggestions and Alerts</Heading>
+                <Button colorScheme={"green"} size="sm">
+                  View all
+                </Button>
+              </HStack>
+              <Accordion allowMultiple>
+                <AccordionItem>
+                  <h2>
+                    <AccordionButton>
+                      <Box flex="1" textAlign="left">
+                        Unused TFSA Room
+                      </Box>
+                      <Badge colorScheme="green">Savings opportunity</Badge>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  </AccordionPanel>
+                </AccordionItem>
+
+                <AccordionItem>
+                  <h2>
+                    <AccordionButton>
+                      <Box flex="1" textAlign="left">
+                        Spending on entertainment 15% greater than last month
+                      </Box>
+                      <Badge colorScheme="red">Increased spending</Badge>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            </Box>
+            <Box
+              bg={"gray.100"}
+              rounded={"5px"}
+              p={"20px"}
+              width={"100%"}
+              border={"1px"}
+              borderColor={"gray.300"}
+            >
+              <HStack justifyContent="space-between">
+                <Heading size={"md"}>Monthly Transactions</Heading>
+                <Button size="sm" colorScheme="green">
+                  View all transactions
+                </Button>
+              </HStack>
+              <Heading size={"sm"}>November 2022</Heading>
+              <TableContainer>
+                <Table size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>Transaction Date</Th>
+                      <Th>Account</Th>
+                      <Th>Name</Th>
+                      <Th isNumeric>Amount</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    <Tr>
+                      <Td>Nov 12, 2022</Td>
+                      <Td>Credit Card</Td>
+                      <Td>Payment</Td>
+                      <Td isNumeric>-$15.32</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Nov 11, 2022</Td>
+                      <Td>Savings account</Td>
+                      <Td>Deposit</Td>
+                      <Td isNumeric>+$30.48</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Nov 10, 2022</Td>
+                      <Td>Student Loan</Td>
+                      <Td>Monthly Student Loan Payment</Td>
+                      <Td isNumeric>-$200</Td>
+                    </Tr>
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </Box>
+          </VStack>
+          {/* Dashboard Column 2 */}
+          <VStack flex={1} mx={"15px"} spacing={"25px"}>
+            <Box
+              bg={"gray.100"}
+              rounded={"5px"}
+              p={"20px"}
+              width={"100%"}
+              border={"1px"}
+              borderColor={"gray.300"}
+            >
+              <Heading size={"md"}>Net Worth</Heading>
+              <Line
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: "top" as const,
+                    },
+                    title: {
+                      display: true,
+                      text: "Path to Goal",
+                    },
+                  },
+                }}
+                data={dataLine}
+              />
+            </Box>
+            <Box
+              bg={"gray.100"}
+              rounded={"5px"}
+              p={"20px"}
+              width={"100%"}
+              border={"1px"}
+              borderColor={"gray.300"}
+            >
+              <HStack my={2} justifyContent="space-between">
+                <Heading size={"md"}>Your budget categories</Heading>
+                <Button size="sm" colorScheme="green">
+                  View budget
+                </Button>
+              </HStack>
+              <Bar data={data} options={horizontalOptions} />
+            </Box>
+
+            <Box
+              bg={"gray.100"}
+              rounded={"5px"}
+              p={"20px"}
+              width={"100%"}
+              border={"1px"}
+              borderColor={"gray.300"}
+            >
+              <HStack my={2} justifyContent="space-between">
+                <Heading size={"md"}>Accounts Overview</Heading>
+                <Button size="sm" colorScheme="green">
+                  View all
+                </Button>
+              </HStack>
+              <SimpleGrid
+                spacing={4}
+                templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+              >
+                <Card bgColor={"white"} justify="space-between">
+                  <CardBody>
+                    <Badge colorScheme="red">CREDIT CARD</Badge>
+                    <Heading size="sm"> American Express Cobalt </Heading>
+                    <Stat>
+                      <StatLabel>Current Balance</StatLabel>
+                      <StatNumber>$123.56</StatNumber>
+                      <StatLabel>Payment Due</StatLabel>
+                      <StatNumber fontSize="md">Nov 26, 2022</StatNumber>
+                    </Stat>
+                  </CardBody>
+                  <CardFooter>
+                    <Button size="xs" variant="link">
+                      Account details
+                    </Button>
+                  </CardFooter>
+                </Card>
+                <Card bgColor={"white"} justify="space-between">
+                  <CardBody>
+                    <Box>
+                      <Badge colorScheme="red">LOAN</Badge>
+                      <Heading size="sm">
+                        Canada-Ontario Integrated Student Loan
+                      </Heading>
                       <Stat>
-                        <StatLabel>Current Balance</StatLabel>
+                        <StatLabel>Remaining Balance</StatLabel>
                         <StatNumber>$123.56</StatNumber>
-                        <StatLabel>Payment Due</StatLabel>
-                        <StatNumber fontSize="md">Nov 26, 2022</StatNumber>
+                        <StatLabel>Next Payment Due</StatLabel>
+                        <StatNumber fontSize="md">Nov 29, 2022</StatNumber>
                       </Stat>
-                    </CardBody>
-                    <CardFooter>
-                      <Button size="xs" variant="link">
-                        Account details
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                  <Card justify="space-between">
-                    <CardBody>
-                      <Box>
-                        <Badge colorScheme="red">LOAN</Badge>
-                        <Heading size="sm">
-                          Canada-Ontario Integrated Student Loan
-                        </Heading>
-                        <Stat>
-                          <StatLabel>Remaining Balance</StatLabel>
-                          <StatNumber>$123.56</StatNumber>
-                          <StatLabel>Next Payment Due</StatLabel>
-                          <StatNumber fontSize="md">Nov 29, 2022</StatNumber>
-                        </Stat>
-                      </Box>
-                    </CardBody>
-                    <CardFooter>
-                      <Button size="xs" variant="link">
-                        Account details
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                  <Card justify="space-between">
-                    <CardBody>
-                      <Box>
-                        <Badge colorScheme="green">SAVINGS ACCOUNT</Badge>
-                        <Heading size="sm"> Tangerine Savings Account </Heading>
-                        <Stat>
-                          <StatLabel>Balance</StatLabel>
-                          <StatNumber>$123.56</StatNumber>
-                          <StatLabel>Interest Rate</StatLabel>
-                          <StatNumber fontSize="md">3.40%</StatNumber>
-                        </Stat>
-                      </Box>
-                    </CardBody>
-                    <CardFooter>
-                      <Button size="xs" variant="link">
-                        Account details
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </SimpleGrid>
-              </GridItem>
-            </Grid>
-          </Box>
-        </Box>
+                    </Box>
+                  </CardBody>
+                  <CardFooter>
+                    <Button size="xs" variant="link">
+                      Account details
+                    </Button>
+                  </CardFooter>
+                </Card>
+                <Card bgColor={"white"} justify="space-between">
+                  <CardBody>
+                    <Box>
+                      <Badge colorScheme="green">SAVINGS ACCOUNT</Badge>
+                      <Heading size="sm"> Tangerine Savings Account </Heading>
+                      <Stat>
+                        <StatLabel>Balance</StatLabel>
+                        <StatNumber>$123.56</StatNumber>
+                        <StatLabel>Interest Rate</StatLabel>
+                        <StatNumber fontSize="md">3.40%</StatNumber>
+                      </Stat>
+                    </Box>
+                  </CardBody>
+                  <CardFooter>
+                    <Button size="xs" variant="link">
+                      Account details
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </SimpleGrid>
+            </Box>
+          </VStack>
+        </Flex>
       </Sidebar>
     </ProtectedRoute>
   );

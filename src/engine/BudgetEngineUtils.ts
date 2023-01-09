@@ -31,9 +31,9 @@ export class BudgetEngineUtils {
         account.type === AccountType.SAVINGS ||
         account.type === AccountType.CHEQUINGS
       ) {
-        assets += account.value;
+        assets += account.accountValue;
       } else {
-        debts += account.value;
+        debts += account.accountValue;
       }
     }
 

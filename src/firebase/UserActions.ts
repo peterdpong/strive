@@ -6,6 +6,7 @@ import {
   DocumentData,
   updateDoc,
 } from "firebase/firestore";
+import { BudgetEngineUtils } from "../engine/BudgetEngineUtils";
 import { BudgetModel, Transaction } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
 import { Account, FinancialInfo, UserModel } from "../models/UserModel";
@@ -43,7 +44,8 @@ export const addNewUser = (
     },
     budgetInfo: {
       monthlyAllocations: {},
-      totalVariableBudget: 0,
+      monthlyVariableBudget: 0,
+      monthlyVariableBudgetUnallocated: 0,
     },
     goalInfo: {
       goalType: "timeframe",
@@ -181,6 +183,24 @@ export const deleteAccount = (
   });
 };
 
+export const updateMonthlyVariableBudget = (userData: UserModel) => {
+  const balanceAfterFixed =
+    userData?.financialInfo.monthlyIncome -
+    BudgetEngineUtils.calculateFixedMonthlyExpenses(
+      userData?.financialInfo.monthlyTransactions
+    );
+
+  const balanceAfterAllocate =
+    balanceAfterFixed -
+    BudgetEngineUtils.calculateBudgetExpenses(userData?.budgetInfo);
+
+  const userDataRef = doc(firestoreDB, "users", userData.uid);
+  updateDoc(userDataRef, {
+    "budgetInfo.monthlyVariableBudget": balanceAfterFixed,
+    "budgetInfo.monthlyVariableBudgetUnallocated": balanceAfterAllocate,
+  });
+};
+
 export const addBudgetCategoryAllocation = (
   uid: string,
   monthlyAllocations: {
@@ -191,6 +211,21 @@ export const addBudgetCategoryAllocation = (
   allocation: number
 ) => {
   monthlyAllocations[categoryKey] = { allocation, color };
+
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, {
+    "budgetInfo.monthlyAllocations": monthlyAllocations,
+  });
+};
+
+export const deleteBudgetAllocation = (
+  uid: string,
+  monthlyAllocations: {
+    [categoryKey: string]: { allocation: number; color: string };
+  },
+  categoryKey: string
+) => {
+  delete monthlyAllocations[categoryKey];
 
   const userDataRef = doc(firestoreDB, "users", uid);
   updateDoc(userDataRef, {
