@@ -1,14 +1,43 @@
-export type BankAccount = {};
+export type BankAccount = {
+  name: string;
+  type: AccountType.SAVINGS | AccountType.CHEQUINGS;
+  value: number;
+  interestRate: number;
+};
 
-export type CreditCardAccount = {};
+export type CreditCardAccount = {
+  name: string;
+  amountOwned: number;
+  interestRate: number;
+  nextPaymentAmount: number;
+  nextPaymentDate: Date;
+};
 
-export type FixedInvestment = {};
+export type LoanAccount = {
+  name: string;
+  remainingAmount: number;
+  interestRate: number;
+  minimumPayment: number;
+  paymentDate: Date;
+};
 
-export type LoanAccount = {};
+export type FixedInvestment = {
+  name: string;
+  startDate: Date;
+  maturityDate: Date;
+  interestRate: number;
+};
 
-export type TFSAAccount = {};
+//TODO(peter): future implementations
+export type TFSAAccount = {
+  name: string;
+  value: number;
+};
 
-export type RRSPAccount = {};
+export type RRSPAccount = {
+  name: string;
+  value: number;
+};
 
 export enum AccountType {
   SAVINGS = "Savings",

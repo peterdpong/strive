@@ -1,3 +1,9 @@
+import {
+  BankAccount,
+  CreditCardAccount,
+  FixedInvestment,
+  LoanAccount,
+} from "./AccountModel";
 import { BudgetModel, Transaction } from "./BudgetModel";
 import { GoalModel } from "./GoalModel";
 
@@ -22,11 +28,9 @@ export type FinancialInfo = {
   monthlyIncome: number;
   monthlyTransactions: Transaction[];
   accounts: {
-    bankAccounts: [];
-    creditCards: [];
-    fixedInvestments: [];
-    loans: [];
-    tfsaAccounts: [];
-    rrspAccounts: [];
+    bankAccounts: { [key: string]: BankAccount };
+    creditCards: { [key: string]: CreditCardAccount };
+    loans: { [key: string]: LoanAccount };
+    fixedInvestments: { [key: string]: FixedInvestment };
   };
 };

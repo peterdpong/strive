@@ -15,7 +15,10 @@ import {
 } from "@chakra-ui/react";
 import { addAccount } from "../../src/firebase/UserActions";
 import { useAuth } from "../../src/auth/auth";
-import { AccountType, getAccountTypeArray } from "../../src/models/UserModel";
+import {
+  AccountType,
+  getAccountTypeArray,
+} from "../../src/models/AccountModel";
 
 export default function AddAccountModal(props: {
   isOpen: boolean;

@@ -196,13 +196,29 @@ export default function FinancesPages() {
               >
                 <HStack justifyContent="space-between" my={2}>
                   <Heading fontSize={"xl"}>Accounts</Heading>
-                  <Button
-                    colorScheme={"green"}
-                    onClick={accountsModalProps.onOpen}
-                    size="sm"
-                  >
-                    Add account
-                  </Button>
+                  <HStack>
+                    <Button
+                      colorScheme={"green"}
+                      onClick={accountsModalProps.onOpen}
+                      size="sm"
+                    >
+                      Add bank account
+                    </Button>
+                    <Button
+                      colorScheme={"green"}
+                      onClick={accountsModalProps.onOpen}
+                      size="sm"
+                    >
+                      Add credit card
+                    </Button>
+                    <Button
+                      colorScheme={"green"}
+                      onClick={accountsModalProps.onOpen}
+                      size="sm"
+                    >
+                      Add loan
+                    </Button>
+                  </HStack>
                 </HStack>
 
                 {userData && userData.financialInfo.accounts.length === 0 ? (
