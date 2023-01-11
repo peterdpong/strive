@@ -1,0 +1,131 @@
+import React from "react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  FormLabel,
+  Box,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+} from "@chakra-ui/react";
+import { useAuth } from "../../../src/auth/auth";
+import { AccountType } from "../../../src/models/AccountModel";
+import { Formik } from "formik";
+import {
+  InputControl,
+  NumberInputControl,
+  SelectControl,
+  SubmitButton,
+} from "formik-chakra-ui";
+
+export default function BankAccountModal(props: {
+  isOpen: boolean;
+  onClose: () => void;
+  uid: string | undefined;
+}) {
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
+
+  // const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
+  //   e.preventDefault();
+
+  //   if (name === null || type === null || value === null) {
+  //     setError("A field is missing");
+  //     return;
+  //   }
+
+  //   if (userData) {
+  //     addAccount(userData.uid, userData.financialInfo.accounts, {
+  //       name: name,
+  //       type: type as AccountType,
+  //       accountValue: value,
+  //       accountInfo: {},
+  //     });
+  //   }
+  //   props.onClose();
+  // };
+
+  return (
+    <Modal isOpen={props.isOpen} onClose={props.onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Add an account</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Formik
+            initialValues={{
+              name: "",
+              type: AccountType.SAVINGS,
+              value: 0,
+              interestRate: 0,
+              error: null,
+            }}
+            onSubmit={(values, actions) => {
+              if (userData) {
+                //setMonthlyIncome(userData.uid, values.monthlyIncome);
+                actions.resetForm;
+              } else {
+                alert("Error: User not logged in...");
+              }
+            }}
+          >
+            {({ handleSubmit, values }) => (
+              <Box // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                onSubmit={handleSubmit as any}
+              >
+                <FormLabel>Account Type</FormLabel>
+
+                <FormLabel>Account Name</FormLabel>
+                <InputControl name="name" label="Account Name" />
+                <NumberInputControl
+                  name="value"
+                  label="Account Value"
+                  numberInputProps={{
+                    min: 0,
+                    step: 1,
+                    precision: 2,
+                  }}
+                />
+                <NumberInputControl
+                  name="interestRate"
+                  label="Account Interest Rate (%)"
+                  numberInputProps={{
+                    min: 0,
+                    step: 1,
+                    precision: 2,
+                  }}
+                />
+                <SelectControl
+                  name="type"
+                  selectProps={{ placeholder: "Select account type" }}
+                >
+                  <option value={AccountType.SAVINGS}>
+                    {AccountType.SAVINGS}
+                  </option>
+                  <option value={AccountType.CHEQUINGS}>
+                    {AccountType.CHEQUINGS}
+                  </option>
+                </SelectControl>
+                {values.error !== null ? (
+                  <Alert status="error">
+                    <AlertIcon />
+                    <AlertTitle>{values.error}</AlertTitle>
+                  </Alert>
+                ) : (
+                  <></>
+                )}
+                <SubmitButton colorScheme={"green"}>
+                  Add bank account
+                </SubmitButton>
+              </Box>
+            )}
+          </Formik>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
+}

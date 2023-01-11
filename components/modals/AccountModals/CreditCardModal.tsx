@@ -13,14 +13,14 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import { addAccount } from "../../src/firebase/UserActions";
-import { useAuth } from "../../src/auth/auth";
+import { addAccount } from "../../../src/firebase/UserActions";
+import { useAuth } from "../../../src/auth/auth";
 import {
   AccountType,
   getAccountTypeArray,
-} from "../../src/models/AccountModel";
+} from "../../../src/models/AccountModel";
 
-export default function AddAccountModal(props: {
+export default function CreditCardModal(props: {
   isOpen: boolean;
   onClose: () => void;
   uid: string | undefined;
