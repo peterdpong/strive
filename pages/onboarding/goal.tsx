@@ -154,7 +154,7 @@ export default function SuggestionsPage() {
                   borderColor={"gray.300"}
                 >
                   <Heading fontSize={"xl"}>Net Worth Goal</Heading>
-                  <Text fontSize={"xl"}>$65,000</Text>
+                  <Text fontSize={"xl"}>$55,000</Text>
                   <Slider
                     colorScheme={"green"}
                     aria-label="slider-ex-1"
