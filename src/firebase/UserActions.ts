@@ -39,10 +39,6 @@ export const addNewUser = (
     email,
     firstName,
     lastName,
-    onboardingStatus: {
-      finished: false,
-      stageNum: -1,
-    },
     financialInfo: {
       monthlyIncome: 0,
       monthlyTransactions: [],

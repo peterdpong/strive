@@ -12,16 +12,10 @@ export type UserModel = {
   email: string;
   firstName: string;
   lastName: string;
-  onboardingStatus: OnboardingStatus;
   financialInfo: FinancialInfo;
   budgetInfo: BudgetModel;
   goalInfo: GoalModel;
   monthTransactionsMap: { [key: string]: Transaction[] };
-};
-
-export type OnboardingStatus = {
-  finished: boolean;
-  stageNum: number;
 };
 
 export type AccountMap = {
