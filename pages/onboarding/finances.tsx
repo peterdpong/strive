@@ -19,7 +19,11 @@ import {
 import { Formik } from "formik";
 import { NumberInputControl, SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
+import BankAccountModal from "../../components/modals/AccountModals/BankAccountModal";
 import AddAccountModal from "../../components/modals/AccountModals/BankAccountModal";
+import CreditCardModal from "../../components/modals/AccountModals/CreditCardModal";
+import FixedInvestmentsModal from "../../components/modals/AccountModals/FixedInvestmentsModal";
+import LoanAccountModal from "../../components/modals/AccountModals/LoanAccountModal";
 import RecurringExpenseModal from "../../components/modals/RecurringExpenseModal";
 import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
@@ -35,8 +39,11 @@ export default function FinancesPages() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  const accountsModalProps = useDisclosure();
   const recurringExpensesModalProps = useDisclosure();
+  const bankAccountModalProps = useDisclosure();
+  const creditCardModalProps = useDisclosure();
+  const fixedInvestmentsModalProps = useDisclosure();
+  const loanAccountModalProps = useDisclosure();
 
   const onDeleteMonthlyTransaction = (index: number) => {
     if (userData) {
@@ -199,24 +206,31 @@ export default function FinancesPages() {
                   <HStack>
                     <Button
                       colorScheme={"green"}
-                      onClick={accountsModalProps.onOpen}
+                      onClick={bankAccountModalProps.onOpen}
                       size="sm"
                     >
                       Add bank account
                     </Button>
                     <Button
                       colorScheme={"green"}
-                      onClick={accountsModalProps.onOpen}
+                      onClick={creditCardModalProps.onOpen}
                       size="sm"
                     >
                       Add credit card
                     </Button>
                     <Button
                       colorScheme={"green"}
-                      onClick={accountsModalProps.onOpen}
+                      onClick={loanAccountModalProps.onOpen}
                       size="sm"
                     >
                       Add loan
+                    </Button>
+                    <Button
+                      colorScheme={"green"}
+                      onClick={fixedInvestmentsModalProps.onOpen}
+                      size="sm"
+                    >
+                      Add fixed investment
                     </Button>
                   </HStack>
                 </HStack>
@@ -288,9 +302,27 @@ export default function FinancesPages() {
         uid={userData?.uid}
       />
 
-      <AddAccountModal
-        isOpen={accountsModalProps.isOpen}
-        onClose={accountsModalProps.onClose}
+      <LoanAccountModal
+        isOpen={loanAccountModalProps.isOpen}
+        onClose={loanAccountModalProps.onClose}
+        uid={userData?.uid}
+      />
+
+      <BankAccountModal
+        isOpen={bankAccountModalProps.isOpen}
+        onClose={bankAccountModalProps.onClose}
+        uid={userData?.uid}
+      />
+
+      <CreditCardModal
+        isOpen={creditCardModalProps.isOpen}
+        onClose={creditCardModalProps.onClose}
+        uid={userData?.uid}
+      />
+
+      <FixedInvestmentsModal
+        isOpen={fixedInvestmentsModalProps.isOpen}
+        onClose={fixedInvestmentsModalProps.onClose}
         uid={userData?.uid}
       />
     </ProtectedRoute>

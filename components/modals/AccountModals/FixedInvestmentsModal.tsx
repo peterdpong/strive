@@ -21,7 +21,7 @@ import {
   SubmitButton,
 } from "formik-chakra-ui";
 
-export default function LoanAccountModal(props: {
+export default function FixedInvestmentsModal(props: {
   isOpen: boolean;
   onClose: () => void;
   uid: string | undefined;
@@ -52,16 +52,16 @@ export default function LoanAccountModal(props: {
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add a loan</ModalHeader>
+        <ModalHeader>Add a fixed investment</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Formik
             initialValues={{
               name: "",
-              remainingAmount: 0,
-              minimumPayment: 0,
+              startDate: "",
+              maturityDate: "",
+              startingValue: 0,
               interestRate: 0,
-              paymentDate: "",
               error: null,
             }}
             onSubmit={(values, actions) => {
@@ -77,9 +77,19 @@ export default function LoanAccountModal(props: {
               <Box // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
-                <InputControl name="name" label="Loan Name" />
+                <InputControl name="name" label="Account Name" />
+                <InputControl
+                  inputProps={{ type: "date" }}
+                  name="startDate"
+                  label="Start date"
+                />
+                <InputControl
+                  inputProps={{ type: "date" }}
+                  name="maturityDate"
+                  label="Maturity date"
+                />
                 <NumberInputControl
-                  name="remainingAmount"
+                  name="startingValue"
                   label="Remaining owned"
                   numberInputProps={{
                     min: 0,
@@ -89,17 +99,12 @@ export default function LoanAccountModal(props: {
                 />
                 <NumberInputControl
                   name="interestRate"
-                  label="Account Interest Rate (%)"
+                  label="Fixed Investment Interest Rate (%)"
                   numberInputProps={{
                     min: 0,
                     step: 1,
                     precision: 2,
                   }}
-                />
-                <InputControl
-                  inputProps={{ type: "date" }}
-                  name="nextPaymentDate"
-                  label="Next payment date"
                 />
                 {values.error !== null ? (
                   <Alert status="error">
@@ -110,7 +115,7 @@ export default function LoanAccountModal(props: {
                   <></>
                 )}
                 <SubmitButton mt={"20px"} colorScheme={"green"}>
-                  Add loan
+                  Add fixed investment
                 </SubmitButton>
               </Box>
             )}

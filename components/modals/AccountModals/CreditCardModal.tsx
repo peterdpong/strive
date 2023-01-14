@@ -1,160 +1,139 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Select,
+  Box,
+  Alert,
+  AlertIcon,
+  AlertTitle,
 } from "@chakra-ui/react";
-import { addAccount } from "../../../src/firebase/UserActions";
 import { useAuth } from "../../../src/auth/auth";
+import { AccountType } from "../../../src/models/AccountModel";
+import { Formik } from "formik";
 import {
-  AccountType,
-  getAccountTypeArray,
-} from "../../../src/models/AccountModel";
+  InputControl,
+  NumberInputControl,
+  SelectControl,
+  SubmitButton,
+} from "formik-chakra-ui";
 
 export default function CreditCardModal(props: {
   isOpen: boolean;
   onClose: () => void;
   uid: string | undefined;
 }) {
-  const [error, setError] = useState<string | null>(null);
-  const [name, setName] = useState<string | null>(null);
-  const [type, setType] = useState<string | null>(null);
-  const [value, setValue] = useState<number | null>(null);
-  // const [accountInfo, setAccountInfo] = useState({});
-  const accountTypes = getAccountTypeArray();
-
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  const nameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  };
+  // const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
+  //   e.preventDefault();
 
-  const typeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setType(e.target.value);
-  };
+  //   if (name === null || type === null || value === null) {
+  //     setError("A field is missing");
+  //     return;
+  //   }
 
-  const valueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(parseFloat(e.target.value));
-  };
-
-  const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-
-    if (name === null || type === null || value === null) {
-      setError("A field is missing");
-      return;
-    }
-
-    if (userData) {
-      addAccount(userData.uid, userData.financialInfo.accounts, {
-        name: name,
-        type: type as AccountType,
-        accountValue: value,
-        accountInfo: {},
-      });
-    }
-
-    setName(null);
-    setType(null);
-    setValue(null);
-    setError(null);
-    props.onClose();
-  };
+  //   if (userData) {
+  //     addAccount(userData.uid, userData.financialInfo.accounts, {
+  //       name: name,
+  //       type: type as AccountType,
+  //       accountValue: value,
+  //       accountInfo: {},
+  //     });
+  //   }
+  //   props.onClose();
+  // };
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add an account</ModalHeader>
+        <ModalHeader>Add a credit card</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl id="account-type" isRequired>
-            <FormLabel>Account Type</FormLabel>
-            <Select onChange={typeHandler} placeholder="Select account type">
-              {accountTypes.map((type) => {
-                return (
-                  <option key={type.key} value={type.key}>
-                    {type.value}
-                  </option>
-                );
-              })}
-            </Select>
-          </FormControl>
-          <FormControl id="account-name" isRequired>
-            <FormLabel>Account Name</FormLabel>
-            <Input onChange={nameHandler} />
-          </FormControl>
-          <FormControl id="account-value" isRequired>
-            <FormLabel>Account Value</FormLabel>
-            <Input type="number" placeholder="$125" onChange={valueHandler} />
-          </FormControl>
-
-          {type === "SAVINGS" || type === "CHEQUINGS" ? (
-            <FormControl id="account-value" isRequired>
-              <FormLabel>Interest Rate (Annual %)</FormLabel>
-              <Input
-                type="number"
-                placeholder="2.50%"
-                // onChange={valueHandler}
-              />
-            </FormControl>
-          ) : (
-            <></>
-          )}
-
-          {type === "CREDITCARD" || type === "LOAN" ? (
-            <>
-              <FormControl isRequired>
-                <FormLabel>Interest Rate</FormLabel>
-                <Input
-                  type="number"
-                  placeholder="2.50%"
-                  // onChange={valueHandler}
+          <Formik
+            initialValues={{
+              name: "",
+              interestRate: 0,
+              amountOwned: 0,
+              nextPaymentAmount: 0,
+              nextPaymentDate: "",
+              error: null,
+            }}
+            onSubmit={(values, actions) => {
+              if (userData) {
+                //setMonthlyIncome(userData.uid, values.monthlyIncome);
+                actions.resetForm;
+              } else {
+                alert("Error: User not logged in...");
+              }
+            }}
+          >
+            {({ handleSubmit, values }) => (
+              <Box // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                onSubmit={handleSubmit as any}
+              >
+                <InputControl name="name" label="Account Name" />
+                <NumberInputControl
+                  name="value"
+                  label="Account Value"
+                  numberInputProps={{
+                    min: 0,
+                    step: 1,
+                    precision: 2,
+                  }}
                 />
-              </FormControl>
-              <FormControl isRequired>
-                <FormLabel>Minimum payment</FormLabel>
-                <Input
-                  type="number"
-                  placeholder="$500"
-                  // onChange={valueHandler}
+                <NumberInputControl
+                  name="interestRate"
+                  label="Account Interest Rate (%)"
+                  numberInputProps={{
+                    min: 0,
+                    step: 1,
+                    precision: 2,
+                  }}
                 />
-              </FormControl>
-              <FormControl isRequired>
-                <FormLabel>Next Payment date</FormLabel>
-                <Input type="date" />
-              </FormControl>
-              <FormControl isRequired>
-                <FormLabel>Next payment value</FormLabel>
-                <Input
-                  type="number"
-                  placeholder="$500"
-                  // onChange={valueHandler}
+                <NumberInputControl
+                  name="amountOwned"
+                  label="Current amount balance"
+                  numberInputProps={{
+                    min: 0,
+                    step: 1,
+                    precision: 2,
+                  }}
                 />
-              </FormControl>
-            </>
-          ) : (
-            <></>
-          )}
-
-          {error !== null ? <div>Error: {error}</div> : <></>}
+                <NumberInputControl
+                  name="nextPaymentAmount"
+                  label="Next payment amount"
+                  numberInputProps={{
+                    min: 0,
+                    step: 1,
+                    precision: 2,
+                  }}
+                />
+                <InputControl
+                  inputProps={{ type: "date" }}
+                  name="nextPaymentDate"
+                  label="Next payment date"
+                />
+                {values.error !== null ? (
+                  <Alert status="error">
+                    <AlertIcon />
+                    <AlertTitle>{values.error}</AlertTitle>
+                  </Alert>
+                ) : (
+                  <></>
+                )}
+                <SubmitButton mt={"20px"} colorScheme={"green"}>
+                  Add credit card
+                </SubmitButton>
+              </Box>
+            )}
+          </Formik>
         </ModalBody>
-
-        <ModalFooter>
-          <Button colorScheme="green" mr={3} onClick={submitHandler}>
-            Add account
-          </Button>
-        </ModalFooter>
       </ModalContent>
     </Modal>
   );

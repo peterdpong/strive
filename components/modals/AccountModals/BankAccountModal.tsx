@@ -77,9 +77,6 @@ export default function BankAccountModal(props: {
               <Box // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
-                <FormLabel>Account Type</FormLabel>
-
-                <FormLabel>Account Name</FormLabel>
                 <InputControl name="name" label="Account Name" />
                 <NumberInputControl
                   name="value"
@@ -90,6 +87,18 @@ export default function BankAccountModal(props: {
                     precision: 2,
                   }}
                 />
+                <SelectControl
+                  name="type"
+                  selectProps={{ placeholder: "Select account type" }}
+                  label="Account Type"
+                >
+                  <option value={AccountType.SAVINGS}>
+                    {AccountType.SAVINGS}
+                  </option>
+                  <option value={AccountType.CHEQUINGS}>
+                    {AccountType.CHEQUINGS}
+                  </option>
+                </SelectControl>
                 <NumberInputControl
                   name="interestRate"
                   label="Account Interest Rate (%)"
@@ -99,17 +108,6 @@ export default function BankAccountModal(props: {
                     precision: 2,
                   }}
                 />
-                <SelectControl
-                  name="type"
-                  selectProps={{ placeholder: "Select account type" }}
-                >
-                  <option value={AccountType.SAVINGS}>
-                    {AccountType.SAVINGS}
-                  </option>
-                  <option value={AccountType.CHEQUINGS}>
-                    {AccountType.CHEQUINGS}
-                  </option>
-                </SelectControl>
                 {values.error !== null ? (
                   <Alert status="error">
                     <AlertIcon />
@@ -118,7 +116,7 @@ export default function BankAccountModal(props: {
                 ) : (
                   <></>
                 )}
-                <SubmitButton colorScheme={"green"}>
+                <SubmitButton mt={"20px"} colorScheme={"green"}>
                   Add bank account
                 </SubmitButton>
               </Box>
