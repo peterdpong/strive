@@ -7,7 +7,14 @@ export default function AccountsPage() {
   return (
     <ProtectedRoute>
       <Sidebar>
-        <Box bgColor="gray.100" padding="6" borderRadius="25">
+        <Box
+          bgColor="gray.100"
+          padding="6"
+          rounded={"5px"}
+          border={"1px"}
+          borderColor={"gray.300"}
+          mx={"15px"}
+        >
           <HStack justifyContent="space-between">
             <VStack align="flex-start">
               <Heading size="lg" mr="2.5rem">

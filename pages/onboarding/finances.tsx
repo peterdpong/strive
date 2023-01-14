@@ -16,10 +16,14 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { Timestamp } from "firebase/firestore";
 import { Formik } from "formik";
 import { NumberInputControl, SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
-import AddAccountModal from "../../components/modals/AddAccountModal";
+import BankAccountModal from "../../components/modals/AccountModals/BankAccountModal";
+import CreditCardModal from "../../components/modals/AccountModals/CreditCardModal";
+import FixedInvestmentsModal from "../../components/modals/AccountModals/FixedInvestmentsModal";
+import LoanAccountModal from "../../components/modals/AccountModals/LoanAccountModal";
 import RecurringExpenseModal from "../../components/modals/RecurringExpenseModal";
 import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
@@ -35,8 +39,11 @@ export default function FinancesPages() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  const accountsModalProps = useDisclosure();
   const recurringExpensesModalProps = useDisclosure();
+  const bankAccountModalProps = useDisclosure();
+  const creditCardModalProps = useDisclosure();
+  const fixedInvestmentsModalProps = useDisclosure();
+  const loanAccountModalProps = useDisclosure();
 
   const onDeleteMonthlyTransaction = (index: number) => {
     if (userData) {
@@ -45,12 +52,6 @@ export default function FinancesPages() {
         userData?.financialInfo.monthlyTransactions,
         index
       );
-    }
-  };
-
-  const onDeleteAccount = (index: number) => {
-    if (userData) {
-      deleteAccount(userData?.uid, userData?.financialInfo.accounts, index);
     }
   };
 
@@ -196,21 +197,50 @@ export default function FinancesPages() {
               >
                 <HStack justifyContent="space-between" my={2}>
                   <Heading fontSize={"xl"}>Accounts</Heading>
-                  <Button
-                    colorScheme={"green"}
-                    onClick={accountsModalProps.onOpen}
-                    size="sm"
-                  >
-                    Add account
-                  </Button>
+                  <HStack>
+                    <Button
+                      colorScheme={"green"}
+                      onClick={bankAccountModalProps.onOpen}
+                      size="sm"
+                    >
+                      Add bank account
+                    </Button>
+                    <Button
+                      colorScheme={"green"}
+                      onClick={creditCardModalProps.onOpen}
+                      size="sm"
+                    >
+                      Add credit card
+                    </Button>
+                    <Button
+                      colorScheme={"green"}
+                      onClick={loanAccountModalProps.onOpen}
+                      size="sm"
+                    >
+                      Add loan
+                    </Button>
+                    <Button
+                      colorScheme={"green"}
+                      onClick={fixedInvestmentsModalProps.onOpen}
+                      size="sm"
+                    >
+                      Add fixed investment
+                    </Button>
+                  </HStack>
                 </HStack>
 
-                {userData && userData.financialInfo.accounts.length === 0 ? (
+                {/* Bank accounts */}
+                <Heading mb={"10px"} fontSize={"lg"}>
+                  Bank accounts
+                </Heading>
+                {userData &&
+                Object.keys(userData.financialInfo.accounts.bankAccounts)
+                  .length === 0 ? (
                   <Center
-                    onClick={accountsModalProps.onOpen}
+                    onClick={bankAccountModalProps.onOpen}
                     bg={"gray.50"}
                     width={"200px"}
-                    height={"200px"}
+                    height={"125px"}
                     rounded={"5px"}
                     my={"25px"}
                     p={"20px"}
@@ -219,43 +249,346 @@ export default function FinancesPages() {
                     borderColor={"gray.300"}
                   >
                     <Text color={"gray.800"} align={"center"}>
-                      Add a financial accounts
+                      Add a bank account
                     </Text>
                   </Center>
                 ) : (
                   <SimpleGrid
                     spacing={4}
                     templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+                    pb={"20px"}
                   >
-                    {userData?.financialInfo.accounts.map((account, index) => {
-                      return (
-                        <Card
-                          bgColor={"white"}
-                          key={index}
-                          justify="space-between"
-                        >
-                          <CardBody>
-                            <Badge>{account.type}</Badge>
-                            <Heading size="sm"> {account.name} </Heading>
-                            <Stat>
-                              <StatLabel>Account Value</StatLabel>
-                              <StatNumber>${account.accountValue}</StatNumber>
-                            </Stat>
-                          </CardBody>
-                          <CardFooter>
-                            <Button
-                              onClick={() => {
-                                onDeleteAccount(index);
-                              }}
-                              size="xs"
-                              variant="link"
+                    {userData &&
+                      Object.keys(
+                        userData.financialInfo.accounts.bankAccounts
+                      ).map((accountKey) => {
+                        const currAccount =
+                          userData.financialInfo.accounts.bankAccounts[
+                            accountKey
+                          ];
+                        return (
+                          <Card
+                            bgColor={"white"}
+                            key={accountKey}
+                            justify="space-between"
+                          >
+                            <CardBody>
+                              <Badge>{currAccount.type}</Badge>
+                              <Heading size="sm"> {currAccount.name} </Heading>
+                              <Stat>
+                                <StatLabel>Account Value</StatLabel>
+                                <StatNumber>${currAccount.value}</StatNumber>
+                              </Stat>
+                              <Stat>
+                                <StatLabel>Account Interest Rate</StatLabel>
+                                <StatNumber>
+                                  {currAccount.interestRate}%
+                                </StatNumber>
+                              </Stat>
+                              <Button
+                                onClick={() => {
+                                  deleteAccount(
+                                    userData.uid,
+                                    userData.financialInfo.accounts,
+                                    "BankAccount",
+                                    accountKey
+                                  );
+                                }}
+                                size="xs"
+                                variant="link"
+                              >
+                                Delete
+                              </Button>
+                            </CardBody>
+                          </Card>
+                        );
+                      })}
+                  </SimpleGrid>
+                )}
+
+                {/* Credit cards */}
+                <Heading mb={"10px"} fontSize={"lg"}>
+                  Credit cards
+                </Heading>
+                {userData &&
+                Object.keys(userData.financialInfo.accounts.creditCards)
+                  .length === 0 ? (
+                  <Center
+                    onClick={creditCardModalProps.onOpen}
+                    bg={"gray.50"}
+                    width={"200px"}
+                    height={"125px"}
+                    rounded={"5px"}
+                    my={"25px"}
+                    p={"20px"}
+                    border={"1px"}
+                    borderStyle={"dashed"}
+                    borderColor={"gray.300"}
+                  >
+                    <Text color={"gray.800"} align={"center"}>
+                      Add a credit card
+                    </Text>
+                  </Center>
+                ) : (
+                  <SimpleGrid
+                    spacing={4}
+                    templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+                    pb={"20px"}
+                  >
+                    {userData &&
+                      Object.keys(
+                        userData.financialInfo.accounts.creditCards
+                      ).map((accountKey) => {
+                        const currAccount =
+                          userData.financialInfo.accounts.creditCards[
+                            accountKey
+                          ];
+                        return (
+                          <Card
+                            bgColor={"white"}
+                            key={accountKey}
+                            justify="space-between"
+                          >
+                            <CardBody>
+                              <Badge>CREDIT CARD</Badge>
+                              <Heading size="sm"> {currAccount.name} </Heading>
+                              <Stat>
+                                <StatLabel>Amount Owned</StatLabel>
+                                <StatNumber>
+                                  ${currAccount.amountOwned}
+                                </StatNumber>
+                              </Stat>
+                              <Stat>
+                                <StatLabel>Account Interest Rate</StatLabel>
+                                <StatNumber>
+                                  {currAccount.interestRate}%
+                                </StatNumber>
+                              </Stat>
+                              <Stat>
+                                <StatLabel>Next payment due</StatLabel>
+                                <StatLabel>
+                                  {(currAccount.nextPaymentDate as Timestamp)
+                                    .toDate()
+                                    .toISOString()
+                                    .substring(0, 10)}
+                                </StatLabel>
+                              </Stat>
+                              <Stat>
+                                <StatLabel>Next payment amount</StatLabel>
+                                <StatNumber>
+                                  ${currAccount.nextPaymentAmount}
+                                </StatNumber>
+                              </Stat>
+                              <Button
+                                onClick={() => {
+                                  deleteAccount(
+                                    userData.uid,
+                                    userData.financialInfo.accounts,
+                                    "CreditCard",
+                                    accountKey
+                                  );
+                                }}
+                                size="xs"
+                                variant="link"
+                              >
+                                Delete
+                              </Button>
+                            </CardBody>
+                          </Card>
+                        );
+                      })}
+                  </SimpleGrid>
+                )}
+
+                {/* Loans */}
+                <Heading mb={"10px"} fontSize={"lg"}>
+                  Loans
+                </Heading>
+                {userData &&
+                Object.keys(userData.financialInfo.accounts.loans).length ===
+                  0 ? (
+                  <Center
+                    onClick={loanAccountModalProps.onOpen}
+                    bg={"gray.50"}
+                    width={"200px"}
+                    height={"125px"}
+                    rounded={"5px"}
+                    my={"25px"}
+                    p={"20px"}
+                    border={"1px"}
+                    borderStyle={"dashed"}
+                    borderColor={"gray.300"}
+                  >
+                    <Text color={"gray.800"} align={"center"}>
+                      Add a loan
+                    </Text>
+                  </Center>
+                ) : (
+                  <SimpleGrid
+                    spacing={4}
+                    templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+                    pb={"20px"}
+                  >
+                    {userData &&
+                      Object.keys(userData.financialInfo.accounts.loans).map(
+                        (accountKey) => {
+                          const currAccount =
+                            userData.financialInfo.accounts.loans[accountKey];
+                          return (
+                            <Card
+                              bgColor={"white"}
+                              key={accountKey}
+                              justify="space-between"
                             >
-                              Delete
-                            </Button>
-                          </CardFooter>
-                        </Card>
-                      );
-                    })}
+                              <CardBody>
+                                <Badge>LOAN</Badge>
+                                <Heading size="sm">{currAccount.name}</Heading>
+                                <Stat>
+                                  <StatLabel>Account Value</StatLabel>
+                                  <StatNumber>
+                                    ${currAccount.remainingAmount}
+                                  </StatNumber>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Interest Rate</StatLabel>
+                                  <StatNumber>
+                                    {currAccount.interestRate}%
+                                  </StatNumber>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Next payment due</StatLabel>
+                                  <StatLabel>
+                                    {(currAccount.paymentDate as Timestamp)
+                                      .toDate()
+                                      .toISOString()
+                                      .substring(0, 10)}
+                                  </StatLabel>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Minimum Payment</StatLabel>
+                                  <StatNumber>
+                                    ${currAccount.minimumPayment}
+                                  </StatNumber>
+                                </Stat>
+                                <Button
+                                  onClick={() => {
+                                    deleteAccount(
+                                      userData.uid,
+                                      userData.financialInfo.accounts,
+                                      "Loan",
+                                      accountKey
+                                    );
+                                  }}
+                                  size="xs"
+                                  variant="link"
+                                >
+                                  Delete
+                                </Button>
+                              </CardBody>
+                            </Card>
+                          );
+                        }
+                      )}
+                  </SimpleGrid>
+                )}
+
+                {/* Fixed investments */}
+                <Heading mb={"10px"} fontSize={"lg"}>
+                  Fixed investments
+                </Heading>
+                {userData &&
+                Object.keys(userData.financialInfo.accounts.fixedInvestments)
+                  .length === 0 ? (
+                  <Center
+                    onClick={fixedInvestmentsModalProps.onOpen}
+                    bg={"gray.50"}
+                    width={"200px"}
+                    height={"125px"}
+                    rounded={"5px"}
+                    my={"25px"}
+                    p={"20px"}
+                    border={"1px"}
+                    borderStyle={"dashed"}
+                    borderColor={"gray.300"}
+                  >
+                    <Text color={"gray.800"} align={"center"}>
+                      Add a fixed investment
+                    </Text>
+                  </Center>
+                ) : (
+                  <SimpleGrid
+                    spacing={4}
+                    templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+                    pb={"20px"}
+                  >
+                    {userData &&
+                      Object.keys(
+                        userData.financialInfo.accounts.fixedInvestments
+                      ).map((accountKey) => {
+                        const currAccount =
+                          userData.financialInfo.accounts.fixedInvestments[
+                            accountKey
+                          ];
+                        return (
+                          <Card
+                            bgColor={"white"}
+                            key={accountKey}
+                            justify="space-between"
+                          >
+                            <CardBody>
+                              <Badge>FIXED INVESTMENT</Badge>
+                              <Heading size="sm"> {currAccount.name} </Heading>
+                              <Stat>
+                                <StatLabel>Account Value</StatLabel>
+                                <Stat>
+                                  <StatLabel>Start date</StatLabel>
+                                  <StatLabel>
+                                    {(currAccount.startDate as Timestamp)
+                                      .toDate()
+                                      .toISOString()
+                                      .substring(0, 10)}
+                                  </StatLabel>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Maturity date</StatLabel>
+                                  <StatLabel>
+                                    {(currAccount.maturityDate as Timestamp)
+                                      .toDate()
+                                      .toISOString()
+                                      .substring(0, 10)}
+                                  </StatLabel>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Starting value</StatLabel>
+                                  <StatNumber>
+                                    ${currAccount.startingValue}
+                                  </StatNumber>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Interest rate</StatLabel>
+                                  <StatNumber>
+                                    {currAccount.interestRate}%
+                                  </StatNumber>
+                                </Stat>
+                              </Stat>
+                              <Button
+                                onClick={() => {
+                                  deleteAccount(
+                                    userData.uid,
+                                    userData.financialInfo.accounts,
+                                    "FixedInvestments",
+                                    accountKey
+                                  );
+                                }}
+                                size="xs"
+                                variant="link"
+                              >
+                                Delete
+                              </Button>
+                            </CardBody>
+                          </Card>
+                        );
+                      })}
                   </SimpleGrid>
                 )}
               </Box>
@@ -272,9 +605,27 @@ export default function FinancesPages() {
         uid={userData?.uid}
       />
 
-      <AddAccountModal
-        isOpen={accountsModalProps.isOpen}
-        onClose={accountsModalProps.onClose}
+      <LoanAccountModal
+        isOpen={loanAccountModalProps.isOpen}
+        onClose={loanAccountModalProps.onClose}
+        uid={userData?.uid}
+      />
+
+      <BankAccountModal
+        isOpen={bankAccountModalProps.isOpen}
+        onClose={bankAccountModalProps.onClose}
+        uid={userData?.uid}
+      />
+
+      <CreditCardModal
+        isOpen={creditCardModalProps.isOpen}
+        onClose={creditCardModalProps.onClose}
+        uid={userData?.uid}
+      />
+
+      <FixedInvestmentsModal
+        isOpen={fixedInvestmentsModalProps.isOpen}
+        onClose={fixedInvestmentsModalProps.onClose}
         uid={userData?.uid}
       />
     </ProtectedRoute>
