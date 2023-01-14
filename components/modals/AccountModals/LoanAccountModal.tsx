@@ -12,14 +12,13 @@ import {
   AlertTitle,
 } from "@chakra-ui/react";
 import { useAuth } from "../../../src/auth/auth";
-import { AccountType } from "../../../src/models/AccountModel";
 import { Formik } from "formik";
 import {
   InputControl,
   NumberInputControl,
-  SelectControl,
   SubmitButton,
 } from "formik-chakra-ui";
+import { addAccount } from "../../../src/firebase/UserActions";
 
 export default function LoanAccountModal(props: {
   isOpen: boolean;
@@ -66,15 +65,29 @@ export default function LoanAccountModal(props: {
             }}
             onSubmit={(values, actions) => {
               if (userData) {
-                //setMonthlyIncome(userData.uid, values.monthlyIncome);
+                addAccount(
+                  userData.uid,
+                  userData.financialInfo.accounts,
+                  "Loan",
+                  {
+                    name: values.name,
+                    remainingAmount: values.remainingAmount,
+                    minimumPayment: values.minimumPayment,
+                    interestRate: values.interestRate,
+                    paymentDate: new Date(values.paymentDate),
+                  }
+                );
                 actions.resetForm;
+                props.onClose();
               } else {
                 alert("Error: User not logged in...");
               }
             }}
           >
             {({ handleSubmit, values }) => (
-              <Box // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              <Box
+                as="form"
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
                 <InputControl name="name" label="Loan Name" />
@@ -88,8 +101,17 @@ export default function LoanAccountModal(props: {
                   }}
                 />
                 <NumberInputControl
+                  name="minimumPayment"
+                  label="Minimum monthly payment"
+                  numberInputProps={{
+                    min: 0,
+                    step: 1,
+                    precision: 2,
+                  }}
+                />
+                <NumberInputControl
                   name="interestRate"
-                  label="Account Interest Rate (%)"
+                  label="Loan Interest Rate (%)"
                   numberInputProps={{
                     min: 0,
                     step: 1,
@@ -98,7 +120,7 @@ export default function LoanAccountModal(props: {
                 />
                 <InputControl
                   inputProps={{ type: "date" }}
-                  name="nextPaymentDate"
+                  name="paymentDate"
                   label="Next payment date"
                 />
                 {values.error !== null ? (

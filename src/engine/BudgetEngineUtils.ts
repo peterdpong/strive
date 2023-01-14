@@ -1,5 +1,4 @@
 import { BudgetModel, Transaction } from "../models/BudgetModel";
-import { Account, AccountType } from "../models/UserModel";
 
 export class BudgetEngineUtils {
   static calculateBudgetExpenses(budgetInfo: BudgetModel) {
@@ -22,21 +21,21 @@ export class BudgetEngineUtils {
     return expenseAmount;
   }
 
-  static calculateNetWorth(accounts: Account[]) {
-    let assets = 0;
-    let debts = 0;
+  // static calculateNetWorth(accounts: Account[]) {
+  //   let assets = 0;
+  //   let debts = 0;
 
-    for (const account of accounts) {
-      if (
-        account.type === AccountType.SAVINGS ||
-        account.type === AccountType.CHEQUINGS
-      ) {
-        assets += account.accountValue;
-      } else {
-        debts += account.accountValue;
-      }
-    }
+  //   for (const account of accounts) {
+  //     if (
+  //       account.type === AccountType.SAVINGS ||
+  //       account.type === AccountType.CHEQUINGS
+  //     ) {
+  //       assets += account.accountValue;
+  //     } else {
+  //       debts += account.accountValue;
+  //     }
+  //   }
 
-    return assets - debts;
-  }
+  //   return assets - debts;
+  // }
 }

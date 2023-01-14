@@ -1,6 +1,8 @@
+import { Timestamp } from "firebase/firestore";
+
 export type BankAccount = {
   name: string;
-  type: AccountType.SAVINGS | AccountType.CHEQUINGS;
+  type: string;
   value: number;
   interestRate: number;
 };
@@ -10,7 +12,7 @@ export type CreditCardAccount = {
   amountOwned: number;
   interestRate: number;
   nextPaymentAmount: number;
-  nextPaymentDate: Date;
+  nextPaymentDate: Date | Timestamp;
 };
 
 export type LoanAccount = {
@@ -18,14 +20,15 @@ export type LoanAccount = {
   remainingAmount: number;
   interestRate: number;
   minimumPayment: number;
-  paymentDate: Date;
+  paymentDate: Date | Timestamp;
 };
 
 export type FixedInvestment = {
   name: string;
-  startDate: Date;
-  maturityDate: Date;
+  startDate: Date | Timestamp;
+  maturityDate: Date | Timestamp;
   interestRate: number;
+  startingValue: number;
 };
 
 //TODO(peter): future implementations
@@ -48,38 +51,3 @@ export enum AccountType {
   RRSP = "RRSP",
   GIC = "GIC",
 }
-
-export const getAccountTypeArray = () => {
-  const accountTypes = [];
-  for (const value of Object.values(AccountType)) {
-    accountTypes.push({
-      value: value,
-      key: Object.keys(AccountType)[Object.values(AccountType).indexOf(value)],
-    });
-  }
-
-  return accountTypes;
-};
-
-export type Account = {
-  name: string;
-  type: AccountType;
-  accountValue: number;
-  accountInfo: {
-    depositAccountInfo?: { interestRate: number }; // Deposit account refers to savings or chequings
-    creditCardInfo?: {
-      interestRate: number;
-      nextPaymentDate: Date;
-      paymentValue: number;
-      minimumPayment: number;
-      paymentPaid: boolean;
-    };
-    loanInfo?: {
-      interestRate: number;
-      nextPaymentDate: Date;
-      paymentValue: number;
-      minimumPayment: number;
-      paymentPaid: boolean;
-    };
-  };
-};

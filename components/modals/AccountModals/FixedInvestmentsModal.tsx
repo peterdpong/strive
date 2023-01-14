@@ -12,14 +12,13 @@ import {
   AlertTitle,
 } from "@chakra-ui/react";
 import { useAuth } from "../../../src/auth/auth";
-import { AccountType } from "../../../src/models/AccountModel";
 import { Formik } from "formik";
 import {
   InputControl,
   NumberInputControl,
-  SelectControl,
   SubmitButton,
 } from "formik-chakra-ui";
+import { addAccount } from "../../../src/firebase/UserActions";
 
 export default function FixedInvestmentsModal(props: {
   isOpen: boolean;
@@ -66,15 +65,29 @@ export default function FixedInvestmentsModal(props: {
             }}
             onSubmit={(values, actions) => {
               if (userData) {
-                //setMonthlyIncome(userData.uid, values.monthlyIncome);
+                addAccount(
+                  userData.uid,
+                  userData.financialInfo.accounts,
+                  "FixedInvestment",
+                  {
+                    name: values.name,
+                    startDate: new Date(values.startDate),
+                    maturityDate: new Date(values.maturityDate),
+                    startingValue: values.startingValue,
+                    interestRate: values.interestRate,
+                  }
+                );
                 actions.resetForm;
+                props.onClose();
               } else {
                 alert("Error: User not logged in...");
               }
             }}
           >
             {({ handleSubmit, values }) => (
-              <Box // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              <Box
+                as="form"
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
                 <InputControl name="name" label="Account Name" />
@@ -90,7 +103,7 @@ export default function FixedInvestmentsModal(props: {
                 />
                 <NumberInputControl
                   name="startingValue"
-                  label="Remaining owned"
+                  label="Starting value"
                   numberInputProps={{
                     min: 0,
                     step: 1,

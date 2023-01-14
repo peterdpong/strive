@@ -24,13 +24,15 @@ export type OnboardingStatus = {
   stageNum: number;
 };
 
+export type AccountMap = {
+  bankAccounts: { [key: string]: BankAccount };
+  creditCards: { [key: string]: CreditCardAccount };
+  loans: { [key: string]: LoanAccount };
+  fixedInvestments: { [key: string]: FixedInvestment };
+};
+
 export type FinancialInfo = {
   monthlyIncome: number;
   monthlyTransactions: Transaction[];
-  accounts: {
-    bankAccounts: { [key: string]: BankAccount };
-    creditCards: { [key: string]: CreditCardAccount };
-    loans: { [key: string]: LoanAccount };
-    fixedInvestments: { [key: string]: FixedInvestment };
-  };
+  accounts: AccountMap;
 };

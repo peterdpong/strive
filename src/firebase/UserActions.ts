@@ -7,9 +7,15 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { BudgetEngineUtils } from "../engine/BudgetEngineUtils";
+import {
+  BankAccount,
+  CreditCardAccount,
+  FixedInvestment,
+  LoanAccount,
+} from "../models/AccountModel";
 import { BudgetModel, Transaction } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
-import { Account, FinancialInfo, UserModel } from "../models/UserModel";
+import { AccountMap, FinancialInfo, UserModel } from "../models/UserModel";
 import { firestoreDB } from "./firebase";
 
 export const addNewUser = (
@@ -40,7 +46,12 @@ export const addNewUser = (
     financialInfo: {
       monthlyIncome: 0,
       monthlyTransactions: [],
-      accounts: [],
+      accounts: {
+        bankAccounts: {},
+        creditCards: {},
+        loans: {},
+        fixedInvestments: {},
+      },
     },
     budgetInfo: {
       monthlyAllocations: {},
@@ -159,10 +170,19 @@ export const deleteMonthlyTransaction = (
 
 export const addAccount = (
   uid: string,
-  accounts: Account[],
-  newAccount: Account
+  accounts: AccountMap,
+  type: string,
+  newAccount: BankAccount | CreditCardAccount | LoanAccount | FixedInvestment
 ) => {
-  accounts.push(newAccount);
+  if (type === "BankAccount") {
+    accounts.bankAccounts[newAccount.name] = newAccount as BankAccount;
+  } else if (type === "CreditCard") {
+    accounts.creditCards[newAccount.name] = newAccount as CreditCardAccount;
+  } else if (type === "Loan") {
+    accounts.loans[newAccount.name] = newAccount as LoanAccount;
+  } else if (type === "FixedInvestment") {
+    accounts.fixedInvestments[newAccount.name] = newAccount as FixedInvestment;
+  }
 
   const userDataRef = doc(firestoreDB, "users", uid);
   updateDoc(userDataRef, {
@@ -172,10 +192,19 @@ export const addAccount = (
 
 export const deleteAccount = (
   uid: string,
-  accounts: Account[],
-  index: number
+  accounts: AccountMap,
+  type: string,
+  key: string
 ) => {
-  accounts.splice(index, 1);
+  if (type === "BankAccount") {
+    delete accounts.bankAccounts[key];
+  } else if (type === "CreditCard") {
+    delete accounts.creditCards[key];
+  } else if (type === "Loan") {
+    delete accounts.loans[key];
+  } else if (type === "FixedInvestment") {
+    delete accounts.fixedInvestments[key];
+  }
 
   const userDataRef = doc(firestoreDB, "users", uid);
   updateDoc(userDataRef, {

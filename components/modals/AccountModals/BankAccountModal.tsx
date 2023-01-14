@@ -6,7 +6,6 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
-  FormLabel,
   Box,
   Alert,
   AlertIcon,
@@ -21,6 +20,7 @@ import {
   SelectControl,
   SubmitButton,
 } from "formik-chakra-ui";
+import { addAccount } from "../../../src/firebase/UserActions";
 
 export default function BankAccountModal(props: {
   isOpen: boolean;
@@ -66,15 +66,28 @@ export default function BankAccountModal(props: {
             }}
             onSubmit={(values, actions) => {
               if (userData) {
-                //setMonthlyIncome(userData.uid, values.monthlyIncome);
+                addAccount(
+                  userData.uid,
+                  userData.financialInfo.accounts,
+                  "BankAccount",
+                  {
+                    name: values.name,
+                    type: values.type,
+                    value: values.value,
+                    interestRate: values.interestRate,
+                  }
+                );
                 actions.resetForm;
+                props.onClose();
               } else {
                 alert("Error: User not logged in...");
               }
             }}
           >
             {({ handleSubmit, values }) => (
-              <Box // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              <Box
+                as="form"
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
                 <InputControl name="name" label="Account Name" />
