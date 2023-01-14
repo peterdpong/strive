@@ -62,7 +62,6 @@ const formatUserState = (userData: DocumentSnapshot): UserModel | null => {
     email: userData?.get("email"),
     firstName: userData?.get("firstName"),
     lastName: userData?.get("lastName"),
-    onboardingStatus: userData?.get("onboardingStatus"),
     financialInfo: userData?.get("financialInfo"),
     budgetInfo: userData?.get("budgetInfo"),
     goalInfo: userData?.get("goalInfo"),
