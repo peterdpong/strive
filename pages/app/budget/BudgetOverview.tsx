@@ -1,6 +1,5 @@
 import {
   Box,
-  Container,
   Flex,
   Heading,
   Tag,
@@ -9,6 +8,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import ProtectedRoute from "../../../src/auth/ProtectedRoute";
+import Expenses from "./expenses";
 
 const expenses = [
   {
@@ -60,7 +60,7 @@ type CategoryType = {
   amount: number;
 };
 
-export default function BudgetUI() {
+export default function BudgetOverview() {
   const monthlyBudget = 12000;
   const totalSpent = expenses.reduce((sum, expense) => {
     return sum + expense.amount;
@@ -87,8 +87,8 @@ export default function BudgetUI() {
 
   return (
     <ProtectedRoute>
-      <Box>
-        <Container maxW="container.md" rounded={"5px"} px={"0px"} mt="60px">
+      <Box p="24px">
+        <Box rounded={"5px"} p={"0px"} mt="10px">
           <Heading size="md">May</Heading>
           <Heading size="xl">${totalSpent} spent</Heading>
           <Heading size="md">${monthlyBudget - totalSpent} remaining</Heading>
@@ -125,26 +125,31 @@ export default function BudgetUI() {
               ))}
             </Flex>
           </Box>
-        </Container>
+        </Box>
 
-        <Container
-          bg={"gray.300"}
-          maxW="container.md"
+        <Box
+          bg={"gray.100"}
+          my={"14px"}
           rounded={"5px"}
-          my={"25px"}
-          p={"25px"}
+          p={"20px"}
+          width={"100%"}
+          border={"1px"}
+          borderColor={"gray.300"}
         >
           <Flex>
             <Heading size="lg">56%</Heading>
             <Text>Increase on food from last month</Text>
           </Flex>
-        </Container>
-        <Container
-          bg={"gray.300"}
-          maxW="container.md"
+        </Box>
+
+        <Box
+          bg={"gray.100"}
+          my={"14px"}
           rounded={"5px"}
-          my={"25px"}
-          p={"25px"}
+          p={"20px"}
+          width={"100%"}
+          border={"1px"}
+          borderColor={"gray.300"}
         >
           <Heading size="md">Top expenses this month</Heading>
           <Box width="100%">
@@ -155,7 +160,8 @@ export default function BudgetUI() {
               </HStack>
             ))}
           </Box>
-        </Container>
+        </Box>
+        <Expenses />
       </Box>
     </ProtectedRoute>
   );

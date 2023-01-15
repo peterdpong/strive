@@ -29,7 +29,7 @@ export default function RecurringExpenseModal(props: {
   const [name, setName] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [amount, setAmount] = useState<number | null>(null);
-  const [date, setDate] = useState<Date | null>(null);
+  const [date, setDate] = useState<string | null>(null);
   const transactionCategories = getTransactionCategoriesArray();
 
   const { useRequiredAuth } = useAuth();
@@ -44,7 +44,7 @@ export default function RecurringExpenseModal(props: {
   };
 
   const dateHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(new Date(e.target.value));
+    setDate(e.target.value);
   };
 
   const amountHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,6 +71,7 @@ export default function RecurringExpenseModal(props: {
         {
           name: name,
           date: date,
+          account: "",
           isMonthly: true,
           category: category as TransactionCategories,
           amount: amount,

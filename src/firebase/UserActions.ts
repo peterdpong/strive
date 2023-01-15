@@ -261,3 +261,23 @@ export const deleteBudgetAllocation = (
     "budgetInfo.monthlyAllocations": monthlyAllocations,
   });
 };
+
+export const addTransaction = (
+  uid: string,
+  monthTransactionsMap: {
+    [monthAndYear: string]: Transaction[];
+  },
+  monthAndYear: string,
+  transaction: Transaction
+) => {
+  if (!(monthAndYear in monthTransactionsMap)) {
+    monthTransactionsMap[monthAndYear] = [transaction];
+  } else {
+    monthTransactionsMap[monthAndYear].push(transaction);
+  }
+
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, {
+    monthTransactionsMap: monthTransactionsMap,
+  });
+};

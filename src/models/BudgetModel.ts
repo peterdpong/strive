@@ -36,8 +36,8 @@ export const getTransactionCategoriesArray = () => {
 };
 
 export type Transaction = {
-  accountIndex?: number; // Index associating to an Account in the user's account array.
-  date: Date;
+  account: string;
+  date: string;
   isMonthly: boolean;
   name: string;
   category: TransactionCategories;
