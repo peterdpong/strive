@@ -15,7 +15,6 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { useAuth } from "../../../src/auth/auth";
 import { addTransaction } from "../../../src/firebase/UserActions";
 import {
   Transaction,
