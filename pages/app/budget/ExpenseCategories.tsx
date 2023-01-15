@@ -1,4 +1,6 @@
 import { Box, Flex, Heading, Tag, Spacer, HStack } from "@chakra-ui/react";
+import { Transaction } from "../../../src/models/BudgetModel";
+import { getMonth } from "./utils";
 
 const tagColors = [
   "#C4EFFE",
@@ -22,36 +24,46 @@ type CategoryType = {
   amount: number;
 };
 
-const ExpenseCategories = () => {
-  const monthlyBudget = 12000;
-  // const totalSpent = expenses.reduce((sum, expense) => {
-  //   return sum + expense.amount;
-  // }, 0);
+const ExpenseCategories = ({
+  transactions,
+  monthlyBudget,
+}: {
+  transactions: Transaction[];
+  monthlyBudget: number;
+}) => {
+  const totalSpent = transactions.reduce((sum, expense) => {
+    return sum + expense.amount;
+  }, 0);
+  const remainingBudget = monthlyBudget - totalSpent;
 
   const categories = () => {
     const categoryList: Array<CategoryType> = [];
 
-    // expenses.forEach((expense) => {
-    //   for (let i = 0; i < categoryList.length; i++) {
-    //     if (expense.category === categoryList[i].name) {
-    //       categoryList[i].amount += expense.amount;
-    //       return;
-    //     }
-    //   }
-    //   categoryList.push({
-    //     name: expense.category,
-    //     amount: expense.amount,
-    //   });
-    // });
+    transactions.forEach((expense) => {
+      for (let i = 0; i < categoryList.length; i++) {
+        if (expense.category === categoryList[i].name) {
+          categoryList[i].amount += expense.amount;
+          return;
+        }
+      }
+      categoryList.push({
+        name: expense.category,
+        amount: expense.amount,
+      });
+    });
 
     return categoryList;
   };
 
   return (
     <Box rounded={"5px"} p={"0px"} mt="10px">
-      <Heading size="md">May</Heading>
-      {/* <Heading size="xl">${totalSpent} spent</Heading> */}
-      {/* <Heading size="md">${monthlyBudget - totalSpent} remaining</Heading> */}
+      <Heading size="md" mb="10px">
+        {getMonth(undefined, undefined)}
+      </Heading>
+      <Heading size="xl" my="5px">
+        ${totalSpent.toFixed(2)} spent
+      </Heading>
+      <Heading size="md">${remainingBudget.toFixed(2)} remaining</Heading>
       <Box mt="20px">
         <Flex width="100%" mb="8px">
           <HStack spacing="6px">

@@ -195,8 +195,6 @@ const MonthTransaction = ({
   const dateParts = monthSection.split("-");
   const year = parseInt(dateParts[1]);
   const month = parseInt(dateParts[0]) - 1;
-  // const date = new Date(year, month, 1);
-  // const monthName = date.toLocaleString("default", { month: "long" });
   return (
     <Box>
       <Heading size={"sm"} my="10px">

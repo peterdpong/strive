@@ -1,18 +1,12 @@
 import {
   Box,
-  Button,
-  FormControl,
   Heading,
-  HStack,
-  Input,
   Table,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
-  TableContainer,
-  Select,
 } from "@chakra-ui/react";
 import { Transaction } from "../../../src/models/BudgetModel";
 import { getMonth } from "./utils";
@@ -35,7 +29,7 @@ const TopExpenses = ({ transactions }: { transactions: Transaction[] }) => {
       borderColor={"gray.300"}
     >
       <Heading size="md" mb="10px">
-        Top expenses in {getMonth()}
+        Top expenses in {getMonth(undefined, undefined)}
       </Heading>
 
       <Table size="sm">

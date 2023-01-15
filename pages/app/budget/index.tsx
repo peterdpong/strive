@@ -10,11 +10,8 @@ import { getCurrentDate } from "./utils";
 export default function BudgetPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
-
   const dateParts = getCurrentDate().split("-");
   const monthAndYear = parseInt(dateParts[1]) + "-" + dateParts[0];
-
-  console.log(userData);
 
   return (
     <ProtectedRoute>
@@ -30,7 +27,14 @@ export default function BudgetPage() {
         </Box>
         <Box rounded={"5px"} px={"0px"}></Box>
         <Box p="24px">
-          <ExpenseCategories />
+          {userData && (
+            <ExpenseCategories
+              monthlyBudget={parseFloat(
+                userData.budgetInfo.monthlyVariableBudget.toString()
+              )}
+              transactions={userData.monthTransactionsMap[monthAndYear]}
+            />
+          )}
 
           {/* <Box
             bg={"gray.100"}
