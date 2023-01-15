@@ -1,9 +1,21 @@
 import { Box, Heading, HStack, VStack } from "@chakra-ui/react";
 import Sidebar from "../../../components/app/Sidebar";
 import ProtectedRoute from "../../../src/auth/ProtectedRoute";
-import BudgetOverview from "./BudgetOverview";
+import ExpenseCategories from "./ExpenseCategories";
+import TopExpenses from "./TopExpenses";
+import MonthlyTransactions from "./MonthlyTransactions";
+import { useAuth } from "../../../src/auth/auth";
+import { getCurrentDate } from "./utils";
 
 export default function BudgetPage() {
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
+
+  const dateParts = getCurrentDate().split("-");
+  const monthAndYear = parseInt(dateParts[1]) + "-" + dateParts[0];
+
+  console.log(userData);
+
   return (
     <ProtectedRoute>
       <Sidebar>
@@ -17,7 +29,30 @@ export default function BudgetPage() {
           </HStack>
         </Box>
         <Box rounded={"5px"} px={"0px"}></Box>
-        <BudgetOverview />
+        <Box p="24px">
+          <ExpenseCategories />
+
+          {/* <Box
+            bg={"gray.100"}
+            my={"14px"}
+            rounded={"5px"}
+            p={"20px"}
+            width={"100%"}
+            border={"1px"}
+            borderColor={"gray.300"}
+          >
+            <Flex>
+              <Heading size="lg">56%</Heading>
+              <Text>Increase on food from last month</Text>
+            </Flex>
+          </Box> */}
+          {userData && (
+            <TopExpenses
+              transactions={userData.monthTransactionsMap[monthAndYear]}
+            />
+          )}
+          {userData && <MonthlyTransactions userData={userData} />}
+        </Box>
       </Sidebar>
     </ProtectedRoute>
   );
