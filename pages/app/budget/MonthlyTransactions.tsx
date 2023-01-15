@@ -15,13 +15,13 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { useAuth } from "../../../src/auth/auth";
 import { addTransaction } from "../../../src/firebase/UserActions";
 import {
   Transaction,
   TransactionCategories,
 } from "../../../src/models/BudgetModel";
 import { UserModel } from "../../../src/models/UserModel";
+import { getCurrentDate, getMonth } from "../../../src/DateTimeUtils";
 
 const AddTransactionsForm = ({ data }: { data: UserModel }) => {
   const dataAccounts = data.financialInfo.accounts;
@@ -32,11 +32,8 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
     ...Object.keys(dataAccounts.loans),
   ];
   const categories = Object.values(TransactionCategories);
-  const dateInit = new Date();
-  const currentDate = dateInit.toISOString().split("T");
-  const initialDate = currentDate[0];
 
-  const [date, setDate] = useState<string>(initialDate);
+  const [date, setDate] = useState<string>(getCurrentDate());
   const [account, setAccount] = useState<string>(accounts[0]);
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>(categories[0]);
@@ -71,7 +68,7 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
       );
     }
 
-    setDate(initialDate);
+    setDate(getCurrentDate());
     setAccount(accounts[0]);
     setName("");
     setCategory(categories[0]);
@@ -197,12 +194,10 @@ const MonthTransaction = ({
   const dateParts = monthSection.split("-");
   const year = parseInt(dateParts[1]);
   const month = parseInt(dateParts[0]) - 1;
-  const date = new Date(year, month, 2);
-  const monthName = date.toLocaleString("default", { month: "long" });
   return (
     <Box>
       <Heading size={"sm"} my="10px">
-        {monthName} {year}
+        {getMonth(month, year)}
       </Heading>
       <TableContainer>
         <Table size="sm">
@@ -232,14 +227,11 @@ const MonthTransaction = ({
   );
 };
 
-const Expenses = () => {
-  const { useRequiredAuth } = useAuth();
-  const userData = useRequiredAuth();
+const MonthlyTransactions = ({ userData }: { userData: UserModel }) => {
   const [showAddTransactionsForm, setShowAddTransactionsForm] = useState(false);
-  const transactions = userData?.monthTransactionsMap || {};
-  const transactionMonths = Object.keys(transactions);
-
   if (!userData) return null;
+  const transactions = userData.monthTransactionsMap || {};
+  const transactionMonths = Object.keys(transactions);
   return (
     <Box
       bg={"gray.100"}
@@ -274,4 +266,4 @@ const Expenses = () => {
   );
 };
 
-export default Expenses;
+export default MonthlyTransactions;

@@ -87,9 +87,7 @@ export const getUserData = async (
 
   await getDoc(userDataRef).then(
     (userDataSnapshot: DocumentSnapshot<DocumentData>) => {
-      // console.log(uid, userDataSnapshot.exists(), userDataSnapshot.data());
       if (userDataSnapshot.exists()) {
-        console.log("returned", userDataSnapshot.data());
         userData = userDataSnapshot.data() as UserModel;
       }
     }
