@@ -13,7 +13,11 @@ import {
   FixedInvestment,
   LoanAccount,
 } from "../models/AccountModel";
-import { BudgetModel, Transaction } from "../models/BudgetModel";
+import {
+  BudgetModel,
+  Transaction,
+  TransactionCategories,
+} from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
 import { AccountMap, FinancialInfo, UserModel } from "../models/UserModel";
 import { firestoreDB } from "./firebase";
@@ -259,5 +263,25 @@ export const deleteBudgetAllocation = (
   const userDataRef = doc(firestoreDB, "users", uid);
   updateDoc(userDataRef, {
     "budgetInfo.monthlyAllocations": monthlyAllocations,
+  });
+};
+
+export const addTransaction = (
+  uid: string,
+  monthTransactionsMap: {
+    [monthAndYear: string]: Transaction[];
+  },
+  monthAndYear: string,
+  transaction: Transaction
+) => {
+  if (!(monthAndYear in monthTransactionsMap)) {
+    monthTransactionsMap[monthAndYear] = [transaction];
+  } else {
+    monthTransactionsMap[monthAndYear].push(transaction);
+  }
+
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, {
+    monthTransactionsMap: monthTransactionsMap,
   });
 };

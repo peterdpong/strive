@@ -291,7 +291,11 @@ export default function Dashboard() {
             >
               <HStack justifyContent="space-between">
                 <Heading size={"md"}>Monthly Transactions</Heading>
-                <Button size="sm" colorScheme="green">
+                <Button
+                  size="sm"
+                  colorScheme="green"
+                  onClick={() => router.push("/app/budget")}
+                >
                   View all transactions
                 </Button>
               </HStack>
