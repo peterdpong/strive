@@ -5,7 +5,7 @@ import ExpenseCategories from "./ExpenseCategories";
 import TopExpenses from "./TopExpenses";
 import MonthlyTransactions from "./MonthlyTransactions";
 import { useAuth } from "../../../src/auth/auth";
-import { getCurrentDate } from "./utils";
+import { getCurrentDate } from "../../../src/DateTimeUtils";
 
 export default function BudgetPage() {
   const { useRequiredAuth } = useAuth();

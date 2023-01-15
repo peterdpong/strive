@@ -21,7 +21,7 @@ import {
   TransactionCategories,
 } from "../../../src/models/BudgetModel";
 import { UserModel } from "../../../src/models/UserModel";
-import { getCurrentDate, getMonth } from "./utils";
+import { getCurrentDate, getMonth } from "../../../src/DateTimeUtils";
 
 const AddTransactionsForm = ({ data }: { data: UserModel }) => {
   const dataAccounts = data.financialInfo.accounts;
@@ -229,6 +229,7 @@ const MonthTransaction = ({
 
 const MonthlyTransactions = ({ userData }: { userData: UserModel }) => {
   const [showAddTransactionsForm, setShowAddTransactionsForm] = useState(false);
+  if (!userData) return null;
   const transactions = userData.monthTransactionsMap || {};
   const transactionMonths = Object.keys(transactions);
   return (

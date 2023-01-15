@@ -9,9 +9,11 @@ import {
   Td,
 } from "@chakra-ui/react";
 import { Transaction } from "../../../src/models/BudgetModel";
-import { getMonth } from "./utils";
+import { getMonth } from "../../../src/DateTimeUtils";
 
 const TopExpenses = ({ transactions }: { transactions: Transaction[] }) => {
+  if (!transactions) return null;
+
   transactions.sort((a, b) => {
     return b.amount - a.amount;
   });

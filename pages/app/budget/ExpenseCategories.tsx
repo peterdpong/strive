@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, Tag, Spacer, HStack } from "@chakra-ui/react";
 import { Transaction } from "../../../src/models/BudgetModel";
-import { getMonth } from "./utils";
+import { getMonth } from "../../../src/DateTimeUtils";
 
 const tagColors = [
   "#C4EFFE",
@@ -31,6 +31,8 @@ const ExpenseCategories = ({
   transactions: Transaction[];
   monthlyBudget: number;
 }) => {
+  if (!transactions) return null;
+
   const totalSpent = transactions.reduce((sum, expense) => {
     return sum + expense.amount;
   }, 0);
