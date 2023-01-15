@@ -13,11 +13,7 @@ import {
   FixedInvestment,
   LoanAccount,
 } from "../models/AccountModel";
-import {
-  BudgetModel,
-  Transaction,
-  TransactionCategories,
-} from "../models/BudgetModel";
+import { BudgetModel, Transaction } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
 import { AccountMap, FinancialInfo, UserModel } from "../models/UserModel";
 import { firestoreDB } from "./firebase";

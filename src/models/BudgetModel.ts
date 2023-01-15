@@ -37,7 +37,7 @@ export const getTransactionCategoriesArray = () => {
 
 export type Transaction = {
   account: string;
-  date: Date;
+  date: string;
   isMonthly: boolean;
   name: string;
   category: TransactionCategories;

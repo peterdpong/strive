@@ -21,8 +21,9 @@ import {
   Transaction,
   TransactionCategories,
 } from "../../../src/models/BudgetModel";
+import { UserModel } from "../../../src/models/UserModel";
 
-const AddTransactionsForm = ({ data }: { data: any }) => {
+const AddTransactionsForm = ({ data }: { data: UserModel }) => {
   const dataAccounts = data.financialInfo.accounts;
   const accounts = [
     ...Object.keys(dataAccounts.bankAccounts),
@@ -31,9 +32,11 @@ const AddTransactionsForm = ({ data }: { data: any }) => {
     ...Object.keys(dataAccounts.loans),
   ];
   const categories = Object.values(TransactionCategories);
+  const dateInit = new Date();
+  const currentDate = dateInit.toISOString().split("T");
+  const initialDate = currentDate[0];
 
-  // TO DO: initialize current date
-  const [date, setDate] = useState<Date>("");
+  const [date, setDate] = useState<string>(initialDate);
   const [account, setAccount] = useState<string>(accounts[0]);
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>(categories[0]);
@@ -50,9 +53,8 @@ const AddTransactionsForm = ({ data }: { data: any }) => {
 
     const dateParts = date.toString().split("-");
     const monthAndYear = parseInt(dateParts[1]) + "-" + dateParts[0];
-    const transactionDate = new Date(date);
     const transaction: Transaction = {
-      date: transactionDate,
+      date: date,
       account: account,
       isMonthly: false,
       name: name,
@@ -69,8 +71,7 @@ const AddTransactionsForm = ({ data }: { data: any }) => {
       );
     }
 
-    // TO DO: reset with current date
-    setDate("");
+    setDate(initialDate);
     setAccount(accounts[0]);
     setName("");
     setCategory(categories[0]);
@@ -90,7 +91,7 @@ const AddTransactionsForm = ({ data }: { data: any }) => {
               <Th>Account</Th>
               <Th>Name</Th>
               <Th>Category</Th>
-              <Th isNumeric>Amount</Th>
+              <Th>Amount</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -159,7 +160,7 @@ const AddTransactionsForm = ({ data }: { data: any }) => {
                     type="number"
                     value={amount}
                     placeholder="125"
-                    onChange={(e) => setAmount(parseInt(e.target.value))}
+                    onChange={(e) => setAmount(parseFloat(e.target.value))}
                   />
                 </FormControl>
               </Td>
@@ -175,8 +176,8 @@ const AddTransactionsForm = ({ data }: { data: any }) => {
   );
 };
 
-function getDisplayDate(dateObj: Date) {
-  const date = new Date(dateObj.seconds * 1000);
+function getDisplayDate(dateString: string) {
+  const date = new Date(dateString);
   const displayDate = date.toLocaleString("default", {
     day: "numeric",
     month: "long",
@@ -190,15 +191,14 @@ const MonthTransaction = ({
   monthSection,
   data,
 }: {
-  monthSection: any;
+  monthSection: string;
   data: Transaction[];
 }) => {
   const dateParts = monthSection.split("-");
-  const year = dateParts[1];
-  const month = dateParts[0] - 1;
+  const year = parseInt(dateParts[1]);
+  const month = parseInt(dateParts[0]) - 1;
   const date = new Date(year, month, 2);
   const monthName = date.toLocaleString("default", { month: "long" });
-
   return (
     <Box>
       <Heading size={"sm"} my="10px">
@@ -215,12 +215,14 @@ const MonthTransaction = ({
             </Tr>
           </Thead>
           <Tbody>
-            {data.map((transaction) => (
-              <Tr>
+            {data.map((transaction, i) => (
+              <Tr key={i}>
                 <Td>{getDisplayDate(transaction.date)}</Td>
                 <Td>{transaction.account}</Td>
                 <Td>{transaction.name}</Td>
-                <Td isNumeric>{parseInt(transaction.amount).toFixed(2)}</Td>
+                <Td isNumeric>
+                  {parseFloat(transaction.amount.toString()).toFixed(2)}
+                </Td>
               </Tr>
             ))}
           </Tbody>
@@ -233,10 +235,11 @@ const MonthTransaction = ({
 const Expenses = () => {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
-  let [showAddTransactionsForm, setShowAddTransactionsForm] = useState(false);
-  let transactions = userData?.monthTransactionsMap || {};
-  let transactionMonths = Object.keys(transactions);
+  const [showAddTransactionsForm, setShowAddTransactionsForm] = useState(false);
+  const transactions = userData?.monthTransactionsMap || {};
+  const transactionMonths = Object.keys(transactions);
 
+  if (!userData) return null;
   return (
     <Box
       bg={"gray.100"}
@@ -261,6 +264,7 @@ const Expenses = () => {
         {transactions &&
           transactionMonths.map((monthSection) => (
             <MonthTransaction
+              key={monthSection}
               monthSection={monthSection}
               data={transactions[monthSection]}
             />
