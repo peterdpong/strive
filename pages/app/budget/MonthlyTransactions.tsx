@@ -197,7 +197,11 @@ const MonthTransaction = ({
   monthSection: string;
   data: Transaction[];
   editing: boolean;
-  deleteTransactionHandler: Function;
+  deleteTransactionHandler: (
+    e: React.MouseEvent<HTMLElement>,
+    monthAndYear: string,
+    transaction: Transaction
+  ) => void;
 }) => {
   const dateParts = monthSection.split("-");
   const year = parseInt(dateParts[1]);
