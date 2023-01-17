@@ -14,7 +14,6 @@ import {
   TableContainer,
   Select,
   Flex,
-  Grid,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import {
@@ -258,7 +257,6 @@ const MonthlyTransactions = ({ userData }: { userData: UserModel }) => {
   if (!userData) return null;
   const transactions = userData.monthTransactionsMap || {};
   const transactionMonths = Object.keys(transactions);
-
   const sortedTransactionMonths = transactionMonths.sort((a, b) => {
     const date1 = b.split("-");
     const date2 = a.split("-");
