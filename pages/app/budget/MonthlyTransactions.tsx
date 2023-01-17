@@ -194,6 +194,9 @@ const MonthTransaction = ({
   const dateParts = monthSection.split("-");
   const year = parseInt(dateParts[1]);
   const month = parseInt(dateParts[0]) - 1;
+  const sortedTransactions = data.sort((a, b) => {
+    return b.date.localeCompare(a.date);
+  });
   return (
     <Box>
       <Heading size={"sm"} my="10px">
@@ -210,7 +213,7 @@ const MonthTransaction = ({
             </Tr>
           </Thead>
           <Tbody>
-            {data.map((transaction, i) => (
+            {sortedTransactions.map((transaction, i) => (
               <Tr key={i}>
                 <Td>{getDisplayDate(transaction.date)}</Td>
                 <Td>{transaction.account}</Td>
@@ -232,6 +235,15 @@ const MonthlyTransactions = ({ userData }: { userData: UserModel }) => {
   if (!userData) return null;
   const transactions = userData.monthTransactionsMap || {};
   const transactionMonths = Object.keys(transactions);
+  const sortedTransactionMonths = transactionMonths.sort((a, b) => {
+    const date1 = b.split("-");
+    const date2 = a.split("-");
+    const compareYear = date1[1].localeCompare(date2[1]);
+    if (compareYear !== 0) {
+      return compareYear;
+    }
+    return date1[0].localeCompare(date2[0]);
+  });
   return (
     <Box
       bg={"gray.100"}
@@ -254,7 +266,7 @@ const MonthlyTransactions = ({ userData }: { userData: UserModel }) => {
       {showAddTransactionsForm && <AddTransactionsForm data={userData} />}
       <Box>
         {transactions &&
-          transactionMonths.map((monthSection) => (
+          sortedTransactionMonths.map((monthSection) => (
             <MonthTransaction
               key={monthSection}
               monthSection={monthSection}
