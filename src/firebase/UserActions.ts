@@ -279,3 +279,22 @@ export const addTransaction = (
     monthTransactionsMap: monthTransactionsMap,
   });
 };
+
+export const deleteTransaction = (
+  uid: string,
+  monthTransactionsMap: {
+    [monthAndYear: string]: Transaction[];
+  },
+  monthAndYear: string,
+  transaction: Transaction
+) => {
+  const index = monthTransactionsMap[monthAndYear].indexOf(transaction);
+  if (index > -1) {
+    monthTransactionsMap[monthAndYear].splice(index, 1);
+  }
+
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, {
+    monthTransactionsMap: monthTransactionsMap,
+  });
+};
