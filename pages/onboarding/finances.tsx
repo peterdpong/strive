@@ -66,7 +66,7 @@ export default function FinancesPages() {
 
         <Formik
           initialValues={{
-            monthlyIncome: 2500,
+            monthlyIncome: 4000,
           }}
           onSubmit={(values, actions) => {
             if (userData) {
@@ -96,7 +96,7 @@ export default function FinancesPages() {
                 borderColor={"gray.300"}
               >
                 <Heading mb={"5px"} fontSize={"xl"}>
-                  Monthly Income ($)
+                  Gross Monthly Income ($)
                 </Heading>
                 <NumberInputControl
                   name="monthlyIncome"
