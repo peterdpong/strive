@@ -12,7 +12,7 @@ export default function Index() {
       p={"25px"}
       centerContent
     >
-      <Heading>Circulation</Heading>
+      <Heading>Strive</Heading>
       <HStack>
         <Button onClick={() => router.push("/login")}>Login</Button>
         <Button onClick={() => router.push("/signup")}>Signup</Button>

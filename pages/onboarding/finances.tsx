@@ -119,13 +119,13 @@ export default function FinancesPages() {
                 borderColor={"gray.300"}
               >
                 <HStack justifyContent="space-between" my={2}>
-                  <Heading fontSize={"xl"}>Reccurring Expenses</Heading>
+                  <Heading fontSize={"xl"}>Recurring Expenses</Heading>
                   <Button
                     colorScheme={"green"}
                     onClick={recurringExpensesModalProps.onOpen}
                     size="sm"
                   >
-                    Add reccurring expenses
+                    Add recurring expenses
                   </Button>
                 </HStack>
 

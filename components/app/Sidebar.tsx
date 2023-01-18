@@ -22,6 +22,7 @@ import {
   MdPieChart,
   MdSettings,
   MdMenu,
+  MdBuild,
 } from "react-icons/md";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
@@ -37,6 +38,7 @@ const LinkItems: Array<LinkItemProps> = [
   { name: "Suggestions", icon: MdOutlineFlashOn, href: "/app/suggestions" },
   { name: "Budget", icon: MdPieChart, href: "/app/budget" },
   { name: "Accounts", icon: MdCreditCard, href: "/app/accounts" },
+  { name: "Onboarding", icon: MdBuild, href: "/onboarding"}
 ];
 
 const BottomItems: Array<LinkItemProps> = [
