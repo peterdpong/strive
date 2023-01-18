@@ -62,7 +62,9 @@ const options = {
   },
 };
 
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
+//labels need to be dynamic - port in a list of any size
+const labels = ["January", "February", "March", "April", "May", "June", "July", 
+"August", "September", "October", "November", "December"];
 
 const data = {
   labels,
@@ -70,7 +72,8 @@ const data = {
     {
       fill: true,
       label: "Net Worth",
-      data: [1, 2, 4, 16, 32, 64, 128],
+      //data needs to be dynamic - port in a list of any size
+      data: [1, 2, 4, 16, 32, 64, 128, 1, 2, 4, 16, 32],
       borderColor: "rgb(30, 159, 92)",
       backgroundColor: (context: ScriptableContext<"line">) => {
         const ctx = context.chart.ctx;
