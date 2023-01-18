@@ -32,7 +32,7 @@ export type AccountMap = {
 };
 
 export type FinancialInfo = {
-  monthlyIncome: number;
+  annualIncome: number;
   monthlyTransactions: Transaction[];
   accounts: AccountMap;
 };

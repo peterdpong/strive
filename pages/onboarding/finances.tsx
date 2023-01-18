@@ -30,7 +30,7 @@ import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import {
   deleteAccount,
   deleteMonthlyTransaction,
-  setMonthlyIncome,
+  setAnnualIncome,
 } from "../../src/firebase/UserActions";
 
 export default function FinancesPages() {
@@ -66,11 +66,11 @@ export default function FinancesPages() {
 
         <Formik
           initialValues={{
-            monthlyIncome: 4000,
+            annualIncome: 42000,
           }}
           onSubmit={(values, actions) => {
             if (userData) {
-              setMonthlyIncome(userData.uid, values.monthlyIncome);
+              setAnnualIncome(userData.uid, values.annualIncome);
               actions.resetForm;
               router.push("/onboarding/budget");
             } else {
@@ -96,16 +96,16 @@ export default function FinancesPages() {
                 borderColor={"gray.300"}
               >
                 <Heading mb={"5px"} fontSize={"xl"}>
-                  Gross Monthly Income ($)
+                  Gross Income ($)
                 </Heading>
                 <NumberInputControl
-                  name="monthlyIncome"
+                  name="annualIncome"
                   numberInputProps={{
                     min: 1,
                     max: 1000000000,
                     step: 50,
                     precision: 2,
-                    value: values.monthlyIncome,
+                    value: values.annualIncome,
                   }}
                 />
               </Box>

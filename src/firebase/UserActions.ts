@@ -44,7 +44,7 @@ export const addNewUser = (
       stageNum: -1,
     },
     financialInfo: {
-      monthlyIncome: 0,
+      annualIncome: 0,
       monthlyTransactions: [],
       accounts: {
         bankAccounts: {},
@@ -130,9 +130,9 @@ export const getFinancialInfo = (uid: string | undefined) => {
   });
 };
 
-export const setMonthlyIncome = (uid: string, monthlyIncome: number) => {
+export const setAnnualIncome = (uid: string, annualIncome: number) => {
   const userDataRef = doc(firestoreDB, "users", uid);
-  updateDoc(userDataRef, { "financialInfo.monthlyIncome": monthlyIncome });
+  updateDoc(userDataRef, { "financialInfo.annualIncome": annualIncome });
 };
 
 export const addBudgetInfo = (uid: string, budgetInfo: BudgetModel) => {
@@ -212,7 +212,7 @@ export const deleteAccount = (
 
 export const updateMonthlyVariableBudget = (userData: UserModel) => {
   const balanceAfterFixed =
-    userData?.financialInfo.monthlyIncome -
+    userData?.financialInfo.annualIncome/12 -
     BudgetEngineUtils.calculateFixedMonthlyExpenses(
       userData?.financialInfo.monthlyTransactions
     );
