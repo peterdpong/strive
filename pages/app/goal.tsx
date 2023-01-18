@@ -1,41 +1,9 @@
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Badge,
-  Box,
-  Button,
-  Divider,
-  Heading,
-  HStack,
-  Stat,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
-  Text,
-  VStack,
-  Card,
-  CardBody,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  SimpleGrid,
-  CardFooter,
-  Flex,
-} from "@chakra-ui/react";
-import { CheckIcon } from "@chakra-ui/icons";
-
+import { Box, Heading, HStack, VStack } from "@chakra-ui/react";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
@@ -43,16 +11,38 @@ import {
   PointElement,
   LineElement,
   Filler,
-  Chart,
 } from "chart.js";
-import { useRouter } from "next/router";
-import { Bar, Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import Sidebar from "../../components/app/Sidebar";
 
+ChartJS.register(
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend
+);
+
 //labels need to be dynamic - port in a list of any size
-const labels = ["January", "February", "March", "April", "May", "June", "July", 
-"August", "September", "October", "November", "December"];
+const labels = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 const data_static = {
   labels,
@@ -83,33 +73,33 @@ export default function GoalPage() {
             <VStack align="flex-start">
               <Heading size="lg" mr="2.5rem">
                 Goal
-              </Heading> 
-              
+              </Heading>
+
               <Box
-              bg={"gray.100"}
-              rounded={"5px"}
-              p={"20px"}
-              width={"100%"}
-              border={"1px"}
-              borderColor={"gray.300"}
-            >
-              <Heading size={"md"}>Current Goal</Heading>
-              <Line
-                options={{
-                  responsive: true,
-                  plugins: {
-                    legend: {
-                      position: "top" as const,
+                bg={"gray.100"}
+                rounded={"5px"}
+                p={"20px"}
+                width={"100%"}
+                border={"1px"}
+                borderColor={"gray.300"}
+              >
+                <Heading size={"md"}>Current Goal</Heading>
+                <Line
+                  options={{
+                    responsive: true,
+                    plugins: {
+                      legend: {
+                        position: "top" as const,
+                      },
+                      title: {
+                        display: true,
+                        text: "Path to Goal",
+                      },
                     },
-                    title: {
-                      display: true,
-                      text: "Path to Goal",
-                    },
-                  },
-                }}
-                data={data_static}
-              />
-            </Box>
+                  }}
+                  data={data_static}
+                />
+              </Box>
             </VStack>
           </HStack>
         </Box>
