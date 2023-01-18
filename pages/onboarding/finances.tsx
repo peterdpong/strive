@@ -62,7 +62,7 @@ export default function FinancesPages() {
           Back
         </Button>
         <Heading>Your Monthly Finances</Heading>
-        <Text fontSize={"md"}>What do you finances look like?</Text>
+        <Text fontSize={"md"}>What do your finances look like?</Text>
 
         <Formik
           initialValues={{
