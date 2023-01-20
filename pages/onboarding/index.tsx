@@ -1,4 +1,4 @@
-import { Button, Container, Heading, Text } from "@chakra-ui/react";
+import { Button, ButtonGroup, Container, Heading, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 
@@ -21,6 +21,7 @@ export default function OnboardingIndex() {
         <Text fontSize={"md"}>
           The financial budget tool that helps you to reach your goals.
         </Text>
+        <ButtonGroup variant = 'outline' spacing = '6'>
         <Button
           mt={"15px"}
           colorScheme={"green"}
@@ -35,6 +36,7 @@ export default function OnboardingIndex() {
         >
           About
         </Button>
+        </ButtonGroup>
       </Container>
     </ProtectedRoute>
   );
