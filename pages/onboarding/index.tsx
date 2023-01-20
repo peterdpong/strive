@@ -28,6 +28,13 @@ export default function OnboardingIndex() {
         >
           Get Started
         </Button>
+        <Button
+          mt={"15px"}
+          colorScheme={"green"}
+          onClick={() => router.push("onboarding/about")}
+        >
+          About
+        </Button>
       </Container>
     </ProtectedRoute>
   );
