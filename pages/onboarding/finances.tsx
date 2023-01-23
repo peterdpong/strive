@@ -19,7 +19,7 @@ import { Timestamp } from "firebase/firestore";
 import { Formik } from "formik";
 import { NumberInputControl, SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
-import BankAccountModal from "../../components/modals/AccountModals/BankAccountModal";
+import BankInvestmentAccountModal from "../../components/modals/AccountModals/BankInvestmentAccountModal";
 import CreditCardModal from "../../components/modals/AccountModals/CreditCardModal";
 import FixedInvestmentsModal from "../../components/modals/AccountModals/FixedInvestmentsModal";
 import LoanAccountModal from "../../components/modals/AccountModals/LoanAccountModal";
@@ -33,7 +33,7 @@ export default function FinancesPages() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  const bankAccountModalProps = useDisclosure();
+  const bankInvestmentAccountModalProps = useDisclosure();
   const creditCardModalProps = useDisclosure();
   const fixedInvestmentsModalProps = useDisclosure();
   const loanAccountModalProps = useDisclosure();
@@ -106,10 +106,10 @@ export default function FinancesPages() {
                   <HStack>
                     <Button
                       colorScheme={"green"}
-                      onClick={bankAccountModalProps.onOpen}
+                      onClick={bankInvestmentAccountModalProps.onOpen}
                       size="sm"
                     >
-                      Add bank account
+                      Add bank/investment account
                     </Button>
                     <Button
                       colorScheme={"green"}
@@ -137,13 +137,13 @@ export default function FinancesPages() {
 
                 {/* Bank accounts */}
                 <Heading mb={"10px"} fontSize={"lg"}>
-                  Bank accounts
+                  Bank/Investment accounts
                 </Heading>
                 {userData &&
                 Object.keys(userData.financialInfo.accounts.bankAccounts)
                   .length === 0 ? (
                   <Center
-                    onClick={bankAccountModalProps.onOpen}
+                    onClick={bankInvestmentAccountModalProps.onOpen}
                     bg={"gray.50"}
                     width={"200px"}
                     height={"125px"}
@@ -214,7 +214,7 @@ export default function FinancesPages() {
 
                 {/* Fixed investments */}
                 <Heading mb={"10px"} fontSize={"lg"}>
-                  Investment accounts
+                  Fixed Investment accounts
                 </Heading>
                 {userData &&
                 Object.keys(userData.financialInfo.accounts.fixedInvestments)
@@ -597,7 +597,6 @@ export default function FinancesPages() {
                       )}
                   </SimpleGrid>
                 )}
-
               </Box>
 
               <SubmitButton colorScheme={"green"}>Next Step</SubmitButton>
@@ -612,9 +611,9 @@ export default function FinancesPages() {
         uid={userData?.uid}
       />
 
-      <BankAccountModal
-        isOpen={bankAccountModalProps.isOpen}
-        onClose={bankAccountModalProps.onClose}
+      <BankInvestmentAccountModal
+        isOpen={bankInvestmentAccountModalProps.isOpen}
+        onClose={bankInvestmentAccountModalProps.onClose}
         uid={userData?.uid}
       />
 

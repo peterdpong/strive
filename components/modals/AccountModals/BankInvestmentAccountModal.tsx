@@ -22,7 +22,7 @@ import {
 } from "formik-chakra-ui";
 import { addAccount } from "../../../src/firebase/UserActions";
 
-export default function BankAccountModal(props: {
+export default function BankInvestmentAccountModal(props: {
   isOpen: boolean;
   onClose: () => void;
   uid: string | undefined;
@@ -69,7 +69,7 @@ export default function BankAccountModal(props: {
                 addAccount(
                   userData.uid,
                   userData.financialInfo.accounts,
-                  "BankAccount",
+                  "BankInvestmentAccount",
                   {
                     name: values.name,
                     type: values.type,
@@ -111,6 +111,8 @@ export default function BankAccountModal(props: {
                   <option value={AccountType.CHEQUINGS}>
                     {AccountType.CHEQUINGS}
                   </option>
+                  <option value={AccountType.TFSA}>{AccountType.TFSA}</option>
+                  <option value={AccountType.RRSP}>{AccountType.RRSP}</option>
                 </SelectControl>
                 <NumberInputControl
                   name="interestRate"

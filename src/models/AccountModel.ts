@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 
-export type BankAccount = {
+export type BankInvestmentAccount = {
   name: string;
   type: string;
   value: number;

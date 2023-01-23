@@ -16,11 +16,9 @@ import { Formik } from "formik";
 import {
   InputControl,
   NumberInputControl,
-  SelectControl,
   SubmitButton,
 } from "formik-chakra-ui";
 import { addAccount } from "../../../src/firebase/UserActions";
-import { AccountType } from "../../../src/models/AccountModel";
 
 export default function FixedInvestmentsModal(props: {
   isOpen: boolean;
@@ -53,7 +51,7 @@ export default function FixedInvestmentsModal(props: {
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add an investment account</ModalHeader>
+        <ModalHeader>Add a fixed investment account</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Formik
@@ -93,18 +91,6 @@ export default function FixedInvestmentsModal(props: {
                 onSubmit={handleSubmit as any}
               >
                 <InputControl name="name" label="Account Name" />
-                <SelectControl
-                  name="type"
-                  selectProps={{ placeholder: "Select account type" }}
-                  label="Account Type"
-                >
-                  <option value={AccountType.TFSA}>
-                    {AccountType.TFSA}
-                  </option>
-                  <option value={AccountType.RRSP}>
-                    {AccountType.RRSP}
-                  </option>
-                </SelectControl>
                 <InputControl
                   inputProps={{ type: "date" }}
                   name="startDate"
