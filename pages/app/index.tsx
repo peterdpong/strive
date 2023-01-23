@@ -18,13 +18,6 @@ import {
   VStack,
   Card,
   CardBody,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
   SimpleGrid,
   CardFooter,
   Flex,
@@ -48,6 +41,9 @@ import { useRouter } from "next/router";
 import { Bar, Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import Sidebar from "../../components/app/Sidebar";
+import MonthlyTransactions from "./budget/MonthlyTransactions";
+import { useAuth } from "../../src/auth/auth";
+import { getCurrentDate } from "../../src/DateTimeUtils";
 
 // Boilerplate data
 const labels = [
@@ -125,6 +121,10 @@ ChartJS.register(
 
 export default function Dashboard() {
   const router = useRouter();
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
+  const dateParts = getCurrentDate().split("-");
+  const monthAndYear = parseInt(dateParts[1]) + "-" + dateParts[0];
 
   return (
     <ProtectedRoute>
@@ -143,28 +143,6 @@ export default function Dashboard() {
                 Dashboard
               </Heading>
             </VStack>
-            <Box bgColor="gray.200" padding="4" borderRadius="75">
-              <HStack>
-                <Text
-                  fontSize="md"
-                  as="b"
-                  padding={2}
-                  borderRight="2px"
-                  borderColor="gray.800"
-                >
-                  Quick Actions
-                </Text>
-                <Button size="sm" colorScheme="black" variant="outline">
-                  New transaction
-                </Button>
-                <Button size="sm" colorScheme="black" variant="outline">
-                  Create monthly budget
-                </Button>
-                <Button size="sm" colorScheme="black" variant="outline">
-                  Add monthly goal
-                </Button>
-              </HStack>
-            </Box>
           </HStack>
         </Box>
 
@@ -281,58 +259,14 @@ export default function Dashboard() {
                 </AccordionItem>
               </Accordion>
             </Box>
-            <Box
-              bg={"gray.100"}
-              rounded={"5px"}
-              p={"20px"}
-              width={"100%"}
-              border={"1px"}
-              borderColor={"gray.300"}
-            >
-              <HStack justifyContent="space-between">
-                <Heading size={"md"}>Monthly Transactions</Heading>
-                <Button
-                  size="sm"
-                  colorScheme="green"
-                  onClick={() => router.push("/app/budget")}
-                >
-                  View all transactions
-                </Button>
-              </HStack>
-              <Heading size={"sm"}>November 2022</Heading>
-              <TableContainer>
-                <Table size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th>Transaction Date</Th>
-                      <Th>Account</Th>
-                      <Th>Name</Th>
-                      <Th isNumeric>Amount</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    <Tr>
-                      <Td>Nov 12, 2022</Td>
-                      <Td>Credit Card</Td>
-                      <Td>Payment</Td>
-                      <Td isNumeric>-$15.32</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Nov 11, 2022</Td>
-                      <Td>Savings account</Td>
-                      <Td>Deposit</Td>
-                      <Td isNumeric>+$30.48</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Nov 10, 2022</Td>
-                      <Td>Student Loan</Td>
-                      <Td>Monthly Student Loan Payment</Td>
-                      <Td isNumeric>-$200</Td>
-                    </Tr>
-                  </Tbody>
-                </Table>
-              </TableContainer>
-            </Box>
+
+            {/* Monthly transactions */}
+            {userData && (
+              <MonthlyTransactions
+                userData={userData}
+                monthAndYear={monthAndYear}
+              />
+            )}
           </VStack>
           {/* Dashboard Column 2 */}
           <VStack flex={1} mx={"15px"} spacing={"25px"}>
@@ -371,7 +305,11 @@ export default function Dashboard() {
             >
               <HStack my={2} justifyContent="space-between">
                 <Heading size={"md"}>Your budget categories</Heading>
-                <Button size="sm" colorScheme="green">
+                <Button
+                  onClick={() => router.push("/app/budget")}
+                  size="sm"
+                  colorScheme="green"
+                >
                   View budget
                 </Button>
               </HStack>

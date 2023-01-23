@@ -1,13 +1,15 @@
-import { Box, Heading, HStack, VStack } from "@chakra-ui/react";
+import { Box, Heading, HStack, Select, VStack } from "@chakra-ui/react";
 import Sidebar from "../../../components/app/Sidebar";
 import ProtectedRoute from "../../../src/auth/ProtectedRoute";
 import ExpenseCategories from "./ExpenseCategories";
 import TopExpenses from "./TopExpenses";
 import MonthlyTransactions from "./MonthlyTransactions";
 import { useAuth } from "../../../src/auth/auth";
-import { getCurrentDate } from "../../../src/DateTimeUtils";
+import { getCurrentDate, getMonthFromString } from "../../../src/DateTimeUtils";
+import { useRouter } from "next/router";
 
 export default function BudgetPage() {
+  const router = useRouter();
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
   const dateParts = getCurrentDate().split("-");
@@ -23,6 +25,22 @@ export default function BudgetPage() {
                 Budget
               </Heading>
             </VStack>
+            <Select
+              onChange={(event) => {
+                if (event.target.value !== monthAndYear) {
+                  router.push(`/app/budget/${event.target.value}`);
+                }
+              }}
+            >
+              {userData &&
+                Object.keys(userData.monthTransactionsMap).map((key) => {
+                  return (
+                    <option key={key} value={key}>
+                      {getMonthFromString(key)}
+                    </option>
+                  );
+                })}
+            </Select>
           </HStack>
         </Box>
         <Box rounded={"5px"} px={"0px"}></Box>
