@@ -3,6 +3,7 @@ import {
   CreditCardAccount,
   FixedInvestment,
   LoanAccount,
+  OtherAsset,
 } from "./AccountModel";
 import { BudgetModel, Transaction } from "./BudgetModel";
 import { GoalModel } from "./GoalModel";
@@ -29,6 +30,7 @@ export type AccountMap = {
   creditCards: { [key: string]: CreditCardAccount };
   loans: { [key: string]: LoanAccount };
   fixedInvestments: { [key: string]: FixedInvestment };
+  otherAssets: { [key: string]: OtherAsset };
 };
 
 export type FinancialInfo = {

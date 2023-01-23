@@ -12,7 +12,7 @@ import {
   AlertTitle,
 } from "@chakra-ui/react";
 import { useAuth } from "../../../src/auth/auth";
-import { AccountType } from "../../../src/models/AccountModel";
+import { AssetTypes } from "../../../src/models/AccountModel";
 import { Formik } from "formik";
 import {
   InputControl,
@@ -30,38 +30,18 @@ export default function OtherAssetsModal(props: {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  // const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
-  //   e.preventDefault();
-
-  //   if (name === null || type === null || value === null) {
-  //     setError("A field is missing");
-  //     return;
-  //   }
-
-  //   if (userData) {
-  //     addAccount(userData.uid, userData.financialInfo.accounts, {
-  //       name: name,
-  //       type: type as AccountType,
-  //       accountValue: value,
-  //       accountInfo: {},
-  //     });
-  //   }
-  //   props.onClose();
-  // };
-
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add an account</ModalHeader>
+        <ModalHeader>Add an asset</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Formik
             initialValues={{
               name: "",
-              type: AccountType.SAVINGS,
+              type: AssetTypes.HOUSE,
               value: 0,
-              interestRate: 0,
               error: null,
             }}
             onSubmit={(values, actions) => {
@@ -69,12 +49,11 @@ export default function OtherAssetsModal(props: {
                 addAccount(
                   userData.uid,
                   userData.financialInfo.accounts,
-                  "BankAccount",
+                  "OtherAsset",
                   {
                     name: values.name,
                     type: values.type,
                     value: values.value,
-                    interestRate: values.interestRate,
                   }
                 );
                 actions.resetForm;
@@ -90,39 +69,29 @@ export default function OtherAssetsModal(props: {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
-                <InputControl name="name" label="Account Name" />
+                <InputControl name="name" label="Asset Name" />
                 <NumberInputControl
                   name="value"
-                  label="Account Value"
+                  label="Asset Value"
                   numberInputProps={{
                     min: 0,
                     step: 1,
                     precision: 2,
                   }}
                 />
-                <SelectControl
-                  name="type"
-                  selectProps={{ placeholder: "Select account type" }}
-                  label="Account Type"
-                >
-                  <option value={AccountType.SAVINGS}>
-                    {AccountType.SAVINGS}
+                <SelectControl name="type" label="Asset Type">
+                  <option value={AssetTypes.HOUSE}>{AssetTypes.HOUSE}</option>
+                  <option value={AssetTypes.VEHICLE}>
+                    {AssetTypes.VEHICLE}
                   </option>
-                  <option value={AccountType.CHEQUINGS}>
-                    {AccountType.CHEQUINGS}
+                  <option value={AssetTypes.COLLECTIBLES}>
+                    {AssetTypes.COLLECTIBLES}
                   </option>
-                  <option value={AccountType.TFSA}>{AccountType.TFSA}</option>
-                  <option value={AccountType.RRSP}>{AccountType.RRSP}</option>
+                  <option value={AssetTypes.ART}>{AssetTypes.ART}</option>
+                  <option value={AssetTypes.VALUABLES}>
+                    {AssetTypes.VALUABLES}
+                  </option>
                 </SelectControl>
-                <NumberInputControl
-                  name="interestRate"
-                  label="Account Interest Rate (%)"
-                  numberInputProps={{
-                    min: 0,
-                    step: 1,
-                    precision: 2,
-                  }}
-                />
                 {values.error !== null ? (
                   <Alert status="error">
                     <AlertIcon />

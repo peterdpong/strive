@@ -31,13 +31,11 @@ export type FixedInvestment = {
   startingValue: number;
 };
 
-/*
 export type OtherAsset = {
-  CAR = "Car",
-  HOUSE = "House",
-  value: number,
+  type: AssetTypes;
+  name: string;
+  value: number;
 };
-*/
 
 //TODO(peter): future implementations
 export type TFSAAccount = {
@@ -58,4 +56,12 @@ export enum AccountType {
   TFSA = "TFSA",
   RRSP = "RRSP",
   GIC = "GIC",
+}
+
+export enum AssetTypes {
+  VEHICLE = "Vehicle",
+  HOUSE = "House",
+  COLLECTIBLES = "Collectibles",
+  ART = "Art",
+  VALUABLES = "Valuables",
 }
