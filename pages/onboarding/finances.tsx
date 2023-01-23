@@ -144,7 +144,7 @@ export default function FinancesPages() {
                     borderColor={"gray.300"}
                   >
                     <Text color={"gray.800"} align={"center"}>
-                      Add a recurring expenses
+                      Add your recurring expenses
                     </Text>
                   </Center>
                 ) : (
