@@ -23,6 +23,7 @@ import BankInvestmentAccountModal from "../../components/modals/AccountModals/Ba
 import CreditCardModal from "../../components/modals/AccountModals/CreditCardModal";
 import FixedInvestmentsModal from "../../components/modals/AccountModals/FixedInvestmentsModal";
 import LoanAccountModal from "../../components/modals/AccountModals/LoanAccountModal";
+import OtherAssetsModal from "../../components/modals/AccountModals/OtherAssetsModal";
 import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { deleteAccount, setAnnualIncome } from "../../src/firebase/UserActions";
@@ -37,6 +38,7 @@ export default function FinancesPages() {
   const creditCardModalProps = useDisclosure();
   const fixedInvestmentsModalProps = useDisclosure();
   const loanAccountModalProps = useDisclosure();
+  const otherAssetsModalProps = useDisclosure();
 
   return (
     <ProtectedRoute>
@@ -131,6 +133,13 @@ export default function FinancesPages() {
                       size="sm"
                     >
                       Add fixed investment
+                    </Button>
+                    <Button
+                      colorScheme={"green"}
+                      onClick={otherAssetsModalProps.onOpen}
+                      size="sm"
+                    >
+                      Add other asset
                     </Button>
                   </HStack>
                 </HStack>
@@ -233,106 +242,6 @@ export default function FinancesPages() {
                   >
                     <Text color={"gray.800"} align={"center"}>
                       Add an investment account
-                    </Text>
-                  </Center>
-                ) : (
-                  <SimpleGrid
-                    spacing={4}
-                    templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
-                    pb={"20px"}
-                  >
-                    {userData &&
-                      Object.keys(
-                        userData.financialInfo.accounts.fixedInvestments
-                      ).map((accountKey) => {
-                        const currAccount =
-                          userData.financialInfo.accounts.fixedInvestments[
-                            accountKey
-                          ];
-                        return (
-                          <Card
-                            bgColor={"white"}
-                            key={accountKey}
-                            justify="space-between"
-                          >
-                            <CardBody>
-                              <Badge>FIXED INVESTMENT</Badge>
-                              <Heading size="sm"> {currAccount.name} </Heading>
-                              <Stat>
-                                <StatLabel>Account Value</StatLabel>
-                                <Stat>
-                                  <StatLabel>Start date</StatLabel>
-                                  <StatLabel>
-                                    {(currAccount.startDate as Timestamp)
-                                      .toDate()
-                                      .toISOString()
-                                      .substring(0, 10)}
-                                  </StatLabel>
-                                </Stat>
-                                <Stat>
-                                  <StatLabel>Maturity date</StatLabel>
-                                  <StatLabel>
-                                    {(currAccount.maturityDate as Timestamp)
-                                      .toDate()
-                                      .toISOString()
-                                      .substring(0, 10)}
-                                  </StatLabel>
-                                </Stat>
-                                <Stat>
-                                  <StatLabel>Starting value</StatLabel>
-                                  <StatNumber>
-                                    ${currAccount.startingValue}
-                                  </StatNumber>
-                                </Stat>
-                                <Stat>
-                                  <StatLabel>Interest rate</StatLabel>
-                                  <StatNumber>
-                                    {currAccount.interestRate}%
-                                  </StatNumber>
-                                </Stat>
-                              </Stat>
-                              <Button
-                                onClick={() => {
-                                  deleteAccount(
-                                    userData.uid,
-                                    userData.financialInfo.accounts,
-                                    "FixedInvestments",
-                                    accountKey
-                                  );
-                                }}
-                                size="xs"
-                                variant="link"
-                              >
-                                Delete
-                              </Button>
-                            </CardBody>
-                          </Card>
-                        );
-                      })}
-                  </SimpleGrid>
-                )}
-
-                {/* Other assets */}
-                <Heading mb={"10px"} fontSize={"lg"}>
-                  Other assets
-                </Heading>
-                {userData &&
-                Object.keys(userData.financialInfo.accounts.fixedInvestments)
-                  .length === 0 ? (
-                  <Center
-                    onClick={fixedInvestmentsModalProps.onOpen}
-                    bg={"gray.50"}
-                    width={"200px"}
-                    height={"125px"}
-                    rounded={"5px"}
-                    my={"25px"}
-                    p={"20px"}
-                    border={"1px"}
-                    borderStyle={"dashed"}
-                    borderColor={"gray.300"}
-                  >
-                    <Text color={"gray.800"} align={"center"}>
-                      Add a miscellaneous asset
                     </Text>
                   </Center>
                 ) : (
@@ -597,6 +506,77 @@ export default function FinancesPages() {
                       )}
                   </SimpleGrid>
                 )}
+
+                {/* Other assets */}
+                <Heading mb={"10px"} fontSize={"lg"}>
+                  Other assets
+                </Heading>
+                {userData &&
+                Object.keys(userData.financialInfo.accounts.otherAssets)
+                  .length === 0 ? (
+                  <Center
+                    onClick={otherAssetsModalProps.onOpen}
+                    bg={"gray.50"}
+                    width={"200px"}
+                    height={"125px"}
+                    rounded={"5px"}
+                    my={"25px"}
+                    p={"20px"}
+                    border={"1px"}
+                    borderStyle={"dashed"}
+                    borderColor={"gray.300"}
+                  >
+                    <Text color={"gray.800"} align={"center"}>
+                      Add a miscellaneous asset
+                    </Text>
+                  </Center>
+                ) : (
+                  <SimpleGrid
+                    spacing={4}
+                    templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+                    pb={"20px"}
+                  >
+                    {userData &&
+                      Object.keys(
+                        userData.financialInfo.accounts.otherAssets
+                      ).map((accountKey) => {
+                        const currAccount =
+                          userData.financialInfo.accounts.otherAssets[
+                            accountKey
+                          ];
+                        return (
+                          <Card
+                            bgColor={"white"}
+                            key={accountKey}
+                            justify="space-between"
+                          >
+                            <CardBody>
+                              <Badge>OTHER ASSET</Badge>
+                              <Heading size="sm"> {currAccount.name} </Heading>
+                              <Stat>
+                                <StatLabel>Asset Value</StatLabel>
+                                <StatNumber>${currAccount.value}</StatNumber>
+                              </Stat>
+                              <Button
+                                onClick={() => {
+                                  deleteAccount(
+                                    userData.uid,
+                                    userData.financialInfo.accounts,
+                                    "OtherAsset",
+                                    accountKey
+                                  );
+                                }}
+                                size="xs"
+                                variant="link"
+                              >
+                                Delete
+                              </Button>
+                            </CardBody>
+                          </Card>
+                        );
+                      })}
+                  </SimpleGrid>
+                )}
               </Box>
 
               <SubmitButton colorScheme={"green"}>Next Step</SubmitButton>
@@ -626,6 +606,12 @@ export default function FinancesPages() {
       <FixedInvestmentsModal
         isOpen={fixedInvestmentsModalProps.isOpen}
         onClose={fixedInvestmentsModalProps.onClose}
+        uid={userData?.uid}
+      />
+
+      <OtherAssetsModal
+        isOpen={otherAssetsModalProps.isOpen}
+        onClose={otherAssetsModalProps.onClose}
         uid={userData?.uid}
       />
     </ProtectedRoute>

@@ -12,6 +12,7 @@ import {
   CreditCardAccount,
   FixedInvestment,
   LoanAccount,
+  OtherAsset,
 } from "../models/AccountModel";
 import { BudgetModel, Transaction } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
@@ -51,6 +52,7 @@ export const addNewUser = (
         creditCards: {},
         loans: {},
         fixedInvestments: {},
+        otherAssets: {},
       },
     },
     budgetInfo: {
@@ -175,6 +177,7 @@ export const addAccount = (
     | CreditCardAccount
     | LoanAccount
     | FixedInvestment
+    | OtherAsset
 ) => {
   if (type === "BankInvestmentAccount") {
     accounts.bankAccounts[newAccount.name] =
@@ -185,6 +188,11 @@ export const addAccount = (
     accounts.loans[newAccount.name] = newAccount as LoanAccount;
   } else if (type === "FixedInvestment") {
     accounts.fixedInvestments[newAccount.name] = newAccount as FixedInvestment;
+  } else if (type === "OtherAsset") {
+    if (accounts.otherAssets === undefined) {
+      accounts["otherAssets"] = {};
+    }
+    accounts.otherAssets[newAccount.name] = newAccount as OtherAsset;
   }
 
   const userDataRef = doc(firestoreDB, "users", uid);
@@ -207,6 +215,8 @@ export const deleteAccount = (
     delete accounts.loans[key];
   } else if (type === "FixedInvestment") {
     delete accounts.fixedInvestments[key];
+  } else if (type === "OtherAsset") {
+    delete accounts.otherAssets[key];
   }
 
   const userDataRef = doc(firestoreDB, "users", uid);
