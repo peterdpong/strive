@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import { BudgetEngineUtils } from "../engine/BudgetEngineUtils";
 import {
-  BankAccount,
+  BankInvestmentAccount,
   CreditCardAccount,
   FixedInvestment,
   LoanAccount,
@@ -170,10 +170,15 @@ export const addAccount = (
   uid: string,
   accounts: AccountMap,
   type: string,
-  newAccount: BankAccount | CreditCardAccount | LoanAccount | FixedInvestment
+  newAccount:
+    | BankInvestmentAccount
+    | CreditCardAccount
+    | LoanAccount
+    | FixedInvestment
 ) => {
-  if (type === "BankAccount") {
-    accounts.bankAccounts[newAccount.name] = newAccount as BankAccount;
+  if (type === "BankInvestmentAccount") {
+    accounts.bankAccounts[newAccount.name] =
+      newAccount as BankInvestmentAccount;
   } else if (type === "CreditCard") {
     accounts.creditCards[newAccount.name] = newAccount as CreditCardAccount;
   } else if (type === "Loan") {

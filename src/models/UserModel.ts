@@ -1,5 +1,5 @@
 import {
-  BankAccount,
+  BankInvestmentAccount,
   CreditCardAccount,
   FixedInvestment,
   LoanAccount,
@@ -25,7 +25,7 @@ export type OnboardingStatus = {
 };
 
 export type AccountMap = {
-  bankAccounts: { [key: string]: BankAccount };
+  bankAccounts: { [key: string]: BankInvestmentAccount };
   creditCards: { [key: string]: CreditCardAccount };
   loans: { [key: string]: LoanAccount };
   fixedInvestments: { [key: string]: FixedInvestment };
