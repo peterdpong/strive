@@ -537,6 +537,7 @@ export default function FinancesPages() {
                     pb={"20px"}
                   >
                     {userData &&
+                      userData.financialInfo.accounts.otherAssets &&
                       Object.keys(
                         userData.financialInfo.accounts.otherAssets
                       ).map((accountKey) => {
