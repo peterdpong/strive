@@ -33,6 +33,7 @@ export default function BudgetPage() {
                 userData.budgetInfo.monthlyVariableBudget.toString()
               )}
               transactions={userData.monthTransactionsMap[monthAndYear]}
+              monthAndYear={monthAndYear}
             />
           )}
 
@@ -55,7 +56,12 @@ export default function BudgetPage() {
               transactions={userData.monthTransactionsMap[monthAndYear]}
             />
           )}
-          {userData && <MonthlyTransactions userData={userData} />}
+          {userData && (
+            <MonthlyTransactions
+              userData={userData}
+              monthAndYear={monthAndYear}
+            />
+          )}
         </Box>
       </Sidebar>
     </ProtectedRoute>

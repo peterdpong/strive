@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, Tag, Spacer, HStack } from "@chakra-ui/react";
 import { Transaction } from "../../../src/models/BudgetModel";
-import { getMonth } from "../../../src/DateTimeUtils";
+import { getMonthFromString } from "../../../src/DateTimeUtils";
 
 const tagColors = [
   "#C4EFFE",
@@ -27,9 +27,11 @@ type CategoryType = {
 const ExpenseCategories = ({
   transactions,
   monthlyBudget,
+  monthAndYear,
 }: {
   transactions: Transaction[];
   monthlyBudget: number;
+  monthAndYear: string;
 }) => {
   if (!transactions) return null;
 
@@ -60,7 +62,7 @@ const ExpenseCategories = ({
   return (
     <Box rounded={"5px"} p={"0px"} mt="10px">
       <Heading size="md" mb="10px">
-        {getMonth(undefined, undefined)}
+        {getMonthFromString(monthAndYear)}
       </Heading>
       <Heading size="xl" my="5px">
         ${totalSpent.toFixed(2)} spent

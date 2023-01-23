@@ -254,22 +254,18 @@ const MonthTransaction = ({
   );
 };
 
-const MonthlyTransactions = ({ userData }: { userData: UserModel }) => {
+const MonthlyTransactions = ({
+  userData,
+  monthAndYear,
+}: {
+  userData: UserModel;
+  monthAndYear: string;
+}) => {
   const [showAddTransactionsForm, setShowAddTransactionsForm] = useState(false);
   const [editingTransactions, setEditingTransactions] = useState(false);
 
   if (!userData) return null;
   const transactions = userData.monthTransactionsMap || {};
-  const transactionMonths = Object.keys(transactions);
-  const sortedTransactionMonths = transactionMonths.sort((a, b) => {
-    const date1 = b.split("-");
-    const date2 = a.split("-");
-    const compareYear = date1[1].localeCompare(date2[1]);
-    if (compareYear !== 0) {
-      return compareYear;
-    }
-    return date1[0].localeCompare(date2[0]);
-  });
 
   const deleteTransactionHandler = (
     e: React.MouseEvent<HTMLElement>,
@@ -318,16 +314,13 @@ const MonthlyTransactions = ({ userData }: { userData: UserModel }) => {
       </HStack>
       {showAddTransactionsForm && <AddTransactionsForm data={userData} />}
       <Box>
-        {transactions &&
-          sortedTransactionMonths.map((monthSection) => (
-            <MonthTransaction
-              key={monthSection}
-              monthSection={monthSection}
-              data={transactions[monthSection]}
-              editing={editingTransactions}
-              deleteTransactionHandler={deleteTransactionHandler}
-            />
-          ))}
+        <MonthTransaction
+          key={monthAndYear}
+          monthSection={monthAndYear}
+          data={transactions[monthAndYear]}
+          editing={editingTransactions}
+          deleteTransactionHandler={deleteTransactionHandler}
+        />
       </Box>
     </Box>
   );
