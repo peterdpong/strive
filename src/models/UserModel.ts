@@ -17,6 +17,16 @@ export type UserModel = {
   budgetInfo: BudgetModel;
   goalInfo: GoalModel;
   monthTransactionsMap: { [key: string]: Transaction[] };
+  suggestions: {
+    [suggestionType: string]: Suggestion[];
+  };
+};
+
+export type Suggestion = {
+  suggestionType: string;
+  suggestionTitle: string;
+  suggestionBadge: string;
+  suggestionDescription: string;
 };
 
 export type OnboardingStatus = {
