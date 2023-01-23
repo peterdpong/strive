@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardFooter,
   Center,
   Container,
   Heading,
@@ -24,14 +23,9 @@ import BankAccountModal from "../../components/modals/AccountModals/BankAccountM
 import CreditCardModal from "../../components/modals/AccountModals/CreditCardModal";
 import FixedInvestmentsModal from "../../components/modals/AccountModals/FixedInvestmentsModal";
 import LoanAccountModal from "../../components/modals/AccountModals/LoanAccountModal";
-import RecurringExpenseModal from "../../components/modals/RecurringExpenseModal";
 import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import {
-  deleteAccount,
-  deleteMonthlyTransaction,
-  setAnnualIncome,
-} from "../../src/firebase/UserActions";
+import { deleteAccount, setAnnualIncome } from "../../src/firebase/UserActions";
 
 export default function FinancesPages() {
   const router = useRouter();
@@ -39,21 +33,10 @@ export default function FinancesPages() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  const recurringExpensesModalProps = useDisclosure();
   const bankAccountModalProps = useDisclosure();
   const creditCardModalProps = useDisclosure();
   const fixedInvestmentsModalProps = useDisclosure();
   const loanAccountModalProps = useDisclosure();
-
-  const onDeleteMonthlyTransaction = (index: number) => {
-    if (userData) {
-      deleteMonthlyTransaction(
-        userData?.uid,
-        userData?.financialInfo.monthlyTransactions,
-        index
-      );
-    }
-  };
 
   return (
     <ProtectedRoute>
@@ -108,83 +91,6 @@ export default function FinancesPages() {
                     value: values.annualIncome,
                   }}
                 />
-              </Box>
-
-              <Box
-                bg={"gray.100"}
-                rounded={"5px"}
-                my={"25px"}
-                p={"20px"}
-                border={"1px"}
-                borderColor={"gray.300"}
-              >
-                <HStack justifyContent="space-between" my={2}>
-                  <Heading fontSize={"xl"}>Recurring Expenses</Heading>
-                  <Button
-                    colorScheme={"green"}
-                    onClick={recurringExpensesModalProps.onOpen}
-                    size="sm"
-                  >
-                    Add recurring expenses
-                  </Button>
-                </HStack>
-
-                {userData &&
-                userData.financialInfo.monthlyTransactions.length === 0 ? (
-                  <Center
-                    onClick={recurringExpensesModalProps.onOpen}
-                    bg={"gray.50"}
-                    width={"200px"}
-                    height={"100px"}
-                    rounded={"5px"}
-                    my={"25px"}
-                    p={"20px"}
-                    border={"1px"}
-                    borderStyle={"dashed"}
-                    borderColor={"gray.300"}
-                  >
-                    <Text color={"gray.800"} align={"center"}>
-                      Add your recurring expenses
-                    </Text>
-                  </Center>
-                ) : (
-                  <SimpleGrid
-                    spacing={4}
-                    templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
-                  >
-                    {userData?.financialInfo.monthlyTransactions.map(
-                      (transaction, index) => {
-                        return (
-                          <Card
-                            bgColor={"white"}
-                            key={index}
-                            justify="space-between"
-                          >
-                            <CardBody>
-                              <Badge>{transaction.category}</Badge>
-                              <Heading size="sm"> {transaction.name} </Heading>
-                              <Stat>
-                                <StatLabel>Expense per month</StatLabel>
-                                <StatNumber>-${transaction.amount}</StatNumber>
-                              </Stat>
-                            </CardBody>
-                            <CardFooter>
-                              <Button
-                                onClick={() => {
-                                  onDeleteMonthlyTransaction(index);
-                                }}
-                                size="xs"
-                                variant="link"
-                              >
-                                Delete
-                              </Button>
-                            </CardFooter>
-                          </Card>
-                        );
-                      }
-                    )}
-                  </SimpleGrid>
-                )}
               </Box>
 
               <Box
@@ -598,12 +504,6 @@ export default function FinancesPages() {
           )}
         </Formik>
       </Container>
-
-      <RecurringExpenseModal
-        isOpen={recurringExpensesModalProps.isOpen}
-        onClose={recurringExpensesModalProps.onClose}
-        uid={userData?.uid}
-      />
 
       <LoanAccountModal
         isOpen={loanAccountModalProps.isOpen}

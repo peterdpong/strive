@@ -211,19 +211,15 @@ export const deleteAccount = (
 };
 
 export const updateMonthlyVariableBudget = (userData: UserModel) => {
-  const balanceAfterFixed =
-    userData?.financialInfo.annualIncome/12 -
-    BudgetEngineUtils.calculateFixedMonthlyExpenses(
-      userData?.financialInfo.monthlyTransactions
-    );
+  const monthlyVariableBudget = userData?.financialInfo.annualIncome / 12;
 
   const balanceAfterAllocate =
-    balanceAfterFixed -
+    monthlyVariableBudget -
     BudgetEngineUtils.calculateBudgetExpenses(userData?.budgetInfo);
 
   const userDataRef = doc(firestoreDB, "users", userData.uid);
   updateDoc(userDataRef, {
-    "budgetInfo.monthlyVariableBudget": balanceAfterFixed,
+    "budgetInfo.monthlyVariableBudget": monthlyVariableBudget,
     "budgetInfo.monthlyVariableBudgetUnallocated": balanceAfterAllocate,
   });
 };
