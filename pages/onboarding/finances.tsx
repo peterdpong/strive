@@ -512,8 +512,9 @@ export default function FinancesPages() {
                   Other assets
                 </Heading>
                 {userData &&
-                Object.keys(userData.financialInfo.accounts.otherAssets)
-                  .length === 0 ? (
+                (userData.financialInfo.accounts.otherAssets === undefined ||
+                  Object.keys(userData.financialInfo.accounts.otherAssets)
+                    .length === 0) ? (
                   <Center
                     onClick={otherAssetsModalProps.onOpen}
                     bg={"gray.50"}
