@@ -259,7 +259,7 @@ export default function FinancesPages() {
                               <Badge>CREDIT CARD</Badge>
                               <Heading size="sm"> {currAccount.name} </Heading>
                               <Stat>
-                                <StatLabel>Amount Owned</StatLabel>
+                                <StatLabel>Amount Owed</StatLabel>
                                 <StatNumber>
                                   ${currAccount.amountOwned}
                                 </StatNumber>
