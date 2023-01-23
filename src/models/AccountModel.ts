@@ -31,6 +31,14 @@ export type FixedInvestment = {
   startingValue: number;
 };
 
+/*
+export type OtherAsset = {
+  CAR = "Car",
+  HOUSE = "House",
+  value: number,
+};
+*/
+
 //TODO(peter): future implementations
 export type TFSAAccount = {
   name: string;
