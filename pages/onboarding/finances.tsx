@@ -321,6 +321,79 @@ export default function FinancesPages() {
                   </SimpleGrid>
                 )}
 
+                {/* Other assets */}
+                <Heading mb={"10px"} fontSize={"lg"}>
+                  Other assets
+                </Heading>
+                {userData &&
+                (userData.financialInfo.accounts.otherAssets === undefined ||
+                  Object.keys(userData.financialInfo.accounts.otherAssets)
+                    .length === 0) ? (
+                  <Center
+                    onClick={otherAssetsModalProps.onOpen}
+                    bg={"gray.50"}
+                    width={"200px"}
+                    height={"125px"}
+                    rounded={"5px"}
+                    my={"25px"}
+                    p={"20px"}
+                    border={"1px"}
+                    borderStyle={"dashed"}
+                    borderColor={"gray.300"}
+                  >
+                    <Text color={"gray.800"} align={"center"}>
+                      Add a miscellaneous asset
+                    </Text>
+                  </Center>
+                ) : (
+                  <SimpleGrid
+                    spacing={4}
+                    templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+                    pb={"20px"}
+                  >
+                    {userData &&
+                      userData.financialInfo.accounts.otherAssets &&
+                      Object.keys(
+                        userData.financialInfo.accounts.otherAssets
+                      ).map((accountKey) => {
+                        const currAccount =
+                          userData.financialInfo.accounts.otherAssets[
+                            accountKey
+                          ];
+                        return (
+                          <Card
+                            bgColor={"white"}
+                            key={accountKey}
+                            justify="space-between"
+                          >
+                            <CardBody>
+                              <Badge>OTHER ASSET</Badge>
+                              <Heading size="sm"> {currAccount.name} </Heading>
+                              <Stat>
+                                <StatLabel>Asset Value</StatLabel>
+                                <StatNumber>${currAccount.value}</StatNumber>
+                              </Stat>
+                              <Button
+                                onClick={() => {
+                                  deleteAccount(
+                                    userData.uid,
+                                    userData.financialInfo.accounts,
+                                    "OtherAsset",
+                                    accountKey
+                                  );
+                                }}
+                                size="xs"
+                                variant="link"
+                              >
+                                Delete
+                              </Button>
+                            </CardBody>
+                          </Card>
+                        );
+                      })}
+                  </SimpleGrid>
+                )}
+
                 {/* Credit cards */}
                 <Heading mb={"10px"} fontSize={"lg"}>
                   Credit cards
@@ -504,79 +577,6 @@ export default function FinancesPages() {
                           );
                         }
                       )}
-                  </SimpleGrid>
-                )}
-
-                {/* Other assets */}
-                <Heading mb={"10px"} fontSize={"lg"}>
-                  Other assets
-                </Heading>
-                {userData &&
-                (userData.financialInfo.accounts.otherAssets === undefined ||
-                  Object.keys(userData.financialInfo.accounts.otherAssets)
-                    .length === 0) ? (
-                  <Center
-                    onClick={otherAssetsModalProps.onOpen}
-                    bg={"gray.50"}
-                    width={"200px"}
-                    height={"125px"}
-                    rounded={"5px"}
-                    my={"25px"}
-                    p={"20px"}
-                    border={"1px"}
-                    borderStyle={"dashed"}
-                    borderColor={"gray.300"}
-                  >
-                    <Text color={"gray.800"} align={"center"}>
-                      Add a miscellaneous asset
-                    </Text>
-                  </Center>
-                ) : (
-                  <SimpleGrid
-                    spacing={4}
-                    templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
-                    pb={"20px"}
-                  >
-                    {userData &&
-                      userData.financialInfo.accounts.otherAssets &&
-                      Object.keys(
-                        userData.financialInfo.accounts.otherAssets
-                      ).map((accountKey) => {
-                        const currAccount =
-                          userData.financialInfo.accounts.otherAssets[
-                            accountKey
-                          ];
-                        return (
-                          <Card
-                            bgColor={"white"}
-                            key={accountKey}
-                            justify="space-between"
-                          >
-                            <CardBody>
-                              <Badge>OTHER ASSET</Badge>
-                              <Heading size="sm"> {currAccount.name} </Heading>
-                              <Stat>
-                                <StatLabel>Asset Value</StatLabel>
-                                <StatNumber>${currAccount.value}</StatNumber>
-                              </Stat>
-                              <Button
-                                onClick={() => {
-                                  deleteAccount(
-                                    userData.uid,
-                                    userData.financialInfo.accounts,
-                                    "OtherAsset",
-                                    accountKey
-                                  );
-                                }}
-                                size="xs"
-                                variant="link"
-                              >
-                                Delete
-                              </Button>
-                            </CardBody>
-                          </Card>
-                        );
-                      })}
                   </SimpleGrid>
                 )}
               </Box>
