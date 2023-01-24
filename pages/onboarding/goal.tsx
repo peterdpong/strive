@@ -294,6 +294,8 @@ export default function SuggestionsPage() {
                 </Box>
               </SimpleGrid>
 
+              <Heading fontSize={"xl"}>Suggested goals</Heading>
+
               <Box
                 bg={"gray.100"}
                 rounded={"5px"}
@@ -302,9 +304,6 @@ export default function SuggestionsPage() {
                 border={"1px"}
                 borderColor={"gray.300"}
               >
-                <Heading mb={"8px"} fontSize={"xl"}>
-                  Suggested goals
-                </Heading>
                 <SimpleGrid columns={3} spacing={3}>
                   <Card>
                     <CardBody>
