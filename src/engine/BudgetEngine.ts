@@ -1,7 +1,10 @@
 // Holds all budget optimization functions
 
+import { UserModel } from "../models/UserModel";
+
 export class BudgetEngine {
-  static generateGoals() {
+  static generateGoals(UserModel: UserModel) {
+    
     return;
   }
 
