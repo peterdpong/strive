@@ -164,28 +164,7 @@ export default function SuggestionsPage() {
               <Heading fontSize={"xl"}>Adjust goal</Heading>
 
               <SimpleGrid columns={3} spacing={5}>
-                <Box
-                  bg={"gray.100"}
-                  rounded={"5px"}
-                  my={"25px"}
-                  p={"20px"}
-                  border={"1px"}
-                  borderColor={"gray.300"}
-                >
-                  <Heading fontSize={"xl"}>Net Worth Goal</Heading>
-                  <Text fontSize={"xl"}>$55,000</Text>
-                  <Slider
-                    colorScheme={"green"}
-                    aria-label="slider-ex-1"
-                    defaultValue={30}
-                  >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </Box>
-                
+           
                 <Box
                   bg={"gray.100"}
                   rounded={"5px"}
@@ -205,6 +184,7 @@ export default function SuggestionsPage() {
                   onChange={(v) => setSliderValue(v)}
                   onMouseEnter={() => setShowTooltip(true)}
                   onMouseLeave={() => setShowTooltip(false)}
+                  onChangeEnd={(sliderValue) => console.log(sliderValue)}
                 >
                   <SliderMark value={0} mt="1" ml="-2.5" fontSize="sm">
                     $0
