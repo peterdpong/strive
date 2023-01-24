@@ -227,28 +227,6 @@ export default function SuggestionsPage() {
                   border={"1px"}
                   borderColor={"gray.300"}
                 >
-                  <Heading fontSize={"xl"}>Monthly Savings Goal</Heading>
-                  <Text fontSize={"xl"}>$500</Text>
-                  <Slider
-                    colorScheme={"green"}
-                    aria-label="slider-ex-1"
-                    defaultValue={30}
-                  >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </Box>
-
-                <Box
-                  bg={"gray.100"}
-                  rounded={"5px"}
-                  my={"25px"}
-                  p={"20px"}
-                  border={"1px"}
-                  borderColor={"gray.300"}
-                >
                 <Heading fontSize={"xl"}>Timeline Goal</Heading>
                 <Text fontSize={"xl"}>{sliderValueTimeline} yrs</Text>
                 <Slider
@@ -338,7 +316,7 @@ export default function SuggestionsPage() {
                   <Card>
                     <CardBody>
                       <Box>
-                        <Heading size="sm"> Aggresive Goal </Heading>
+                        <Heading size="sm"> Aggressive Goal </Heading>
                         <Stat>
                           <StatLabel>Monthly Savings</StatLabel>
                           <StatNumber>$1000</StatNumber>
