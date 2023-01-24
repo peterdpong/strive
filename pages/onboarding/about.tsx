@@ -23,7 +23,10 @@ return (
             on how to best reach your goal.  Calculations and suggestions are cited
             where appropriate.  Disclaimer: the outputs are suggestions and should not be
             taken as financial advice.
-            </Text>        
+            </Text>
+            <Button size="sm" onClick={() => router.push("/onboarding/finances/")}>
+            Get Started
+            </Button>        
         </Container>
     </ProtectedRoute>
 );
