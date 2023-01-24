@@ -106,6 +106,8 @@ export default function SuggestionsPage() {
 
   const [sliderValue, setSliderValue] = useState(500000);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [sliderValueTimeline, setSliderValueTimeline] = useState(40);
+  const [showTooltipTimeline, setShowTooltipTimeline] = useState(false);
 
   return (
     <ProtectedRoute>
@@ -210,7 +212,7 @@ export default function SuggestionsPage() {
                     color="white"
                     placement="top"
                     isOpen={showTooltip}
-                    label={`${sliderValue}`}
+                    label={`$${sliderValue}`}
                   >
                     <SliderThumb />
                   </Tooltip>
@@ -238,6 +240,7 @@ export default function SuggestionsPage() {
                     <SliderThumb />
                   </Slider>
                 </Box>
+
                 <Box
                   bg={"gray.100"}
                   rounded={"5px"}
@@ -246,18 +249,48 @@ export default function SuggestionsPage() {
                   border={"1px"}
                   borderColor={"gray.300"}
                 >
-                  <Heading fontSize={"xl"}>Timeline</Heading>
-                  <Text fontSize={"xl"}>5 Years</Text>
-                  <Slider
-                    colorScheme={"green"}
-                    aria-label="slider-ex-1"
-                    defaultValue={30}
+                <Heading fontSize={"xl"}>Timeline Goal</Heading>
+                <Text fontSize={"xl"}>{sliderValueTimeline} yrs</Text>
+                <Slider
+                  defaultValue={5}
+                  id="slider"
+                  min={0}
+                  max={80}
+                  colorScheme="green"
+                  onChange={(v) => setSliderValueTimeline(v)}
+                  onMouseEnter={() => setShowTooltipTimeline(true)}
+                  onMouseLeave={() => setShowTooltipTimeline(false)}
+                  onChangeEnd={(sliderValueTimeline) => console.log(sliderValueTimeline)}
+                >
+                  <SliderMark value={0} mt="1" ml="-2.5" fontSize="sm">
+                    0 yrs
+                  </SliderMark>
+                  <SliderMark value={17.5} mt="1" ml="-2.5" fontSize="sm">
+                    20 yrs
+                  </SliderMark>
+                  <SliderMark value={37.5} mt="1" ml="-2.5" fontSize="sm">
+                    40 yrs
+                  </SliderMark>
+                  <SliderMark value={57.5} mt="1" ml="-2.5" fontSize="sm">
+                    60 yrs
+                  </SliderMark>
+                  <SliderMark value={74.1} mt="1" ml="-2.5" fontSize="sm">
+                    80 yrs
+                  </SliderMark>
+                  <SliderTrack>
+                    <SliderFilledTrack />
+                  </SliderTrack>
+                  <Tooltip
+                    hasArrow
+                    bg="green"
+                    color="white"
+                    placement="top"
+                    isOpen={showTooltipTimeline}
+                    label={`${sliderValueTimeline} yrs`}
                   >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
                     <SliderThumb />
-                  </Slider>
+                  </Tooltip>
+                </Slider>
                 </Box>
               </SimpleGrid>
 
