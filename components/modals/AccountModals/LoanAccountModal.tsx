@@ -13,10 +13,12 @@ import {
 } from "@chakra-ui/react";
 import { useAuth } from "../../../src/auth/auth";
 import { Formik } from "formik";
+import { LoanTypes } from "../../../src/models/AccountModel";
 import {
   InputControl,
   NumberInputControl,
   SubmitButton,
+  SelectControl,
 } from "formik-chakra-ui";
 import { addAccount } from "../../../src/firebase/UserActions";
 
@@ -91,6 +93,15 @@ export default function LoanAccountModal(props: {
                 onSubmit={handleSubmit as any}
               >
                 <InputControl name="name" label="Loan Name" />
+                <SelectControl name="type" label="Loan Type">
+                  <option value={LoanTypes.MORTGAGE}>{LoanTypes.MORTGAGE}</option>
+                  <option value={LoanTypes.CAR}>
+                    {LoanTypes.CAR}
+                  </option>
+                  <option value={LoanTypes.STUDENT}>
+                    {LoanTypes.STUDENT}
+                  </option>
+                </SelectControl>
                 <NumberInputControl
                   name="remainingAmount"
                   label="Remaining owned"

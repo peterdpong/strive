@@ -65,3 +65,9 @@ export enum AssetTypes {
   ART = "Art",
   VALUABLES = "Valuables",
 }
+
+export enum LoanTypes {
+  MORTGAGE = "Mortgage",
+  STUDENT = "Student Loan",
+  CAR = "Car Loan"
+}
