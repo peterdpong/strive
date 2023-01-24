@@ -51,7 +51,7 @@ export default function FinancesPages() {
 
         <Formik
           initialValues={{
-            annualIncome: 42000,
+            annualIncome: 0,
           }}
           onSubmit={(values, actions) => {
             if (userData) {
