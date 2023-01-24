@@ -104,7 +104,7 @@ export default function SuggestionsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  const [sliderValue, setSliderValue] = useState(50);
+  const [sliderValue, setSliderValue] = useState(500000);
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
@@ -185,40 +185,57 @@ export default function SuggestionsPage() {
                     <SliderThumb />
                   </Slider>
                 </Box>
-
+                
+                <Box
+                  bg={"gray.100"}
+                  rounded={"5px"}
+                  my={"25px"}
+                  p={"20px"}
+                  border={"1px"}
+                  borderColor={"gray.300"}
+                >
+                <Heading fontSize={"xl"}>Net Worth Goal</Heading>
+                <Text fontSize={"xl"}>${sliderValue}</Text>
                 <Slider
-                  defaultValue={5}
+                  defaultValue={500000}
                   id="slider"
                   min={0}
-                  max={100}
-                  colorScheme="teal"
+                  max={1000000}
+                  colorScheme="green"
                   onChange={(v) => setSliderValue(v)}
                   onMouseEnter={() => setShowTooltip(true)}
                   onMouseLeave={() => setShowTooltip(false)}
                 >
-                  <SliderMark value={25} mt="1" ml="-2.5" fontSize="sm">
-                    25%
+                  <SliderMark value={0} mt="1" ml="-2.5" fontSize="sm">
+                    $0
                   </SliderMark>
-                  <SliderMark value={50} mt="1" ml="-2.5" fontSize="sm">
-                    50%
+                  <SliderMark value={200000} mt="1" ml="-2.5" fontSize="sm">
+                    $250k
                   </SliderMark>
-                  <SliderMark value={75} mt="1" ml="-2.5" fontSize="sm">
-                    75%
+                  <SliderMark value={450000} mt="1" ml="-2.5" fontSize="sm">
+                    $500k
+                  </SliderMark>
+                  <SliderMark value={700000} mt="1" ml="-2.5" fontSize="sm">
+                    $750k
+                  </SliderMark>
+                  <SliderMark value={950000} mt="1" ml="-2.5" fontSize="sm">
+                    $1mm
                   </SliderMark>
                   <SliderTrack>
                     <SliderFilledTrack />
                   </SliderTrack>
                   <Tooltip
                     hasArrow
-                    bg="teal.500"
+                    bg="green"
                     color="white"
                     placement="top"
                     isOpen={showTooltip}
-                    label={`${sliderValue}%`}
+                    label={`${sliderValue}`}
                   >
                     <SliderThumb />
                   </Tooltip>
                 </Slider>
+                </Box>
 
                 <Box
                   bg={"gray.100"}
