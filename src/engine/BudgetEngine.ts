@@ -1,8 +1,11 @@
 // Holds all budget optimization functions
 
 export class BudgetEngine {
-  static generateGoals() {
-    return;
+  static generateGoals(userData: UserModel, goalNetWorth: number) {
+    //present net worth
+    //goal net worth
+
+    userData.return;
   }
 
   static generateBudgetDemographicSuggestions() {
@@ -21,3 +24,17 @@ export class BudgetEngine {
     return;
   }
 }
+
+/*
+export default function netWorthDifferential() {
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
+
+return (
+
+    //present net worth
+    //userData.
+
+);
+}
+*/
