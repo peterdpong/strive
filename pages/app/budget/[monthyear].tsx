@@ -80,6 +80,7 @@ export default function BudgetPage() {
             {userData && (
               <TopExpenses
                 transactions={userData.monthTransactionsMap[monthAndYear]}
+                monthAndYear={monthAndYear}
               />
             )}
             {userData && (

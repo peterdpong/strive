@@ -16,10 +16,6 @@ import {
   StatNumber,
   Text,
   VStack,
-  Card,
-  CardBody,
-  SimpleGrid,
-  CardFooter,
   Flex,
 } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
@@ -314,84 +310,6 @@ export default function Dashboard() {
                 </Button>
               </HStack>
               <Bar data={data} options={horizontalOptions} />
-            </Box>
-
-            <Box
-              bg={"gray.100"}
-              rounded={"5px"}
-              p={"20px"}
-              width={"100%"}
-              border={"1px"}
-              borderColor={"gray.300"}
-            >
-              <HStack my={2} justifyContent="space-between">
-                <Heading size={"md"}>Accounts Overview</Heading>
-                <Button size="sm" colorScheme="green">
-                  View all
-                </Button>
-              </HStack>
-              <SimpleGrid
-                spacing={4}
-                templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
-              >
-                <Card bgColor={"white"} justify="space-between">
-                  <CardBody>
-                    <Badge colorScheme="red">CREDIT CARD</Badge>
-                    <Heading size="sm"> American Express Cobalt </Heading>
-                    <Stat>
-                      <StatLabel>Current Balance</StatLabel>
-                      <StatNumber>$123.56</StatNumber>
-                      <StatLabel>Payment Due</StatLabel>
-                      <StatNumber fontSize="md">Nov 26, 2022</StatNumber>
-                    </Stat>
-                  </CardBody>
-                  <CardFooter>
-                    <Button size="xs" variant="link">
-                      Account details
-                    </Button>
-                  </CardFooter>
-                </Card>
-                <Card bgColor={"white"} justify="space-between">
-                  <CardBody>
-                    <Box>
-                      <Badge colorScheme="red">LOAN</Badge>
-                      <Heading size="sm">
-                        Canada-Ontario Integrated Student Loan
-                      </Heading>
-                      <Stat>
-                        <StatLabel>Remaining Balance</StatLabel>
-                        <StatNumber>$123.56</StatNumber>
-                        <StatLabel>Next Payment Due</StatLabel>
-                        <StatNumber fontSize="md">Nov 29, 2022</StatNumber>
-                      </Stat>
-                    </Box>
-                  </CardBody>
-                  <CardFooter>
-                    <Button size="xs" variant="link">
-                      Account details
-                    </Button>
-                  </CardFooter>
-                </Card>
-                <Card bgColor={"white"} justify="space-between">
-                  <CardBody>
-                    <Box>
-                      <Badge colorScheme="green">SAVINGS ACCOUNT</Badge>
-                      <Heading size="sm"> Tangerine Savings Account </Heading>
-                      <Stat>
-                        <StatLabel>Balance</StatLabel>
-                        <StatNumber>$123.56</StatNumber>
-                        <StatLabel>Interest Rate</StatLabel>
-                        <StatNumber fontSize="md">3.40%</StatNumber>
-                      </Stat>
-                    </Box>
-                  </CardBody>
-                  <CardFooter>
-                    <Button size="xs" variant="link">
-                      Account details
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </SimpleGrid>
             </Box>
           </VStack>
         </Flex>

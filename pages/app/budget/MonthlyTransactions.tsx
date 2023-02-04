@@ -14,6 +14,11 @@ import {
   TableContainer,
   Select,
   Flex,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import {
@@ -25,7 +30,7 @@ import {
   TransactionCategories,
 } from "../../../src/models/BudgetModel";
 import { UserModel } from "../../../src/models/UserModel";
-import { getCurrentDate, getMonth } from "../../../src/DateTimeUtils";
+import { getCurrentDate, getMonthFromString } from "../../../src/DateTimeUtils";
 
 const AddTransactionsForm = ({ data }: { data: UserModel }) => {
   const dataAccounts = data.financialInfo.accounts;
@@ -41,7 +46,7 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
   const [account, setAccount] = useState<string>(accounts[0]);
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>(categories[0]);
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>("");
 
   const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -60,7 +65,7 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
       isMonthly: false,
       name: name,
       category: category as TransactionCategories,
-      amount: amount,
+      amount: parseFloat(amount),
     };
 
     if (data) {
@@ -76,7 +81,7 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
     setAccount(accounts[0]);
     setName("");
     setCategory(categories[0]);
-    setAmount(0);
+    setAmount("");
   };
 
   return (
@@ -156,13 +161,17 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
               </Td>
               <Td isNumeric>
                 <FormControl id="transaction-value" isRequired>
-                  <Input
-                    size="sm"
-                    type="number"
-                    value={amount}
-                    placeholder="125"
-                    onChange={(e) => setAmount(parseFloat(e.target.value))}
-                  />
+                  <NumberInput
+                    size={"sm"}
+                    value={amount ? amount : ""}
+                    onChange={(e) => setAmount(e)}
+                  >
+                    <NumberInputField />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
                 </FormControl>
               </Td>
             </Tr>
@@ -203,9 +212,6 @@ const MonthTransaction = ({
     transaction: Transaction
   ) => void;
 }) => {
-  const dateParts = monthSection.split("-");
-  const year = parseInt(dateParts[1]);
-  const month = parseInt(dateParts[0]) - 1;
   const sortedTransactions = data.sort((a, b) => {
     return b.date.localeCompare(a.date);
   });
@@ -213,7 +219,7 @@ const MonthTransaction = ({
   return (
     <Box>
       <Heading size={"sm"} my="10px">
-        {getMonth(month, year)}
+        {getMonthFromString(monthSection)}
       </Heading>
       <TableContainer>
         <Table size="sm">
