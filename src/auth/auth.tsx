@@ -30,7 +30,8 @@ interface AuthContext {
     email: string,
     password: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    age: number
   ) => Promise<void>;
   signOutAuth: () => Promise<void>;
 }
@@ -45,7 +46,8 @@ const authContext: Context<AuthContext> = createContext<AuthContext>({
     email: string,
     password: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    age: number
   ) => {},
   signOutAuth: async () => {},
 });
@@ -62,11 +64,13 @@ const formatUserState = (userData: DocumentSnapshot): UserModel | null => {
     email: userData?.get("email"),
     firstName: userData?.get("firstName"),
     lastName: userData?.get("lastName"),
+    age: userData?.get("age"),
     onboardingStatus: userData?.get("onboardingStatus"),
     financialInfo: userData?.get("financialInfo"),
     budgetInfo: userData?.get("budgetInfo"),
     goalInfo: userData?.get("goalInfo"),
     monthTransactionsMap: userData?.get("monthTransactionsMap"),
+    suggestions: userData?.get("suggestions"),
   };
 };
 
@@ -127,7 +131,8 @@ function useProvideAuth() {
     email: string,
     password: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    age: number
   ) => {
     return createUserWithEmailAndPassword(authInstance, email, password).then(
       async (response: UserCredential) => {
@@ -141,7 +146,8 @@ function useProvideAuth() {
           response.user.uid,
           email,
           firstName,
-          lastName
+          lastName,
+          age
         );
         setAuth(userData);
 

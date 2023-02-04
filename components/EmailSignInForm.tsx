@@ -1,4 +1,14 @@
-import React, { FormEvent, useCallback, useState } from "react";
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  Container,
+  Heading,
+} from "@chakra-ui/react";
+import { Formik } from "formik";
+import { InputControl, SubmitButton } from "formik-chakra-ui";
+import React, { useState } from "react";
 import { useAuth } from "../src/auth/auth";
 
 function EmailSignInForm(
@@ -9,55 +19,77 @@ function EmailSignInForm(
   const [error, setError] = useState<string | null>(null);
 
   const auth = useAuth();
-  const onSubmit = useCallback(
-    async (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      if (auth.loading) return;
-      setError(null);
 
-      const data = new FormData(event.currentTarget);
-
-      const email = data.get("email") as string;
-      const password = data.get("password") as string;
-
-      return auth
-        .signinEmail(email, password)
-        .then(() => {
-          props.onSignUp();
-        })
-        .catch((error) => {
-          setError(error.message);
-        });
-    },
-    [auth, props]
-  );
-
-  // TODO(Peter): Styling and use CharkaUI components
-  // TODO(Peter): Better form control
   return (
-    <form onSubmit={onSubmit}>
-      <div>
-        <input
-          required
-          placeholder="Your Email"
-          name="email"
-          type="email"
-          className="TextField"
-        />
+    <Formik
+      initialValues={{
+        email: "",
+        password: "",
+      }}
+      onSubmit={(values, actions) => {
+        if (auth.loading) return;
+        setError(null);
 
-        <input
-          required
-          placeholder="Your Password"
-          name="password"
-          type="password"
-          className="TextField"
-        />
+        if (values.email.length === 0) {
+          setError("Email missing.");
+          actions.resetForm();
+          return;
+        }
 
-        {error ? <span>{error}</span> : null}
+        if (values.password.length === 0) {
+          setError("Password missing.");
+          actions.resetForm();
+          return;
+        }
 
-        <button disabled={auth.loading}>Sign In</button>
-      </div>
-    </form>
+        auth
+          .signinEmail(values.email, values.password)
+          .then(() => {
+            props.onSignUp();
+          })
+          .catch((error) => {
+            setError(error.message);
+          });
+      }}
+    >
+      {({ handleSubmit }) => (
+        <Container
+          maxW="container.xl"
+          as="form"
+          p={"0px"}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onSubmit={handleSubmit as any}
+        >
+          <Box
+            bg={"gray.100"}
+            rounded={"5px"}
+            my={"25px"}
+            p={"20px"}
+            border={"1px"}
+            borderColor={"gray.300"}
+          >
+            <Heading mb={"5px"} fontSize={"xl"}>
+              Strive Login
+            </Heading>
+            {error !== null ? (
+              <Alert my={"1rem"} status="error">
+                <AlertIcon />
+                <AlertTitle>{error}</AlertTitle>
+              </Alert>
+            ) : null}
+            <InputControl name="email" label="Email" />
+            <InputControl
+              name="password"
+              inputProps={{ type: "password" }}
+              label="Password"
+            />
+
+            <br />
+            <SubmitButton>Log in</SubmitButton>
+          </Box>
+        </Container>
+      )}
+    </Formik>
   );
 }
 

@@ -13,11 +13,22 @@ export type UserModel = {
   email: string;
   firstName: string;
   lastName: string;
+  age: number;
   onboardingStatus: OnboardingStatus;
   financialInfo: FinancialInfo;
   budgetInfo: BudgetModel;
   goalInfo: GoalModel;
   monthTransactionsMap: { [key: string]: Transaction[] };
+  suggestions: {
+    [suggestionType: string]: Suggestion[];
+  };
+};
+
+export type Suggestion = {
+  suggestionType: string;
+  suggestionTitle: string;
+  suggestionBadge: string;
+  suggestionDescription: string;
 };
 
 export type OnboardingStatus = {
