@@ -279,6 +279,7 @@ export const addTransaction = (
   monthTransactionsMap: {
     [monthAndYear: string]: Transaction[];
   },
+  accounts: AccountMap,
   monthAndYear: string,
   transaction: Transaction
 ) => {
@@ -288,9 +289,36 @@ export const addTransaction = (
     monthTransactionsMap[monthAndYear].push(transaction);
   }
 
+  const accountAndType = new Map<string, string>();
+  for (let i = 0; i < Object.keys(accounts.bankAccounts).length; i++) {
+    accountAndType.set(Object.keys(accounts.bankAccounts)[i], "bankAccount");
+  }
+
+  for (let i = 0; i < Object.keys(accounts.creditCards).length; i++) {
+    accountAndType.set(Object.keys(accounts.creditCards)[i], "creditCard");
+  }
+
+  for (let i = 0; i < Object.keys(accounts.loans).length; i++) {
+    accountAndType.set(Object.keys(accounts.loans)[i], "loan");
+  }
+
+  const accountType: string | undefined = accountAndType.get(
+    transaction.account
+  );
+
+  if (accountType === "bankAccount") {
+    accounts.bankAccounts[transaction.account].value += transaction.amount;
+  } else if (accountType === "creditCard") {
+    accounts.creditCards[transaction.account].amountOwned +=
+      -transaction.amount;
+  } else if (accountType === "loan") {
+    accounts.loans[transaction.account].remainingAmount += -transaction.amount;
+  }
+
   const userDataRef = doc(firestoreDB, "users", uid);
   updateDoc(userDataRef, {
     monthTransactionsMap: monthTransactionsMap,
+    "financialInfo.accounts": accounts,
   });
 };
 
@@ -299,6 +327,7 @@ export const deleteTransaction = (
   monthTransactionsMap: {
     [monthAndYear: string]: Transaction[];
   },
+  accounts: AccountMap,
   monthAndYear: string,
   transaction: Transaction
 ) => {
@@ -307,8 +336,35 @@ export const deleteTransaction = (
     monthTransactionsMap[monthAndYear].splice(index, 1);
   }
 
+  const accountAndType = new Map<string, string>();
+  for (let i = 0; i < Object.keys(accounts.bankAccounts).length; i++) {
+    accountAndType.set(Object.keys(accounts.bankAccounts)[i], "bankAccount");
+  }
+
+  for (let i = 0; i < Object.keys(accounts.creditCards).length; i++) {
+    accountAndType.set(Object.keys(accounts.creditCards)[i], "creditCard");
+  }
+
+  for (let i = 0; i < Object.keys(accounts.loans).length; i++) {
+    accountAndType.set(Object.keys(accounts.loans)[i], "loan");
+  }
+
+  const accountType: string | undefined = accountAndType.get(
+    transaction.account
+  );
+
+  if (accountType === "bankAccount") {
+    accounts.bankAccounts[transaction.account].value -= transaction.amount;
+  } else if (accountType === "creditCard") {
+    accounts.creditCards[transaction.account].amountOwned -=
+      -transaction.amount;
+  } else if (accountType === "loan") {
+    accounts.loans[transaction.account].remainingAmount -= -transaction.amount;
+  }
+
   const userDataRef = doc(firestoreDB, "users", uid);
   updateDoc(userDataRef, {
     monthTransactionsMap: monthTransactionsMap,
+    "financialInfo.accounts": accounts,
   });
 };

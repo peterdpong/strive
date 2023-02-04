@@ -37,7 +37,6 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
   const accounts = [
     ...Object.keys(dataAccounts.bankAccounts),
     ...Object.keys(dataAccounts.creditCards),
-    ...Object.keys(dataAccounts.fixedInvestments),
     ...Object.keys(dataAccounts.loans),
   ];
   const categories = Object.values(TransactionCategories);
@@ -72,6 +71,7 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
       addTransaction(
         data.uid,
         data.monthTransactionsMap,
+        data.financialInfo.accounts,
         monthAndYear,
         transaction
       );
@@ -284,6 +284,7 @@ const MonthlyTransactions = ({
       deleteTransaction(
         userData.uid,
         userData.monthTransactionsMap,
+        userData.financialInfo.accounts,
         monthAndYear,
         transaction
       );
