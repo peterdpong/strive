@@ -12,7 +12,7 @@ import {
   NumberInputControl,
   SubmitButton,
 } from "formik-chakra-ui";
-import React, { FormEvent, useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../src/auth/auth";
 
 function EmailSignUpForm(
@@ -22,25 +22,6 @@ function EmailSignUpForm(
 ) {
   const [error, setError] = useState<string | null>(null);
   const auth = useAuth();
-
-  const onSubmit = useCallback(
-    async (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-
-      if (auth.loading) return;
-      setError(null);
-
-      return auth
-        .createUserEmail(email, password, firstName, lastName)
-        .then(() => {
-          props.onSignUp();
-        })
-        .catch((error) => {
-          setError(error.message);
-        });
-    },
-    [auth, props]
-  );
 
   return (
     <Formik
