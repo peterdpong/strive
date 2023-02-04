@@ -10,6 +10,7 @@ import {
   Stat,
   StatLabel,
   StatNumber,
+  useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 
@@ -18,10 +19,21 @@ import Sidebar from "../../../components/app/Sidebar";
 import { useAuth } from "../../../src/auth/auth";
 import { deleteAccount } from "../../../src/firebase/UserActions";
 import { Timestamp } from "firebase/firestore";
+import LoanAccountModal from "../../../components/modals/AccountModals/LoanAccountModal";
+import BankInvestmentAccountModal from "../../../components/modals/AccountModals/BankInvestmentAccountModal";
+import CreditCardModal from "../../../components/modals/AccountModals/CreditCardModal";
+import FixedInvestmentsModal from "../../../components/modals/AccountModals/FixedInvestmentsModal";
+import OtherAssetsModal from "../../../components/modals/AccountModals/OtherAssetsModal";
 
 export default function AccountsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
+
+  const bankInvestmentAccountModalProps = useDisclosure();
+  const creditCardModalProps = useDisclosure();
+  const fixedInvestmentsModalProps = useDisclosure();
+  const loanAccountModalProps = useDisclosure();
+  const otherAssetsModalProps = useDisclosure();
   return (
     <ProtectedRoute>
       <Sidebar>
@@ -35,11 +47,46 @@ export default function AccountsPage() {
           my={"2rem"}
         >
           <HStack justifyContent="space-between">
-            <VStack align="flex-start">
-              <Heading size="lg" mr="2.5rem">
-                Accounts
-              </Heading>
-            </VStack>
+            <Heading size="lg" mr="2.5rem">
+              Accounts
+            </Heading>
+            <HStack>
+              <Button
+                colorScheme={"green"}
+                onClick={bankInvestmentAccountModalProps.onOpen}
+                size="sm"
+              >
+                Add bank/investment account
+              </Button>
+              <Button
+                colorScheme={"green"}
+                onClick={creditCardModalProps.onOpen}
+                size="sm"
+              >
+                Add credit card
+              </Button>
+              <Button
+                colorScheme={"green"}
+                onClick={loanAccountModalProps.onOpen}
+                size="sm"
+              >
+                Add loan
+              </Button>
+              <Button
+                colorScheme={"green"}
+                onClick={fixedInvestmentsModalProps.onOpen}
+                size="sm"
+              >
+                Add fixed investment
+              </Button>
+              <Button
+                colorScheme={"green"}
+                onClick={otherAssetsModalProps.onOpen}
+                size="sm"
+              >
+                Add other asset
+              </Button>
+            </HStack>
           </HStack>
         </Box>
         <Box
@@ -332,6 +379,36 @@ export default function AccountsPage() {
           </SimpleGrid>
         </Box>
       </Sidebar>
+
+      <LoanAccountModal
+        isOpen={loanAccountModalProps.isOpen}
+        onClose={loanAccountModalProps.onClose}
+        uid={userData?.uid}
+      />
+
+      <BankInvestmentAccountModal
+        isOpen={bankInvestmentAccountModalProps.isOpen}
+        onClose={bankInvestmentAccountModalProps.onClose}
+        uid={userData?.uid}
+      />
+
+      <CreditCardModal
+        isOpen={creditCardModalProps.isOpen}
+        onClose={creditCardModalProps.onClose}
+        uid={userData?.uid}
+      />
+
+      <FixedInvestmentsModal
+        isOpen={fixedInvestmentsModalProps.isOpen}
+        onClose={fixedInvestmentsModalProps.onClose}
+        uid={userData?.uid}
+      />
+
+      <OtherAssetsModal
+        isOpen={otherAssetsModalProps.isOpen}
+        onClose={otherAssetsModalProps.onClose}
+        uid={userData?.uid}
+      />
     </ProtectedRoute>
   );
 }
