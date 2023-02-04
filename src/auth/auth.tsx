@@ -70,6 +70,7 @@ const formatUserState = (userData: DocumentSnapshot): UserModel | null => {
     budgetInfo: userData?.get("budgetInfo"),
     goalInfo: userData?.get("goalInfo"),
     monthTransactionsMap: userData?.get("monthTransactionsMap"),
+    suggestions: userData?.get("suggestions"),
   };
 };
 
