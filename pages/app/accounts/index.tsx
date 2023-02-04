@@ -11,7 +11,6 @@ import {
   StatLabel,
   StatNumber,
   useDisclosure,
-  VStack,
 } from "@chakra-ui/react";
 
 import ProtectedRoute from "../../../src/auth/ProtectedRoute";
