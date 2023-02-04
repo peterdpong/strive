@@ -24,7 +24,10 @@ const TopExpenses = ({
     return b.amount - a.amount;
   });
 
-  const topFiveExpenses = transactions.slice(0, 5);
+  const topFiveExpenses = transactions
+    .sort((a: Transaction, b: Transaction) => a.amount - b.amount)
+    .filter((transaction: Transaction) => transaction.amount < 0)
+    .slice(0, 5);
 
   return (
     <Box
