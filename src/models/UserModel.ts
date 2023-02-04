@@ -13,6 +13,7 @@ export type UserModel = {
   email: string;
   firstName: string;
   lastName: string;
+  age: number;
   onboardingStatus: OnboardingStatus;
   financialInfo: FinancialInfo;
   budgetInfo: BudgetModel;

@@ -23,7 +23,8 @@ export const addNewUser = (
   uid: string,
   email: string,
   firstName: string,
-  lastName: string
+  lastName: string,
+  age: number
 ) => {
   const initMonthTransactionsMap: { [key: string]: Transaction[] } = {};
   const currentDate = new Date();
@@ -40,6 +41,7 @@ export const addNewUser = (
     email,
     firstName,
     lastName,
+    age,
     onboardingStatus: {
       finished: false,
       stageNum: -1,
@@ -67,6 +69,7 @@ export const addNewUser = (
       timeframeValue: 5,
     },
     monthTransactionsMap: initMonthTransactionsMap,
+    suggestions: {},
   };
 
   try {
