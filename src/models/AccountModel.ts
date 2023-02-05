@@ -50,7 +50,7 @@ export type RRSPAccount = {
 
 export enum AccountType {
   SAVINGS = "Savings",
-  CHEQUINGS = "Chequings",
+  CHEQUINGS = "Chequing",
   CREDITCARD = "Credit Card",
   LOAN = "Loan",
   TFSA = "TFSA",
