@@ -22,6 +22,13 @@ import { SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import {
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+} from "@chakra-ui/input"
+import { CheckIcon } from '@chakra-ui/icons'
+import {
   Chart as ChartJS,
   ArcElement,
   Legend,
@@ -33,6 +40,7 @@ import {
   Filler,
   ScriptableContext,
 } from "chart.js";
+import { Flex, Stack, Divider } from '@chakra-ui/react'
 import { Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
@@ -165,7 +173,7 @@ export default function SuggestionsPage() {
 
               <Heading fontSize={"xl"}>Adjust goal</Heading>
 
-              <SimpleGrid columns={3} spacing={5}>
+              <SimpleGrid columns={2} spacing={3}>
            
                 <Box
                   bg={"gray.100"}
@@ -270,7 +278,27 @@ export default function SuggestionsPage() {
                   </Tooltip>
                 </Slider>
                 </Box>
+              
+                <Flex>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents='none'
+                      color='gray.300'
+                      fontSize='1.2em'
+                      children='$'
+                    />
+                    <Input placeholder='Enter amount over $1,000,000' />
+                    <InputRightElement>
+                      <CheckIcon color='green.500' />
+                    </InputRightElement>
+                  </InputGroup>
+                </Flex>
+
+                <Input placeholder='Enter number of months if under 1 yr' />
               </SimpleGrid>
+
+              <Stack direction='row' h='10px' p={4}>
+              </Stack>
 
               <Heading fontSize={"xl"}>Suggested goals</Heading>
 
