@@ -46,6 +46,7 @@ import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
 import { useAuth } from "../../src/auth/auth";
 import { BudgetEngine } from "../../src/engine/BudgetEngine";
+import { B } from "chart.js/dist/chunks/helpers.core";
 
 // Boilerplate data
 ChartJS.register(
