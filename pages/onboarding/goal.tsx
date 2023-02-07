@@ -45,6 +45,7 @@ import { Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
 import { useAuth } from "../../src/auth/auth";
+import { BudgetEngine } from "../../src/engine/BudgetEngine";
 
 // Boilerplate data
 ChartJS.register(
@@ -116,6 +117,8 @@ export default function SuggestionsPage() {
   const [showTooltip, setShowTooltip] = useState(false);
   const [sliderValueTimeline, setSliderValueTimeline] = useState(40);
   const [showTooltipTimeline, setShowTooltipTimeline] = useState(false);
+
+  console.log(BudgetEngine.generateGoals(userData, 100000, 10));
 
   return (
     <ProtectedRoute>
