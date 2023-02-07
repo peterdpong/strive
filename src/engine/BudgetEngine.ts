@@ -1,11 +1,12 @@
 // Holds all budget optimization functions
-
-//import { exit } from "process";
-import MonthlyTransactions from "../../pages/app/budget/MonthlyTransactions";
 import { UserModel } from "../models/UserModel";
 
 export class BudgetEngine {
-  static generateGoals(userData: UserModel | null, goalNetWorth: number, goalTimeline: number) {
+  static generateGoals(
+    userData: UserModel | null,
+    goalNetWorth: number,
+    goalTimeline: number
+  ) {
     if (userData == null) {
       return 0;
     }
@@ -18,10 +19,12 @@ export class BudgetEngine {
     //bank accounts
     let bankAcctTotal = 0;
 
-    Object.values(userData.financialInfo.accounts.bankAccounts).map((account) => {
-      bankAcctTotal += account.value;
-    })
-    
+    Object.values(userData.financialInfo.accounts.bankAccounts).map(
+      (account) => {
+        bankAcctTotal += account.value;
+      }
+    );
+
     //return ("this is bankaacctotal:" ) + bankAcctTotal;
 
     //fv bank account assets
@@ -31,9 +34,11 @@ export class BudgetEngine {
 
     let fixedInvTotal = 0;
 
-    Object.values(userData.financialInfo.accounts.fixedInvestments).map((account) => {
-      fixedInvTotal += account.startingValue;
-    })
+    Object.values(userData.financialInfo.accounts.fixedInvestments).map(
+      (account) => {
+        fixedInvTotal += account.startingValue;
+      }
+    );
 
     //return ("this is fixedInvTotal: ") + fixedInvTotal;
 
@@ -48,27 +53,21 @@ export class BudgetEngine {
     let artTotal = 0;
     let valuablesTotal = 0;
 
-    Object.values(userData.financialInfo.accounts.otherAssets).map((account) => {
-      if (account.type == 'House') {
-        houseTotal += account.value;
+    Object.values(userData.financialInfo.accounts.otherAssets).map(
+      (account) => {
+        if (account.type == "House") {
+          houseTotal += account.value;
+        } else if (account.type == "Vehicle") {
+          vehicleTotal += account.value;
+        } else if (account.type == "Collectibles") {
+          collectiblesTotal += account.value;
+        } else if (account.type == "Art") {
+          artTotal += account.value;
+        } else if (account.type == "Valuables") {
+          valuablesTotal += account.value;
+        }
       }
-
-      else if (account.type == 'Vehicle') {
-        vehicleTotal += account.value;
-      } 
-
-      else if (account.type == 'Collectibles') {
-        collectiblesTotal += account.value;
-      }
-
-      else if (account.type == 'Art') {
-        artTotal += account.value;
-      }
-
-      else if (account.type == 'Valuables') {
-        valuablesTotal += account.value;
-      }
-    })
+    );
 
     //fv house
     //const houseTotalInterest = houseTotal*(1.02)**goalTimeline;
@@ -86,7 +85,12 @@ export class BudgetEngine {
     //const valuablesTotalInterest = valuablesTotal*(1.02)**goalTimeline;
 
     //total other assets
-    const otherAssetsTotal = +houseTotal + +vehicleTotal + +collectiblesTotal + +artTotal + +valuablesTotal;
+    const otherAssetsTotal =
+      +houseTotal +
+      +vehicleTotal +
+      +collectiblesTotal +
+      +artTotal +
+      +valuablesTotal;
 
     //return ("artTotal: ") + artTotal;
     //return ("this is other assets: ") + otherAssetsTotal;
@@ -110,16 +114,17 @@ export class BudgetEngine {
     + (userData.financialInfo.accounts.fixedInvestments.FixedInvestment.startingValue)*(1+(userData.financialInfo.accounts.bankAccounts.FixedInvestment.interestRate)/100)**goalTimeline
     + userData.financialInfo.accounts.otherAssets.OtherAsset.value
     */
-    
 
     //total liabilities
 
     //credit card debt
     let creditCardTotal = 0;
 
-    Object.values(userData.financialInfo.accounts.creditCards).map((account) => {
-      creditCardTotal += account.amountOwned;
-    })
+    Object.values(userData.financialInfo.accounts.creditCards).map(
+      (account) => {
+        creditCardTotal += account.amountOwned;
+      }
+    );
 
     //return ("this is credit card debt: ") + creditCardTotal;
 
@@ -128,7 +133,7 @@ export class BudgetEngine {
 
     Object.values(userData.financialInfo.accounts.loans).map((account) => {
       loansTotal += account.remainingAmount;
-    })
+    });
 
     //return ("this is loan debt: ") + loansTotal;
 
@@ -149,10 +154,10 @@ export class BudgetEngine {
     currNetWorth = totalAssets - totalLiabilities;
 
     //return ("this is curr net worth: ") + currNetWorth;
- 
+
     //present net worth future valued
     let currNetWorthFV = 0;
-    currNetWorthFV = currNetWorth*1.05**(goalTimeline); //5% RoR assumption
+    currNetWorthFV = currNetWorth * 1.05 ** goalTimeline; //5% RoR assumption
 
     //return ("this is FV currNW: ") + currNetWorthFV;
 
@@ -163,15 +168,14 @@ export class BudgetEngine {
     //const arr1 = [goalNetWorth, currNetWorthFV, netWorthDiff];
     //return (arr1);
 
-
     //FORMULA 2: monthly savings available
 
     //cash inflows
     //const monthlySavingsAvail: number = userData.budgetInfo.monthlyVariableBudgetUnallocated
 
     let monthlyIncome = 0;
-    monthlyIncome = (userData.financialInfo.annualIncome)/12;
-    
+    monthlyIncome = userData.financialInfo.annualIncome / 12;
+
     //return ("this is monthly income: ") + monthlyIncome;
 
     //cash outflows
@@ -179,26 +183,29 @@ export class BudgetEngine {
     let categoryAllocations = 0;
     Object.values(userData.budgetInfo.monthlyAllocations).map((account) => {
       categoryAllocations += account.allocation; //monthly expenses
-    })
+    });
 
     //return ("this is monthly transactions: ") + categoryAllocations;
 
     let creditCardRepayment = 0;
-    Object.values(userData.financialInfo.accounts.creditCards).map((account) => {
-      creditCardRepayment += account.nextPaymentAmount; //monthly payment
-    })
+    Object.values(userData.financialInfo.accounts.creditCards).map(
+      (account) => {
+        creditCardRepayment += account.nextPaymentAmount; //monthly payment
+      }
+    );
 
     //return ("this is credit card repayment: ") + creditCardRepayment;
-    
+
     let loanRepayment = 0;
     Object.values(userData.financialInfo.accounts.loans).map((account) => {
       loanRepayment += account.minimumPayment; //monthly payment
-    })
+    });
 
     //return ("this is loan repayment: ") + loanRepayment;
 
     let totalOutflows = 0;
-    totalOutflows = +categoryAllocations + +creditCardRepayment + +loanRepayment;
+    totalOutflows =
+      +categoryAllocations + +creditCardRepayment + +loanRepayment;
 
     //return ("this is total outflows: ") + totalOutflows;
 
@@ -213,18 +220,33 @@ export class BudgetEngine {
     let calcMonthlySavings = 0;
     //calcMonthlySavings = netWorthDiff/((1.015/12)**12*goalTimeline-1)/(1.015/12)
     //return goalTimeline;
-    calcMonthlySavings = netWorthDiff*(0.05/12)/(((1+0.05/12)**(12*goalTimeline))-1)
+    calcMonthlySavings =
+      (netWorthDiff * (0.05 / 12)) /
+      ((1 + 0.05 / 12) ** (12 * goalTimeline) - 1);
 
     //return ("this is calcMonthlySavings: ") + calcMonthlySavings;
 
     if (calcMonthlySavings > monthlySavingsAvail) {
-      console.log("Error - not enough $ for monthly savings required to meet your goals.");
-    }
-    else {
-      let monthlySavingsArray: Array<number>;
+      console.log(
+        "Error - not enough $ for monthly savings required to meet your goals."
+      );
+    } else {
       //less aggressive, neutral and more aggressive options
-      monthlySavingsArray = [1.05*calcMonthlySavings, calcMonthlySavings, 0.95*calcMonthlySavings]
-      return "most aggressive: " + monthlySavingsArray[0] + "\n" + "neutral: " + monthlySavingsArray[1] + "\n" + "least aggressive: " + monthlySavingsArray[2];
+      const monthlySavingsArray: Array<number> = [
+        1.05 * calcMonthlySavings,
+        calcMonthlySavings,
+        0.95 * calcMonthlySavings,
+      ];
+      return (
+        "most aggressive: " +
+        monthlySavingsArray[0] +
+        "\n" +
+        "neutral: " +
+        monthlySavingsArray[1] +
+        "\n" +
+        "least aggressive: " +
+        monthlySavingsArray[2]
+      );
     }
   }
 
