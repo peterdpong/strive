@@ -11,27 +11,6 @@ export class BudgetEngine {
   ) {
     //formula 1: net worth differential
 
-    //present net worth
-
-    //total assets
-    const totalAssets: number =
-      userData.financialInfo.accounts.bankAccounts.BankInvestmentAccount.value +
-      userData.financialInfo.accounts.fixedInvestments.FixedInvestment
-        .startingValue +
-      userData.financialInfo.accounts.otherAssets.OtherAsset.value;
-
-    //total liabilities
-    const totalLiabilities: number =
-      userData.financialInfo.accounts.loans.LoanAccount.remainingAmount +
-      userData.financialInfo.accounts.creditCards.CreditCardAccount.amountOwned;
-
-    //present net worth
-    const currNetWorth = totalAssets - totalLiabilities;
-
-    //goal net worth
-
-    userData.return;
-
     //total assets
     const totalAssets: number =
       userData.financialInfo.accounts.bankAccounts.BankInvestmentAccount.value *
