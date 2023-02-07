@@ -25,8 +25,8 @@ export type LoanAccount = {
 
 export type FixedInvestment = {
   name: string;
-  startDate: Date | Timestamp;
-  maturityDate: Date | Timestamp;
+  startDate: Timestamp;
+  maturityDate: Timestamp;
   interestRate: number;
   startingValue: number;
 };
@@ -69,5 +69,5 @@ export enum AssetTypes {
 export enum LoanTypes {
   MORTGAGE = "Mortgage",
   STUDENT = "Student Loan",
-  CAR = "Car Loan"
+  CAR = "Car Loan",
 }

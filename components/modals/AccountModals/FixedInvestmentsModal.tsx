@@ -19,6 +19,7 @@ import {
   SubmitButton,
 } from "formik-chakra-ui";
 import { addAccount } from "../../../src/firebase/UserActions";
+import { Timestamp } from "firebase/firestore";
 
 export default function FixedInvestmentsModal(props: {
   isOpen: boolean;
@@ -27,25 +28,6 @@ export default function FixedInvestmentsModal(props: {
 }) {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
-
-  // const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
-  //   e.preventDefault();
-
-  //   if (name === null || type === null || value === null) {
-  //     setError("A field is missing");
-  //     return;
-  //   }
-
-  //   if (userData) {
-  //     addAccount(userData.uid, userData.financialInfo.accounts, {
-  //       name: name,
-  //       type: type as AccountType,
-  //       accountValue: value,
-  //       accountInfo: {},
-  //     });
-  //   }
-  //   props.onClose();
-  // };
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
@@ -71,8 +53,14 @@ export default function FixedInvestmentsModal(props: {
                   "FixedInvestment",
                   {
                     name: values.name,
-                    startDate: new Date(values.startDate),
-                    maturityDate: new Date(values.maturityDate),
+                    startDate: new Timestamp(
+                      Date.parse(values.startDate) / 1000,
+                      0
+                    ),
+                    maturityDate: new Timestamp(
+                      Date.parse(values.maturityDate) / 1000,
+                      0
+                    ),
                     startingValue: values.startingValue,
                     interestRate: values.interestRate,
                   }

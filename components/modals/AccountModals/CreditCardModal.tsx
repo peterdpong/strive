@@ -19,6 +19,7 @@ import {
   SubmitButton,
 } from "formik-chakra-ui";
 import { addAccount } from "../../../src/firebase/UserActions";
+import { Timestamp } from "firebase/firestore";
 
 export default function CreditCardModal(props: {
   isOpen: boolean;
@@ -55,7 +56,10 @@ export default function CreditCardModal(props: {
                     interestRate: values.interestRate,
                     amountOwned: values.amountOwned,
                     nextPaymentAmount: values.nextPaymentAmount,
-                    nextPaymentDate: new Date(values.nextPaymentDate),
+                    nextPaymentDate: new Timestamp(
+                      Date.parse(values.nextPaymentDate) / 1000,
+                      0
+                    ),
                   }
                 );
                 actions.resetForm;

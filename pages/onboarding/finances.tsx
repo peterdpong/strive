@@ -272,7 +272,7 @@ export default function FinancesPages() {
                                 <Stat>
                                   <StatLabel>Start date</StatLabel>
                                   <StatLabel>
-                                    {(currAccount.startDate as Timestamp)
+                                    {currAccount.startDate
                                       .toDate()
                                       .toISOString()
                                       .substring(0, 10)}
@@ -281,7 +281,7 @@ export default function FinancesPages() {
                                 <Stat>
                                   <StatLabel>Maturity date</StatLabel>
                                   <StatLabel>
-                                    {(currAccount.maturityDate as Timestamp)
+                                    {currAccount.maturityDate
                                       .toDate()
                                       .toISOString()
                                       .substring(0, 10)}
@@ -305,7 +305,7 @@ export default function FinancesPages() {
                                   deleteAccount(
                                     userData.uid,
                                     userData.financialInfo.accounts,
-                                    "FixedInvestments",
+                                    "FixedInvestment",
                                     accountKey
                                   );
                                 }}

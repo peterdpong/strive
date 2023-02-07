@@ -21,6 +21,7 @@ import {
   SelectControl,
 } from "formik-chakra-ui";
 import { addAccount } from "../../../src/firebase/UserActions";
+import { Timestamp } from "firebase/firestore";
 
 export default function LoanAccountModal(props: {
   isOpen: boolean;
@@ -29,25 +30,6 @@ export default function LoanAccountModal(props: {
 }) {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
-
-  // const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
-  //   e.preventDefault();
-
-  //   if (name === null || type === null || value === null) {
-  //     setError("A field is missing");
-  //     return;
-  //   }
-
-  //   if (userData) {
-  //     addAccount(userData.uid, userData.financialInfo.accounts, {
-  //       name: name,
-  //       type: type as AccountType,
-  //       accountValue: value,
-  //       accountInfo: {},
-  //     });
-  //   }
-  //   props.onClose();
-  // };
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
@@ -76,7 +58,10 @@ export default function LoanAccountModal(props: {
                     remainingAmount: values.remainingAmount,
                     minimumPayment: values.minimumPayment,
                     interestRate: values.interestRate,
-                    paymentDate: new Date(values.paymentDate),
+                    paymentDate: new Timestamp(
+                      Date.parse(values.paymentDate) / 1000,
+                      0
+                    ),
                   }
                 );
                 actions.resetForm;
@@ -94,13 +79,11 @@ export default function LoanAccountModal(props: {
               >
                 <InputControl name="name" label="Loan Name" />
                 <SelectControl name="type" label="Loan Type">
-                  <option value={LoanTypes.MORTGAGE}>{LoanTypes.MORTGAGE}</option>
-                  <option value={LoanTypes.CAR}>
-                    {LoanTypes.CAR}
+                  <option value={LoanTypes.MORTGAGE}>
+                    {LoanTypes.MORTGAGE}
                   </option>
-                  <option value={LoanTypes.STUDENT}>
-                    {LoanTypes.STUDENT}
-                  </option>
+                  <option value={LoanTypes.CAR}>{LoanTypes.CAR}</option>
+                  <option value={LoanTypes.STUDENT}>{LoanTypes.STUDENT}</option>
                 </SelectControl>
                 <NumberInputControl
                   name="remainingAmount"
