@@ -26,8 +26,8 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
-} from "@chakra-ui/input"
-import { CheckIcon } from '@chakra-ui/icons'
+} from "@chakra-ui/input";
+import { CheckIcon } from "@chakra-ui/icons";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -40,7 +40,7 @@ import {
   Filler,
   ScriptableContext,
 } from "chart.js";
-import { Flex, Stack, Divider } from '@chakra-ui/react'
+import { Flex, Stack } from "@chakra-ui/react";
 import { Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
@@ -174,7 +174,6 @@ export default function SuggestionsPage() {
               <Heading fontSize={"xl"}>Adjust goal</Heading>
 
               <SimpleGrid columns={2} spacing={3}>
-           
                 <Box
                   bg={"gray.100"}
                   rounded={"5px"}
@@ -183,48 +182,48 @@ export default function SuggestionsPage() {
                   border={"1px"}
                   borderColor={"gray.300"}
                 >
-                <Heading fontSize={"xl"}>Net Worth Goal</Heading>
-                <Text fontSize={"xl"}>${sliderValue}</Text>
-                <Slider
-                  defaultValue={500000}
-                  id="slider"
-                  min={0}
-                  max={1000000}
-                  colorScheme="green"
-                  onChange={(v) => setSliderValue(v)}
-                  onMouseEnter={() => setShowTooltip(true)}
-                  onMouseLeave={() => setShowTooltip(false)}
-                  onChangeEnd={(sliderValue) => console.log(sliderValue)}
-                >
-                  <SliderMark value={0} mt="1" ml="-2.5" fontSize="sm">
-                    $0
-                  </SliderMark>
-                  <SliderMark value={200000} mt="1" ml="-2.5" fontSize="sm">
-                    $250k
-                  </SliderMark>
-                  <SliderMark value={450000} mt="1" ml="-2.5" fontSize="sm">
-                    $500k
-                  </SliderMark>
-                  <SliderMark value={700000} mt="1" ml="-2.5" fontSize="sm">
-                    $750k
-                  </SliderMark>
-                  <SliderMark value={950000} mt="1" ml="-2.5" fontSize="sm">
-                    $1mm
-                  </SliderMark>
-                  <SliderTrack>
-                    <SliderFilledTrack />
-                  </SliderTrack>
-                  <Tooltip
-                    hasArrow
-                    bg="green"
-                    color="white"
-                    placement="top"
-                    isOpen={showTooltip}
-                    label={`$${sliderValue}`}
+                  <Heading fontSize={"xl"}>Net Worth Goal</Heading>
+                  <Text fontSize={"xl"}>${sliderValue}</Text>
+                  <Slider
+                    defaultValue={500000}
+                    id="slider"
+                    min={0}
+                    max={1000000}
+                    colorScheme="green"
+                    onChange={(v) => setSliderValue(v)}
+                    onMouseEnter={() => setShowTooltip(true)}
+                    onMouseLeave={() => setShowTooltip(false)}
+                    onChangeEnd={(sliderValue) => console.log(sliderValue)}
                   >
-                    <SliderThumb />
-                  </Tooltip>
-                </Slider>
+                    <SliderMark value={0} mt="1" ml="-2.5" fontSize="sm">
+                      $0
+                    </SliderMark>
+                    <SliderMark value={200000} mt="1" ml="-2.5" fontSize="sm">
+                      $250k
+                    </SliderMark>
+                    <SliderMark value={450000} mt="1" ml="-2.5" fontSize="sm">
+                      $500k
+                    </SliderMark>
+                    <SliderMark value={700000} mt="1" ml="-2.5" fontSize="sm">
+                      $750k
+                    </SliderMark>
+                    <SliderMark value={950000} mt="1" ml="-2.5" fontSize="sm">
+                      $1mm
+                    </SliderMark>
+                    <SliderTrack>
+                      <SliderFilledTrack />
+                    </SliderTrack>
+                    <Tooltip
+                      hasArrow
+                      bg="green"
+                      color="white"
+                      placement="top"
+                      isOpen={showTooltip}
+                      label={`$${sliderValue}`}
+                    >
+                      <SliderThumb />
+                    </Tooltip>
+                  </Slider>
                 </Box>
 
                 <Box
@@ -235,70 +234,72 @@ export default function SuggestionsPage() {
                   border={"1px"}
                   borderColor={"gray.300"}
                 >
-                <Heading fontSize={"xl"}>Timeline Goal</Heading>
-                <Text fontSize={"xl"}>{sliderValueTimeline} yrs</Text>
-                <Slider
-                  defaultValue={5}
-                  id="slider"
-                  min={0}
-                  max={80}
-                  colorScheme="green"
-                  onChange={(v) => setSliderValueTimeline(v)}
-                  onMouseEnter={() => setShowTooltipTimeline(true)}
-                  onMouseLeave={() => setShowTooltipTimeline(false)}
-                  onChangeEnd={(sliderValueTimeline) => console.log(sliderValueTimeline)}
-                >
-                  <SliderMark value={0} mt="1" ml="-2.5" fontSize="sm">
-                    0 yrs
-                  </SliderMark>
-                  <SliderMark value={17.5} mt="1" ml="-2.5" fontSize="sm">
-                    20 yrs
-                  </SliderMark>
-                  <SliderMark value={37.5} mt="1" ml="-2.5" fontSize="sm">
-                    40 yrs
-                  </SliderMark>
-                  <SliderMark value={57.5} mt="1" ml="-2.5" fontSize="sm">
-                    60 yrs
-                  </SliderMark>
-                  <SliderMark value={74.1} mt="1" ml="-2.5" fontSize="sm">
-                    80 yrs
-                  </SliderMark>
-                  <SliderTrack>
-                    <SliderFilledTrack />
-                  </SliderTrack>
-                  <Tooltip
-                    hasArrow
-                    bg="green"
-                    color="white"
-                    placement="top"
-                    isOpen={showTooltipTimeline}
-                    label={`${sliderValueTimeline} yrs`}
+                  <Heading fontSize={"xl"}>Timeline Goal</Heading>
+                  <Text fontSize={"xl"}>{sliderValueTimeline} yrs</Text>
+                  <Slider
+                    defaultValue={5}
+                    id="slider"
+                    min={0}
+                    max={80}
+                    colorScheme="green"
+                    onChange={(v) => setSliderValueTimeline(v)}
+                    onMouseEnter={() => setShowTooltipTimeline(true)}
+                    onMouseLeave={() => setShowTooltipTimeline(false)}
+                    onChangeEnd={(sliderValueTimeline) =>
+                      console.log(sliderValueTimeline)
+                    }
                   >
-                    <SliderThumb />
-                  </Tooltip>
-                </Slider>
+                    <SliderMark value={0} mt="1" ml="-2.5" fontSize="sm">
+                      0 yrs
+                    </SliderMark>
+                    <SliderMark value={17.5} mt="1" ml="-2.5" fontSize="sm">
+                      20 yrs
+                    </SliderMark>
+                    <SliderMark value={37.5} mt="1" ml="-2.5" fontSize="sm">
+                      40 yrs
+                    </SliderMark>
+                    <SliderMark value={57.5} mt="1" ml="-2.5" fontSize="sm">
+                      60 yrs
+                    </SliderMark>
+                    <SliderMark value={74.1} mt="1" ml="-2.5" fontSize="sm">
+                      80 yrs
+                    </SliderMark>
+                    <SliderTrack>
+                      <SliderFilledTrack />
+                    </SliderTrack>
+                    <Tooltip
+                      hasArrow
+                      bg="green"
+                      color="white"
+                      placement="top"
+                      isOpen={showTooltipTimeline}
+                      label={`${sliderValueTimeline} yrs`}
+                    >
+                      <SliderThumb />
+                    </Tooltip>
+                  </Slider>
                 </Box>
-              
+
                 <Flex>
                   <InputGroup>
                     <InputLeftElement
-                      pointerEvents='none'
-                      color='gray.300'
-                      fontSize='1.2em'
-                      children='$'
+                      pointerEvents="none"
+                      color="gray.300"
+                      fontSize="1.2em"
+                      // eslint-disable-next-line react/no-children-prop
+                      children="$"
                     />
-                    <Input placeholder='Enter amount over $1,000,000' />
+                    <Input placeholder="Enter amount over $1,000,000" />
                     <InputRightElement>
-                      <CheckIcon color='green.500' />
+                      <CheckIcon color="green.500" />
                     </InputRightElement>
                   </InputGroup>
                 </Flex>
 
-                <Input placeholder='Enter number of months if under 1 yr' />
+                <Input placeholder="Enter number of months if under 1 yr" />
               </SimpleGrid>
 
-              <Stack direction='row' h='10px' p={4}>
-              </Stack>
+              <Stack direction="row" h="10px" p={4}></Stack>
 
               <Heading fontSize={"xl"}>Suggested goals</Heading>
 
