@@ -35,7 +35,7 @@ import {
 import { Flex, Stack } from "@chakra-ui/react";
 import { Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
+//import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
 import { useAuth } from "../../src/auth/auth";
 import { BudgetEngine } from "../../src/engine/BudgetEngine";
 
@@ -191,12 +191,12 @@ export default function SuggestionsPage() {
           }}
           onSubmit={(values, actions) => {
             if (userData) {
-              if (
-                values.selectedGoalInfo &&
-                getUserGoal(userData.uid) !== values.selectedGoalInfo
-              ) {
-                addUserGoal(userData.uid, values.selectedGoalInfo);
-              }
+              // if (
+              //   values.selectedGoalInfo &&
+              //   getUserGoal(userData.uid) !== values.selectedGoalInfo
+              // ) {
+              //   addUserGoal(userData.uid, values.selectedGoalInfo);
+              // }
               actions.resetForm;
               console.log(values);
               router.push("/app");
