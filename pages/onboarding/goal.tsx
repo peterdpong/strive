@@ -6,28 +6,20 @@ import {
   Container,
   Heading,
   SimpleGrid,
-  Slider,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderTrack,
   Stat,
   StatLabel,
   StatNumber,
-  SliderMark,
   Text,
-  Tooltip,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import { SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import {
-  Input,
-  InputGroup,
-  InputLeftElement,
-  InputRightElement,
-} from "@chakra-ui/input";
-import { CheckIcon } from "@chakra-ui/icons";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -43,8 +35,9 @@ import {
 import { Flex, Stack } from "@chakra-ui/react";
 import { Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
+//import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
 import { useAuth } from "../../src/auth/auth";
+import { BudgetEngine } from "../../src/engine/BudgetEngine";
 
 // Boilerplate data
 ChartJS.register(
@@ -112,10 +105,27 @@ export default function SuggestionsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  const [sliderValue, setSliderValue] = useState(500000);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [sliderValueTimeline, setSliderValueTimeline] = useState(40);
-  const [showTooltipTimeline, setShowTooltipTimeline] = useState(false);
+  const [netWorthGoal, setNetWorthGoal] = useState<number>(500000);
+  const [timelineYears, setTimelineYears] = useState<number>(20);
+
+  const [goals, setGoals] = useState<string | 0 | undefined>(undefined);
+
+  const onGenerateGoals = () => {
+    const generateGoalsResult = BudgetEngine.generateGoals(
+      userData,
+      netWorthGoal,
+      timelineYears
+    );
+    setGoals(generateGoalsResult);
+    console.log(generateGoalsResult);
+  };
+
+  // const [sliderValue, setSliderValue] = useState(500000);
+  // const [showTooltip, setShowTooltip] = useState(false);
+  // const [sliderValueTimeline, setSliderValueTimeline] = useState(40);
+  // const [showTooltipTimeline, setShowTooltipTimeline] = useState(false);
+
+  //console.log(BudgetEngine.generateGoals(userData, 100000, 10));
 
   return (
     <ProtectedRoute>
@@ -124,22 +134,69 @@ export default function SuggestionsPage() {
           Back
         </Button>
         <Heading>Choose your goal</Heading>
-        <Text fontSize={"md"}>
-          Choose one of the generated goals based on your finances or change it
-          just the way you like it!
-        </Text>
+        <Text fontSize={"md"}>Choose your net worth and timeline goal.</Text>
+        <Box
+          bg={"gray.100"}
+          rounded={"5px"}
+          my={"25px"}
+          p={"20px"}
+          border={"1px"}
+          borderColor={"gray.300"}
+        >
+          <Flex gap="1rem" mb="1">
+            <Stack flex={1}>
+              <Heading size="md">Net Worth Goal ($)</Heading>
+              <NumberInput
+                min={0}
+                defaultValue={netWorthGoal}
+                precision={2}
+                onChange={(_asString, asNumber) => {
+                  setNetWorthGoal(asNumber);
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </Stack>
+            <Stack flex={1}>
+              <Heading size="md">Timeline Goal in years</Heading>
+              <NumberInput
+                min={0}
+                defaultValue={timelineYears}
+                onChange={(_asString, asNumber) => {
+                  setTimelineYears(asNumber);
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </Stack>
+          </Flex>
+          <Button onClick={onGenerateGoals} colorScheme="green">
+            {goals === undefined ? "Generate Goals" : "Regenerate Goals"}
+          </Button>
+        </Box>
+
+        {goals === undefined ? null : <>hello</>}
+
         <Formik
           initialValues={{
-            selectedGoalInfo: userData ? getUserGoal(userData?.uid) : null,
+            selectedGoalIndex: 1, // 1 is the neutral aggresiveness
           }}
           onSubmit={(values, actions) => {
             if (userData) {
-              if (
-                values.selectedGoalInfo &&
-                getUserGoal(userData.uid) !== values.selectedGoalInfo
-              ) {
-                addUserGoal(userData.uid, values.selectedGoalInfo);
-              }
+              // if (
+              //   values.selectedGoalInfo &&
+              //   getUserGoal(userData.uid) !== values.selectedGoalInfo
+              // ) {
+              //   addUserGoal(userData.uid, values.selectedGoalInfo);
+              // }
               actions.resetForm;
               console.log(values);
               router.push("/app");
@@ -157,151 +214,7 @@ export default function SuggestionsPage() {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onSubmit={handleSubmit as any}
             >
-              <Box
-                bg={"gray.100"}
-                rounded={"5px"}
-                my={"25px"}
-                p={"20px"}
-                border={"1px"}
-                borderColor={"gray.300"}
-              >
-                <Heading mb={"8px"} fontSize={"xl"}>
-                  Selected Goal
-                </Heading>
-                <Line options={options} data={data} />
-              </Box>
-
-              <Heading fontSize={"xl"}>Adjust goal</Heading>
-
-              <SimpleGrid columns={2} spacing={3}>
-                <Box
-                  bg={"gray.100"}
-                  rounded={"5px"}
-                  my={"25px"}
-                  p={"20px"}
-                  border={"1px"}
-                  borderColor={"gray.300"}
-                >
-                  <Heading fontSize={"xl"}>Net Worth Goal</Heading>
-                  <Text fontSize={"xl"}>${sliderValue}</Text>
-                  <Slider
-                    defaultValue={500000}
-                    id="slider"
-                    min={0}
-                    max={1000000}
-                    colorScheme="green"
-                    onChange={(v) => setSliderValue(v)}
-                    onMouseEnter={() => setShowTooltip(true)}
-                    onMouseLeave={() => setShowTooltip(false)}
-                    onChangeEnd={(sliderValue) => console.log(sliderValue)}
-                  >
-                    <SliderMark value={0} mt="1" ml="-2.5" fontSize="sm">
-                      $0
-                    </SliderMark>
-                    <SliderMark value={200000} mt="1" ml="-2.5" fontSize="sm">
-                      $250k
-                    </SliderMark>
-                    <SliderMark value={450000} mt="1" ml="-2.5" fontSize="sm">
-                      $500k
-                    </SliderMark>
-                    <SliderMark value={700000} mt="1" ml="-2.5" fontSize="sm">
-                      $750k
-                    </SliderMark>
-                    <SliderMark value={950000} mt="1" ml="-2.5" fontSize="sm">
-                      $1mm
-                    </SliderMark>
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <Tooltip
-                      hasArrow
-                      bg="green"
-                      color="white"
-                      placement="top"
-                      isOpen={showTooltip}
-                      label={`$${sliderValue}`}
-                    >
-                      <SliderThumb />
-                    </Tooltip>
-                  </Slider>
-                </Box>
-
-                <Box
-                  bg={"gray.100"}
-                  rounded={"5px"}
-                  my={"25px"}
-                  p={"20px"}
-                  border={"1px"}
-                  borderColor={"gray.300"}
-                >
-                  <Heading fontSize={"xl"}>Timeline Goal</Heading>
-                  <Text fontSize={"xl"}>{sliderValueTimeline} yrs</Text>
-                  <Slider
-                    defaultValue={5}
-                    id="slider"
-                    min={0}
-                    max={80}
-                    colorScheme="green"
-                    onChange={(v) => setSliderValueTimeline(v)}
-                    onMouseEnter={() => setShowTooltipTimeline(true)}
-                    onMouseLeave={() => setShowTooltipTimeline(false)}
-                    onChangeEnd={(sliderValueTimeline) =>
-                      console.log(sliderValueTimeline)
-                    }
-                  >
-                    <SliderMark value={0} mt="1" ml="-2.5" fontSize="sm">
-                      0 yrs
-                    </SliderMark>
-                    <SliderMark value={17.5} mt="1" ml="-2.5" fontSize="sm">
-                      20 yrs
-                    </SliderMark>
-                    <SliderMark value={37.5} mt="1" ml="-2.5" fontSize="sm">
-                      40 yrs
-                    </SliderMark>
-                    <SliderMark value={57.5} mt="1" ml="-2.5" fontSize="sm">
-                      60 yrs
-                    </SliderMark>
-                    <SliderMark value={74.1} mt="1" ml="-2.5" fontSize="sm">
-                      80 yrs
-                    </SliderMark>
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <Tooltip
-                      hasArrow
-                      bg="green"
-                      color="white"
-                      placement="top"
-                      isOpen={showTooltipTimeline}
-                      label={`${sliderValueTimeline} yrs`}
-                    >
-                      <SliderThumb />
-                    </Tooltip>
-                  </Slider>
-                </Box>
-
-                <Flex>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      color="gray.300"
-                      fontSize="1.2em"
-                      // eslint-disable-next-line react/no-children-prop
-                      children="$"
-                    />
-                    <Input placeholder="Enter amount over $1,000,000" />
-                    <InputRightElement>
-                      <CheckIcon color="green.500" />
-                    </InputRightElement>
-                  </InputGroup>
-                </Flex>
-
-                <Input placeholder="Enter number of months if under 1 yr" />
-              </SimpleGrid>
-
-              <Stack direction="row" h="10px" p={4}></Stack>
-
-              <Heading fontSize={"xl"}>Suggested goals</Heading>
+              <Heading fontSize={"xl"}>Selected a suggested goals</Heading>
 
               <Box
                 bg={"gray.100"}
@@ -336,8 +249,13 @@ export default function SuggestionsPage() {
                           <StatLabel>Net Worth Goal in 5 years</StatLabel>
                           <StatNumber fontSize="md">$65,000</StatNumber>
                         </Stat>
-                        <Button my={"4px"} size={"sm"} colorScheme={"green"}>
-                          Select
+                        <Button
+                          isDisabled
+                          my={"4px"}
+                          size={"sm"}
+                          colorScheme={"green"}
+                        >
+                          Selected
                         </Button>
                       </Box>
                     </CardBody>
@@ -359,6 +277,19 @@ export default function SuggestionsPage() {
                     </CardBody>
                   </Card>
                 </SimpleGrid>
+              </Box>
+              <Box
+                bg={"gray.100"}
+                rounded={"5px"}
+                my={"25px"}
+                p={"20px"}
+                border={"1px"}
+                borderColor={"gray.300"}
+              >
+                <Heading mb={"8px"} fontSize={"xl"}>
+                  Overview of selected goal
+                </Heading>
+                <Line options={options} data={data} />
               </Box>
 
               <SubmitButton colorScheme={"green"}>Finish</SubmitButton>
