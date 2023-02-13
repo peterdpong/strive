@@ -78,7 +78,11 @@ export default function LoanAccountModal(props: {
                 onSubmit={handleSubmit as any}
               >
                 <InputControl name="name" label="Loan Name" />
-                <SelectControl name="type" label="Loan Type">
+                <SelectControl 
+                  name="type" 
+                  label="Loan Type"
+                  selectProps={{ placeholder: "Select loan type" }}
+                >
                   <option value={LoanTypes.MORTGAGE}>
                     {LoanTypes.MORTGAGE}
                   </option>

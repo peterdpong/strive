@@ -79,7 +79,11 @@ export default function OtherAssetsModal(props: {
                     precision: 2,
                   }}
                 />
-                <SelectControl name="type" label="Asset Type">
+                <SelectControl 
+                    name="type" 
+                    label="Asset Type"
+                    selectProps={{ placeholder: "Select other asset type" }}
+                >
                   <option value={AssetTypes.HOUSE}>{AssetTypes.HOUSE}</option>
                   <option value={AssetTypes.VEHICLE}>
                     {AssetTypes.VEHICLE}
@@ -101,7 +105,7 @@ export default function OtherAssetsModal(props: {
                   <></>
                 )}
                 <SubmitButton mt={"20px"} colorScheme={"green"}>
-                  Add bank account
+                  Add other asset
                 </SubmitButton>
               </Box>
             )}
