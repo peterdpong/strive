@@ -1,6 +1,24 @@
 // Holds all budget optimization functions
 import { UserModel } from "../models/UserModel";
 
+export type GeneratedGoals = {
+  lessAggressiveGoal: {
+    monthlyAmount: number;
+    networthGoal: number;
+    timelineGoal: number;
+  };
+  neutralGoal: {
+    monthlyAmount: number;
+    networthGoal: number;
+    timelineGoal: number;
+  };
+  moreAggressiveGoal: {
+    monthlyAmount: number;
+    networthGoal: number;
+    timelineGoal: number;
+  };
+};
+
 export class BudgetEngine {
   static generateGoals(
     userData: UserModel | null,
@@ -8,7 +26,7 @@ export class BudgetEngine {
     goalTimeline: number
   ) {
     if (userData == null) {
-      return 0;
+      return undefined;
     }
 
     //FORMULA 1: net worth differential
@@ -227,26 +245,27 @@ export class BudgetEngine {
     //return ("this is calcMonthlySavings: ") + calcMonthlySavings;
 
     if (calcMonthlySavings > monthlySavingsAvail) {
-      console.log(
-        "Error - not enough $ for monthly savings required to meet your goals."
-      );
+      return null;
     } else {
-      //less aggressive, neutral and more aggressive options
-      const monthlySavingsArray: Array<number> = [
-        1.05 * calcMonthlySavings,
-        calcMonthlySavings,
-        0.95 * calcMonthlySavings,
-      ];
-      return (
-        "most aggressive: " +
-        monthlySavingsArray[0] +
-        "\n" +
-        "neutral: " +
-        monthlySavingsArray[1] +
-        "\n" +
-        "least aggressive: " +
-        monthlySavingsArray[2]
-      );
+      // Return 3 generated goal options (less aggressive, neutral, and more aggressive)
+
+      return {
+        lessAggressiveGoal: {
+          monthlyAmount: calcMonthlySavings * 0.95,
+          networthGoal: goalNetWorth,
+          timelineGoal: goalTimeline,
+        },
+        neutralGoal: {
+          monthlyAmount: calcMonthlySavings,
+          networthGoal: goalNetWorth,
+          timelineGoal: goalTimeline,
+        },
+        moreAggressiveGoal: {
+          monthlyAmount: calcMonthlySavings * 1.05,
+          networthGoal: goalNetWorth,
+          timelineGoal: goalTimeline,
+        },
+      };
     }
   }
 

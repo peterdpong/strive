@@ -15,6 +15,10 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import { SubmitButton } from "formik-chakra-ui";
@@ -37,7 +41,7 @@ import { Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 //import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
 import { useAuth } from "../../src/auth/auth";
-import { BudgetEngine } from "../../src/engine/BudgetEngine";
+import { BudgetEngine, GeneratedGoals } from "../../src/engine/BudgetEngine";
 
 // Boilerplate data
 ChartJS.register(
@@ -108,7 +112,9 @@ export default function SuggestionsPage() {
   const [netWorthGoal, setNetWorthGoal] = useState<number>(500000);
   const [timelineYears, setTimelineYears] = useState<number>(20);
 
-  const [goals, setGoals] = useState<string | 0 | undefined>(undefined);
+  const [goals, setGoals] = useState<GeneratedGoals | undefined | null>(
+    undefined
+  );
 
   const onGenerateGoals = () => {
     const generateGoalsResult = BudgetEngine.generateGoals(
@@ -183,119 +189,156 @@ export default function SuggestionsPage() {
           </Button>
         </Box>
 
-        {goals === undefined ? null : <>hello</>}
+        {goals === null ? (
+          <Alert status="error">
+            <AlertIcon />
+            <AlertTitle>
+              Set net worth goal and timeline not feasible
+            </AlertTitle>
+            <AlertDescription>
+              Goal is not possible given financial information.
+            </AlertDescription>
+          </Alert>
+        ) : null}
 
-        <Formik
-          initialValues={{
-            selectedGoalIndex: 1, // 1 is the neutral aggresiveness
-          }}
-          onSubmit={(values, actions) => {
-            if (userData) {
-              // if (
-              //   values.selectedGoalInfo &&
-              //   getUserGoal(userData.uid) !== values.selectedGoalInfo
-              // ) {
-              //   addUserGoal(userData.uid, values.selectedGoalInfo);
-              // }
-              actions.resetForm;
-              console.log(values);
-              router.push("/app");
-            } else {
-              alert("Error: User not logged in...");
-              router.push("/login");
-            }
-          }}
-        >
-          {({ handleSubmit }) => (
-            <Container
-              maxW="container.xl"
-              as="form"
-              p={"0px"}
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              onSubmit={handleSubmit as any}
-            >
-              <Heading fontSize={"xl"}>Selected a suggested goals</Heading>
-
-              <Box
-                bg={"gray.100"}
-                rounded={"5px"}
-                my={"25px"}
-                p={"20px"}
-                border={"1px"}
-                borderColor={"gray.300"}
+        {goals === undefined || goals === null ? null : (
+          <Formik
+            initialValues={{
+              selectedGoalIndex: 1, // 1 is the neutral aggresiveness
+            }}
+            onSubmit={(values, actions) => {
+              if (userData) {
+                // if (
+                //   values.selectedGoalInfo &&
+                //   getUserGoal(userData.uid) !== values.selectedGoalInfo
+                // ) {
+                //   addUserGoal(userData.uid, values.selectedGoalInfo);
+                // }
+                actions.resetForm;
+                console.log(values);
+                router.push("/app");
+              } else {
+                alert("Error: User not logged in...");
+                router.push("/login");
+              }
+            }}
+          >
+            {({ handleSubmit }) => (
+              <Container
+                maxW="container.xl"
+                as="form"
+                p={"0px"}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                onSubmit={handleSubmit as any}
               >
-                <SimpleGrid columns={3} spacing={3}>
-                  <Card>
-                    <CardBody>
-                      <Heading size="sm"> Passive Goal </Heading>
-                      <Stat>
-                        <StatLabel>Monthly Savings</StatLabel>
-                        <StatNumber>$250</StatNumber>
-                        <StatLabel>Net Worth Goal in 5 years</StatLabel>
-                        <StatNumber fontSize="md">$50,000</StatNumber>
-                      </Stat>
-                      <Button my={"4px"} size={"sm"} colorScheme={"green"}>
-                        Select
-                      </Button>
-                    </CardBody>
-                  </Card>
-                  <Card>
-                    <CardBody>
-                      <Box>
-                        <Heading size="sm">Neutral Goal</Heading>
+                <Heading fontSize={"xl"}>Selected a suggested goals</Heading>
+
+                <Box
+                  bg={"gray.100"}
+                  rounded={"5px"}
+                  my={"25px"}
+                  p={"20px"}
+                  border={"1px"}
+                  borderColor={"gray.300"}
+                >
+                  <SimpleGrid columns={3} spacing={3}>
+                    <Card>
+                      <CardBody>
+                        <Heading size="sm"> Passive Goal </Heading>
                         <Stat>
                           <StatLabel>Monthly Savings</StatLabel>
-                          <StatNumber>$500</StatNumber>
-                          <StatLabel>Net Worth Goal in 5 years</StatLabel>
-                          <StatNumber fontSize="md">$65,000</StatNumber>
-                        </Stat>
-                        <Button
-                          isDisabled
-                          my={"4px"}
-                          size={"sm"}
-                          colorScheme={"green"}
-                        >
-                          Selected
-                        </Button>
-                      </Box>
-                    </CardBody>
-                  </Card>
-                  <Card>
-                    <CardBody>
-                      <Box>
-                        <Heading size="sm"> Aggressive Goal </Heading>
-                        <Stat>
-                          <StatLabel>Monthly Savings</StatLabel>
-                          <StatNumber>$1000</StatNumber>
-                          <StatLabel>Net Worth Goal in 5 years</StatLabel>
-                          <StatNumber fontSize="md">$85,000</StatNumber>
+                          <StatNumber>
+                            ${goals.lessAggressiveGoal.monthlyAmount.toFixed(2)}
+                          </StatNumber>
+                          <StatLabel>
+                            Net Worth Goal in{" "}
+                            {goals.lessAggressiveGoal.timelineGoal} years
+                          </StatLabel>
+                          <StatNumber fontSize="md">
+                            ${goals.lessAggressiveGoal.networthGoal.toFixed(2)}
+                          </StatNumber>
                         </Stat>
                         <Button my={"4px"} size={"sm"} colorScheme={"green"}>
                           Select
                         </Button>
-                      </Box>
-                    </CardBody>
-                  </Card>
-                </SimpleGrid>
-              </Box>
-              <Box
-                bg={"gray.100"}
-                rounded={"5px"}
-                my={"25px"}
-                p={"20px"}
-                border={"1px"}
-                borderColor={"gray.300"}
-              >
-                <Heading mb={"8px"} fontSize={"xl"}>
-                  Overview of selected goal
-                </Heading>
-                <Line options={options} data={data} />
-              </Box>
+                      </CardBody>
+                    </Card>
+                    <Card>
+                      <CardBody>
+                        <Box>
+                          <Heading size="sm">Neutral Goal</Heading>
+                          <Stat>
+                            <StatLabel>Monthly Savings</StatLabel>
+                            <StatNumber>
+                              ${goals.neutralGoal.monthlyAmount.toFixed(2)}
+                            </StatNumber>
+                            <StatLabel>
+                              Net Worth Goal in {goals.neutralGoal.timelineGoal}{" "}
+                              years
+                            </StatLabel>
+                            <StatNumber fontSize="md">
+                              ${goals.neutralGoal.networthGoal.toFixed(2)}
+                            </StatNumber>
+                          </Stat>
+                          <Button
+                            isDisabled
+                            my={"4px"}
+                            size={"sm"}
+                            colorScheme={"green"}
+                          >
+                            Selected
+                          </Button>
+                        </Box>
+                      </CardBody>
+                    </Card>
+                    <Card>
+                      <CardBody>
+                        <Box>
+                          <Heading size="sm"> Aggressive Goal </Heading>
+                          <Stat>
+                            <StatLabel>Monthly Savings</StatLabel>
+                            <StatNumber>
+                              $
+                              {goals.moreAggressiveGoal.monthlyAmount.toFixed(
+                                2
+                              )}
+                            </StatNumber>
+                            <StatLabel>
+                              Net Worth Goal in{" "}
+                              {goals.moreAggressiveGoal.timelineGoal} years
+                            </StatLabel>
+                            <StatNumber fontSize="md">
+                              $
+                              {goals.moreAggressiveGoal.networthGoal.toFixed(2)}
+                            </StatNumber>
+                          </Stat>
+                          <Button my={"4px"} size={"sm"} colorScheme={"green"}>
+                            Select
+                          </Button>
+                        </Box>
+                      </CardBody>
+                    </Card>
+                  </SimpleGrid>
+                </Box>
+                <Box
+                  bg={"gray.100"}
+                  rounded={"5px"}
+                  my={"25px"}
+                  p={"20px"}
+                  border={"1px"}
+                  borderColor={"gray.300"}
+                >
+                  <Heading mb={"8px"} fontSize={"xl"}>
+                    Overview of selected goal
+                  </Heading>
+                  <Line options={options} data={data} />
+                </Box>
 
-              <SubmitButton colorScheme={"green"}>Finish</SubmitButton>
-            </Container>
-          )}
-        </Formik>
+                <SubmitButton colorScheme={"green"}>Finish</SubmitButton>
+              </Container>
+            )}
+          </Formik>
+        )}
       </Container>
     </ProtectedRoute>
   );
