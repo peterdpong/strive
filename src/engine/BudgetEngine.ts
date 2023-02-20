@@ -249,10 +249,11 @@ export class BudgetEngine {
     } else {
       // Return 3 generated goal options (less aggressive, neutral, and more aggressive)
 
+      // TODO: Joel, check if this is correct to just multiply networth goal by 0.95/1.05
       return {
         lessAggressiveGoal: {
           monthlyAmount: calcMonthlySavings * 0.95,
-          networthGoal: goalNetWorth,
+          networthGoal: goalNetWorth * 0.95,
           timelineGoal: goalTimeline,
         },
         neutralGoal: {
@@ -262,7 +263,7 @@ export class BudgetEngine {
         },
         moreAggressiveGoal: {
           monthlyAmount: calcMonthlySavings * 1.05,
-          networthGoal: goalNetWorth,
+          networthGoal: goalNetWorth * 1.05,
           timelineGoal: goalTimeline,
         },
       };

@@ -34,7 +34,8 @@ import {
   LineElement,
   Title,
   Filler,
-  ScriptableContext,
+  ChartData,
+  ScatterDataPoint,
 } from "chart.js";
 import { Flex, Stack } from "@chakra-ui/react";
 import { Line } from "react-chartjs-2";
@@ -42,6 +43,10 @@ import ProtectedRoute from "../../src/auth/ProtectedRoute";
 //import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
 import { useAuth } from "../../src/auth/auth";
 import { BudgetEngine, GeneratedGoals } from "../../src/engine/BudgetEngine";
+import {
+  buildGoalGraphData,
+  goalGraphOptions,
+} from "../../src/visualization/GoalVisualizations";
 
 // Boilerplate data
 ChartJS.register(
@@ -55,54 +60,6 @@ ChartJS.register(
   Legend
 );
 
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top" as const,
-    },
-    title: {
-      display: true,
-      text: "Path to Goal",
-    },
-  },
-};
-
-//labels need to be dynamic - port in a list of any size
-const labels = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const data = {
-  labels,
-  datasets: [
-    {
-      fill: true,
-      label: "Net Worth",
-      //data needs to be dynamic - port in a list of any size
-      data: [1, 2, 4, 16, 32, 64, 128, 1, 2, 4, 16, 32],
-      borderColor: "rgb(30, 159, 92)",
-      backgroundColor: (context: ScriptableContext<"line">) => {
-        const ctx = context.chart.ctx;
-        const gradient = ctx.createLinearGradient(0, 0, 0, 500);
-        gradient.addColorStop(0, "rgba(45,216,129,1)");
-        gradient.addColorStop(1, "rgba(45,216,129,0)");
-        return gradient;
-      },
-    },
-  ],
-};
 export default function SuggestionsPage() {
   const router = useRouter();
 
@@ -111,10 +68,17 @@ export default function SuggestionsPage() {
 
   const [netWorthGoal, setNetWorthGoal] = useState<number>(500000);
   const [timelineYears, setTimelineYears] = useState<number>(20);
-
   const [goals, setGoals] = useState<GeneratedGoals | undefined | null>(
     undefined
   );
+
+  // Hardcoded to 1 which is neutral goal (0 - less agrressive, 2 more aggressive)
+  const [selectedGoalIndex, setSelectedGoalIndex] = useState<number>(1);
+  const [graphData, setGraphData] = useState<ChartData<
+    "line",
+    (number | ScatterDataPoint | null)[],
+    unknown
+  > | null>(null);
 
   const onGenerateGoals = () => {
     const generateGoalsResult = BudgetEngine.generateGoals(
@@ -123,15 +87,21 @@ export default function SuggestionsPage() {
       timelineYears
     );
     setGoals(generateGoalsResult);
-    console.log(generateGoalsResult);
+    setGraphData(buildGoalGraphData(generateGoalsResult?.neutralGoal));
   };
 
-  // const [sliderValue, setSliderValue] = useState(500000);
-  // const [showTooltip, setShowTooltip] = useState(false);
-  // const [sliderValueTimeline, setSliderValueTimeline] = useState(40);
-  // const [showTooltipTimeline, setShowTooltipTimeline] = useState(false);
+  const onSelectGoal = (goalIndex: number) => {
+    setSelectedGoalIndex(goalIndex);
 
-  //console.log(BudgetEngine.generateGoals(userData, 100000, 10));
+    // Super spaghetti code but im too lazy to figure out a better way rn (peter)
+    if (goalIndex === 0) {
+      setGraphData(buildGoalGraphData(goals?.lessAggressiveGoal));
+    } else if (goalIndex === 1) {
+      setGraphData(buildGoalGraphData(goals?.neutralGoal));
+    } else {
+      setGraphData(buildGoalGraphData(goals?.moreAggressiveGoal));
+    }
+  };
 
   return (
     <ProtectedRoute>
@@ -258,8 +228,16 @@ export default function SuggestionsPage() {
                             ${goals.lessAggressiveGoal.networthGoal.toFixed(2)}
                           </StatNumber>
                         </Stat>
-                        <Button my={"4px"} size={"sm"} colorScheme={"green"}>
-                          Select
+                        <Button
+                          onClick={() => {
+                            onSelectGoal(0);
+                          }}
+                          isDisabled={selectedGoalIndex === 0 ? true : false}
+                          my={"4px"}
+                          size={"sm"}
+                          colorScheme={"green"}
+                        >
+                          {selectedGoalIndex === 0 ? "Selected" : "Select"}
                         </Button>
                       </CardBody>
                     </Card>
@@ -281,12 +259,15 @@ export default function SuggestionsPage() {
                             </StatNumber>
                           </Stat>
                           <Button
-                            isDisabled
+                            onClick={() => {
+                              onSelectGoal(1);
+                            }}
+                            isDisabled={selectedGoalIndex === 1 ? true : false}
                             my={"4px"}
                             size={"sm"}
                             colorScheme={"green"}
                           >
-                            Selected
+                            {selectedGoalIndex === 1 ? "Selected" : "Select"}
                           </Button>
                         </Box>
                       </CardBody>
@@ -312,8 +293,16 @@ export default function SuggestionsPage() {
                               {goals.moreAggressiveGoal.networthGoal.toFixed(2)}
                             </StatNumber>
                           </Stat>
-                          <Button my={"4px"} size={"sm"} colorScheme={"green"}>
-                            Select
+                          <Button
+                            onClick={() => {
+                              onSelectGoal(2);
+                            }}
+                            isDisabled={selectedGoalIndex === 2 ? true : false}
+                            my={"4px"}
+                            size={"sm"}
+                            colorScheme={"green"}
+                          >
+                            {selectedGoalIndex === 2 ? "Selected" : "Select"}
                           </Button>
                         </Box>
                       </CardBody>
@@ -331,7 +320,9 @@ export default function SuggestionsPage() {
                   <Heading mb={"8px"} fontSize={"xl"}>
                     Overview of selected goal
                   </Heading>
-                  <Line options={options} data={data} />
+                  {graphData !== undefined && graphData !== null ? (
+                    <Line options={goalGraphOptions} data={graphData} />
+                  ) : null}
                 </Box>
 
                 <SubmitButton colorScheme={"green"}>Finish</SubmitButton>
