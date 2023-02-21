@@ -312,10 +312,10 @@ const MonthlyTransactions = ({
           </Button>
           <Button
             size="sm"
-            colorScheme="linkedin"
+            colorScheme="green"
             onClick={() => setShowAddTransactionsForm(!showAddTransactionsForm)}
           >
-            {showAddTransactionsForm ? "Hide Form" : "New Transaction"}
+            {showAddTransactionsForm ? "Hide Form" : "New transaction"}
           </Button>
         </Flex>
       </HStack>

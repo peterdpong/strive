@@ -153,12 +153,12 @@ export default function Dashboard() {
               border={"1px"}
               borderColor={"gray.300"}
             >
-              <HStack>
+              <HStack justifyContent="space-between" mb={"10px"}>
                 <Heading size={"md"}>Your Goal</Heading>
                 <Button
                   colorScheme={"green"}
                   onClick={() => router.push("app/goal")}
-                  size="xs"
+                  size="sm"
                 >
                   Explore goal
                 </Button>
@@ -274,7 +274,16 @@ export default function Dashboard() {
               border={"1px"}
               borderColor={"gray.300"}
             >
-              <Heading size={"md"}>Net Worth</Heading>
+              <HStack justifyContent="space-between" mb={"10px"}>
+                <Heading size={"md"}>Net Worth</Heading>
+                <Button
+                  colorScheme={"green"}
+                  onClick={() => router.push("onboarding/goal")}
+                  size="sm"
+                >
+                  Adjust net worth goal
+                </Button>
+              </HStack>
               <Line
                 options={{
                   responsive: true,
