@@ -244,6 +244,22 @@ export class BudgetEngine {
 
     //return ("this is calcMonthlySavings: ") + calcMonthlySavings;
 
+
+    //CALCULATION: future net worth for less aggressive and more aggressive options
+    //less aggressive
+    let lessAggressiveNW = 0;
+    let futureValLessAggressive = 0;
+
+    futureValLessAggressive = (calcMonthlySavings * 0.95)*((((1 + 0.05 / 12)**(12*goalTimeline))-1)/(0.05 / 12));
+    lessAggressiveNW = currNetWorthFV + futureValLessAggressive;
+
+    //more aggressive
+    let moreAggressiveNW = 0;
+    let futureValMoreAggressive = 0;
+
+    futureValMoreAggressive = (calcMonthlySavings * 1.05)*((((1 + 0.05 / 12)**(12*goalTimeline))-1)/(0.05 / 12));
+    moreAggressiveNW = currNetWorthFV + futureValMoreAggressive;
+
     if (calcMonthlySavings > monthlySavingsAvail) {
       return null;
     } else {
@@ -253,7 +269,7 @@ export class BudgetEngine {
       return {
         lessAggressiveGoal: {
           monthlyAmount: calcMonthlySavings * 0.95,
-          networthGoal: goalNetWorth * 0.95,
+          networthGoal: lessAggressiveNW,
           timelineGoal: goalTimeline,
         },
         neutralGoal: {
@@ -263,7 +279,7 @@ export class BudgetEngine {
         },
         moreAggressiveGoal: {
           monthlyAmount: calcMonthlySavings * 1.05,
-          networthGoal: goalNetWorth * 1.05,
+          networthGoal: moreAggressiveNW,
           timelineGoal: goalTimeline,
         },
       };
