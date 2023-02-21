@@ -201,7 +201,7 @@ export default function SuggestionsPage() {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
-                <Heading fontSize={"xl"}>Selected a suggested goals</Heading>
+                <Heading fontSize={"xl"}>Select a suggested goal</Heading>
 
                 <Box
                   bg={"gray.100"}
