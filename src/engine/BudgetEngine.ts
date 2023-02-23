@@ -1,22 +1,11 @@
 // Holds all budget optimization functions
+import { GoalModel } from "../models/GoalModel";
 import { UserModel } from "../models/UserModel";
 
 export type GeneratedGoals = {
-  lessAggressiveGoal: {
-    monthlyAmount: number;
-    networthGoal: number;
-    timelineGoal: number;
-  };
-  neutralGoal: {
-    monthlyAmount: number;
-    networthGoal: number;
-    timelineGoal: number;
-  };
-  moreAggressiveGoal: {
-    monthlyAmount: number;
-    networthGoal: number;
-    timelineGoal: number;
-  };
+  lessAggressiveGoal: GoalModel;
+  neutralGoal: GoalModel;
+  moreAggressiveGoal: GoalModel;
 };
 
 export class BudgetEngine {
@@ -244,28 +233,30 @@ export class BudgetEngine {
 
     //return ("this is calcMonthlySavings: ") + calcMonthlySavings;
 
-
     //CALCULATION: future net worth for less aggressive and more aggressive options
     //less aggressive
     let lessAggressiveNW = 0;
     let futureValLessAggressive = 0;
 
-    futureValLessAggressive = (calcMonthlySavings * 0.95)*((((1 + 0.05 / 12)**(12*goalTimeline))-1)/(0.05 / 12));
+    futureValLessAggressive =
+      calcMonthlySavings *
+      0.95 *
+      (((1 + 0.05 / 12) ** (12 * goalTimeline) - 1) / (0.05 / 12));
     lessAggressiveNW = currNetWorthFV + futureValLessAggressive;
 
     //more aggressive
     let moreAggressiveNW = 0;
     let futureValMoreAggressive = 0;
 
-    futureValMoreAggressive = (calcMonthlySavings * 1.05)*((((1 + 0.05 / 12)**(12*goalTimeline))-1)/(0.05 / 12));
+    futureValMoreAggressive =
+      calcMonthlySavings *
+      1.05 *
+      (((1 + 0.05 / 12) ** (12 * goalTimeline) - 1) / (0.05 / 12));
     moreAggressiveNW = currNetWorthFV + futureValMoreAggressive;
 
     if (calcMonthlySavings > monthlySavingsAvail) {
       return null;
     } else {
-      // Return 3 generated goal options (less aggressive, neutral, and more aggressive)
-
-      // TODO: Joel, check if this is correct to just multiply networth goal by 0.95/1.05
       return {
         lessAggressiveGoal: {
           monthlyAmount: calcMonthlySavings * 0.95,

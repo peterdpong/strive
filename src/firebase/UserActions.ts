@@ -63,10 +63,9 @@ export const addNewUser = (
       monthlyVariableBudgetUnallocated: 0,
     },
     goalInfo: {
-      goalType: "timeframe",
-      goalValue: 25000,
-      monthlyAmount: 500,
-      timeframeValue: 5,
+      monthlyAmount: 0,
+      networthGoal: 0,
+      timelineGoal: 0,
     },
     monthTransactionsMap: initMonthTransactionsMap,
     suggestions: {},
