@@ -5,7 +5,7 @@ import {
   LoanAccount,
   OtherAsset,
 } from "./AccountModel";
-import { BudgetModel, Transaction } from "./BudgetModel";
+import {BudgetModel, Transaction, TransactionCategories} from "./BudgetModel";
 import { GoalModel } from "./GoalModel";
 
 export type UserModel = {

@@ -36,6 +36,11 @@ export const getTransactionCategoriesArray = () => {
   return transactionCategories;
 };
 
+export const getTransactionCategoriesSpend = () => {
+  const transactionSpend: { value: number; key: TransactionCategories; }[] = [];
+  return transactionSpend;
+}
+
 export type Transaction = {
   account: string;
   date: string;
