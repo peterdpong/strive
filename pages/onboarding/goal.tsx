@@ -6,22 +6,25 @@ import {
   Container,
   Heading,
   SimpleGrid,
-  Slider,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderTrack,
   Stat,
   StatLabel,
   StatNumber,
   Text,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
-import { Formik } from "formik";
-import { SubmitButton } from "formik-chakra-ui";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import {
   Chart as ChartJS,
   ArcElement,
-  Tooltip,
   Legend,
   CategoryScale,
   LinearScale,
@@ -29,12 +32,19 @@ import {
   LineElement,
   Title,
   Filler,
-  ScriptableContext,
+  ChartData,
+  ScatterDataPoint,
 } from "chart.js";
+import { Flex, Stack } from "@chakra-ui/react";
 import { Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import { addUserGoal, getUserGoal } from "../../src/firebase/UserActions";
+import { addUserGoal } from "../../src/firebase/UserActions";
 import { useAuth } from "../../src/auth/auth";
+import { BudgetEngine, GeneratedGoals } from "../../src/engine/BudgetEngine";
+import {
+  buildGoalGraphData,
+  goalGraphOptions,
+} from "../../src/visualization/GoalVisualizations";
 
 // Boilerplate data
 ChartJS.register(
@@ -44,49 +54,69 @@ ChartJS.register(
   PointElement,
   LineElement,
   Title,
-  Tooltip,
   Filler,
   Legend
 );
 
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top" as const,
-    },
-    title: {
-      display: true,
-      text: "Path to Goal",
-    },
-  },
-};
-
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
-
-const data = {
-  labels,
-  datasets: [
-    {
-      fill: true,
-      label: "Net Worth",
-      data: [1, 2, 4, 16, 32, 64, 128],
-      borderColor: "rgb(30, 159, 92)",
-      backgroundColor: (context: ScriptableContext<"line">) => {
-        const ctx = context.chart.ctx;
-        const gradient = ctx.createLinearGradient(0, 0, 0, 500);
-        gradient.addColorStop(0, "rgba(45,216,129,1)");
-        gradient.addColorStop(1, "rgba(45,216,129,0)");
-        return gradient;
-      },
-    },
-  ],
-};
 export default function SuggestionsPage() {
   const router = useRouter();
 
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
+
+  const [netWorthGoal, setNetWorthGoal] = useState<number>(500000);
+  const [timelineYears, setTimelineYears] = useState<number>(20);
+  const [goals, setGoals] = useState<GeneratedGoals | undefined | null>(
+    undefined
+  );
+
+  // Hardcoded to 1 which is neutral goal (0 - less agrressive, 2 more aggressive)
+  const [selectedGoalIndex, setSelectedGoalIndex] = useState<number>(1);
+  const [graphData, setGraphData] = useState<ChartData<
+    "line",
+    (number | ScatterDataPoint | null)[],
+    unknown
+  > | null>(null);
+
+  const onGenerateGoals = () => {
+    const generateGoalsResult = BudgetEngine.generateGoals(
+      userData,
+      netWorthGoal,
+      timelineYears
+    );
+    setGoals(generateGoalsResult);
+    setGraphData(buildGoalGraphData(generateGoalsResult?.neutralGoal));
+  };
+
+  const onSelectGoal = (goalIndex: number) => {
+    setSelectedGoalIndex(goalIndex);
+
+    // Super spaghetti code but im too lazy to figure out a better way rn (peter)
+    if (goalIndex === 0) {
+      setGraphData(buildGoalGraphData(goals?.lessAggressiveGoal));
+    } else if (goalIndex === 1) {
+      setGraphData(buildGoalGraphData(goals?.neutralGoal));
+    } else {
+      setGraphData(buildGoalGraphData(goals?.moreAggressiveGoal));
+    }
+  };
+
+  const onFinish = () => {
+    if (userData && goals) {
+      if (selectedGoalIndex === 0) {
+        addUserGoal(userData.uid, goals.lessAggressiveGoal);
+      } else if (selectedGoalIndex === 1) {
+        addUserGoal(userData.uid, goals.neutralGoal);
+      } else {
+        addUserGoal(userData.uid, goals.moreAggressiveGoal);
+      }
+
+      router.push("/app");
+    } else {
+      alert("Error: User not logged in...");
+      router.push("/login");
+    }
+  };
 
   return (
     <ProtectedRoute>
@@ -95,186 +125,219 @@ export default function SuggestionsPage() {
           Back
         </Button>
         <Heading>Choose your goal</Heading>
-        <Text fontSize={"md"}>
-          Choose one of the generated goals based on your finances or change it
-          just the way you like it!
-        </Text>
-        <Formik
-          initialValues={{
-            selectedGoalInfo: userData ? getUserGoal(userData?.uid) : null,
-          }}
-          onSubmit={(values, actions) => {
-            if (userData) {
-              if (
-                values.selectedGoalInfo &&
-                getUserGoal(userData.uid) !== values.selectedGoalInfo
-              ) {
-                addUserGoal(userData.uid, values.selectedGoalInfo);
-              }
-              actions.resetForm;
-              console.log(values);
-              router.push("/app");
-            } else {
-              alert("Error: User not logged in...");
-              router.push("/login");
-            }
-          }}
+        <Text fontSize={"md"}>Choose your net worth and timeline goal.</Text>
+        <Box
+          bg={"gray.100"}
+          rounded={"5px"}
+          my={"25px"}
+          p={"20px"}
+          border={"1px"}
+          borderColor={"gray.300"}
         >
-          {({ handleSubmit }) => (
-            <Container
-              maxW="container.xl"
-              as="form"
-              p={"0px"}
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              onSubmit={handleSubmit as any}
+          <Flex gap="1rem" mb="1">
+            <Stack flex={1}>
+              <Heading size="md">Net Worth Goal ($)</Heading>
+              <NumberInput
+                min={0}
+                defaultValue={netWorthGoal}
+                precision={2}
+                onChange={(_asString, asNumber) => {
+                  setNetWorthGoal(asNumber);
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </Stack>
+            <Stack flex={1}>
+              <Heading size="md">Timeline Goal in years</Heading>
+              <NumberInput
+                min={0}
+                defaultValue={timelineYears}
+                onChange={(_asString, asNumber) => {
+                  setTimelineYears(asNumber);
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </Stack>
+          </Flex>
+          <Button onClick={onGenerateGoals} colorScheme="green">
+            {goals === undefined ? "Generate Goals" : "Regenerate Goals"}
+          </Button>
+        </Box>
+
+        {goals === null ? (
+          <Alert status="error">
+            <AlertIcon />
+            <AlertTitle>
+              Set net worth goal and timeline not feasible
+            </AlertTitle>
+            <AlertDescription>
+              Goal is not possible given financial information.
+            </AlertDescription>
+          </Alert>
+        ) : null}
+
+        {goals === undefined || goals === null ? null : (
+          // <Formik
+          //   initialValues={{
+          //     selectedGoalIndex: 1, // 1 is the neutral aggresiveness
+          //   }}
+          //   onSubmit={(values, actions) => {
+          //     if (userData) {
+          //       // if (
+          //       //   values.selectedGoalInfo &&
+          //       //   getUserGoal(userData.uid) !== values.selectedGoalInfo
+          //       // ) {
+          //       //   addUserGoal(userData.uid, values.selectedGoalInfo);
+          //       // }
+          //       actions.resetForm;
+          //       console.log(values);
+          //       router.push("/app");
+          //     } else {
+          //       alert("Error: User not logged in...");
+          //       router.push("/login");
+          //     }
+          //   }}
+          // >
+          //   {({ handleSubmit }) => (
+
+          //   )}
+          // </Formik>
+          <Container maxW="container.xl" as="form" p={"0px"}>
+            <Heading fontSize={"xl"}>Select a suggested goal</Heading>
+
+            <Box
+              bg={"gray.100"}
+              rounded={"5px"}
+              my={"25px"}
+              p={"20px"}
+              border={"1px"}
+              borderColor={"gray.300"}
             >
-              <Box
-                bg={"gray.100"}
-                rounded={"5px"}
-                my={"25px"}
-                p={"20px"}
-                border={"1px"}
-                borderColor={"gray.300"}
-              >
-                <Heading mb={"8px"} fontSize={"xl"}>
-                  Selected Goal
-                </Heading>
-                <Line options={options} data={data} />
-              </Box>
-
-              <Heading fontSize={"xl"}>Adjust goal</Heading>
-
-              <SimpleGrid columns={3} spacing={5}>
-                <Box
-                  bg={"gray.100"}
-                  rounded={"5px"}
-                  my={"25px"}
-                  p={"20px"}
-                  border={"1px"}
-                  borderColor={"gray.300"}
-                >
-                  <Heading fontSize={"xl"}>Net Worth Goal</Heading>
-                  <Text fontSize={"xl"}>$55,000</Text>
-                  <Slider
-                    colorScheme={"green"}
-                    aria-label="slider-ex-1"
-                    defaultValue={30}
-                  >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </Box>
-                <Box
-                  bg={"gray.100"}
-                  rounded={"5px"}
-                  my={"25px"}
-                  p={"20px"}
-                  border={"1px"}
-                  borderColor={"gray.300"}
-                >
-                  <Heading fontSize={"xl"}>Monthly Savings Goal</Heading>
-                  <Text fontSize={"xl"}>$500</Text>
-                  <Slider
-                    colorScheme={"green"}
-                    aria-label="slider-ex-1"
-                    defaultValue={30}
-                  >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </Box>
-                <Box
-                  bg={"gray.100"}
-                  rounded={"5px"}
-                  my={"25px"}
-                  p={"20px"}
-                  border={"1px"}
-                  borderColor={"gray.300"}
-                >
-                  <Heading fontSize={"xl"}>Timeline</Heading>
-                  <Text fontSize={"xl"}>5 Years</Text>
-                  <Slider
-                    colorScheme={"green"}
-                    aria-label="slider-ex-1"
-                    defaultValue={30}
-                  >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </Box>
-              </SimpleGrid>
-
-              <Box
-                bg={"gray.100"}
-                rounded={"5px"}
-                my={"25px"}
-                p={"20px"}
-                border={"1px"}
-                borderColor={"gray.300"}
-              >
-                <Heading mb={"8px"} fontSize={"xl"}>
-                  Suggested goals
-                </Heading>
-                <SimpleGrid columns={3} spacing={3}>
-                  <Card>
-                    <CardBody>
-                      <Heading size="sm"> Passive Goal </Heading>
+              <SimpleGrid columns={3} spacing={3}>
+                <Card>
+                  <CardBody>
+                    <Heading size="sm"> Passive Goal </Heading>
+                    <Stat>
+                      <StatLabel>Monthly Savings</StatLabel>
+                      <StatNumber>
+                        ${goals.lessAggressiveGoal.monthlyAmount.toFixed(2)}
+                      </StatNumber>
+                      <StatLabel>
+                        Net Worth Goal in{" "}
+                        {goals.lessAggressiveGoal.timelineGoal} years
+                      </StatLabel>
+                      <StatNumber fontSize="md">
+                        ${goals.lessAggressiveGoal.networthGoal.toFixed(2)}
+                      </StatNumber>
+                    </Stat>
+                    <Button
+                      onClick={() => {
+                        onSelectGoal(0);
+                      }}
+                      isDisabled={selectedGoalIndex === 0 ? true : false}
+                      my={"4px"}
+                      size={"sm"}
+                      colorScheme={"green"}
+                    >
+                      {selectedGoalIndex === 0 ? "Selected" : "Select"}
+                    </Button>
+                  </CardBody>
+                </Card>
+                <Card>
+                  <CardBody>
+                    <Box>
+                      <Heading size="sm">Neutral Goal</Heading>
                       <Stat>
                         <StatLabel>Monthly Savings</StatLabel>
-                        <StatNumber>$250</StatNumber>
-                        <StatLabel>Net Worth Goal in 5 years</StatLabel>
-                        <StatNumber fontSize="md">$50,000</StatNumber>
+                        <StatNumber>
+                          ${goals.neutralGoal.monthlyAmount.toFixed(2)}
+                        </StatNumber>
+                        <StatLabel>
+                          Net Worth Goal in {goals.neutralGoal.timelineGoal}{" "}
+                          years
+                        </StatLabel>
+                        <StatNumber fontSize="md">
+                          ${goals.neutralGoal.networthGoal.toFixed(2)}
+                        </StatNumber>
                       </Stat>
-                      <Button my={"4px"} size={"sm"} colorScheme={"green"}>
-                        Select
+                      <Button
+                        onClick={() => {
+                          onSelectGoal(1);
+                        }}
+                        isDisabled={selectedGoalIndex === 1 ? true : false}
+                        my={"4px"}
+                        size={"sm"}
+                        colorScheme={"green"}
+                      >
+                        {selectedGoalIndex === 1 ? "Selected" : "Select"}
                       </Button>
-                    </CardBody>
-                  </Card>
-                  <Card>
-                    <CardBody>
-                      <Box>
-                        <Heading size="sm">Neutral Goal</Heading>
-                        <Stat>
-                          <StatLabel>Monthly Savings</StatLabel>
-                          <StatNumber>$500</StatNumber>
-                          <StatLabel>Net Worth Goal in 5 years</StatLabel>
-                          <StatNumber fontSize="md">$65,000</StatNumber>
-                        </Stat>
-                        <Button my={"4px"} size={"sm"} colorScheme={"green"}>
-                          Select
-                        </Button>
-                      </Box>
-                    </CardBody>
-                  </Card>
-                  <Card>
-                    <CardBody>
-                      <Box>
-                        <Heading size="sm"> Aggresive Goal </Heading>
-                        <Stat>
-                          <StatLabel>Monthly Savings</StatLabel>
-                          <StatNumber>$1000</StatNumber>
-                          <StatLabel>Net Worth Goal in 5 years</StatLabel>
-                          <StatNumber fontSize="md">$85,000</StatNumber>
-                        </Stat>
-                        <Button my={"4px"} size={"sm"} colorScheme={"green"}>
-                          Select
-                        </Button>
-                      </Box>
-                    </CardBody>
-                  </Card>
-                </SimpleGrid>
-              </Box>
+                    </Box>
+                  </CardBody>
+                </Card>
+                <Card>
+                  <CardBody>
+                    <Box>
+                      <Heading size="sm"> Aggressive Goal </Heading>
+                      <Stat>
+                        <StatLabel>Monthly Savings</StatLabel>
+                        <StatNumber>
+                          ${goals.moreAggressiveGoal.monthlyAmount.toFixed(2)}
+                        </StatNumber>
+                        <StatLabel>
+                          Net Worth Goal in{" "}
+                          {goals.moreAggressiveGoal.timelineGoal} years
+                        </StatLabel>
+                        <StatNumber fontSize="md">
+                          ${goals.moreAggressiveGoal.networthGoal.toFixed(2)}
+                        </StatNumber>
+                      </Stat>
+                      <Button
+                        onClick={() => {
+                          onSelectGoal(2);
+                        }}
+                        isDisabled={selectedGoalIndex === 2 ? true : false}
+                        my={"4px"}
+                        size={"sm"}
+                        colorScheme={"green"}
+                      >
+                        {selectedGoalIndex === 2 ? "Selected" : "Select"}
+                      </Button>
+                    </Box>
+                  </CardBody>
+                </Card>
+              </SimpleGrid>
+            </Box>
+            <Box
+              bg={"gray.100"}
+              rounded={"5px"}
+              my={"25px"}
+              p={"20px"}
+              border={"1px"}
+              borderColor={"gray.300"}
+            >
+              <Heading mb={"8px"} fontSize={"xl"}>
+                Overview of selected goal
+              </Heading>
+              {graphData !== undefined && graphData !== null ? (
+                <Line options={goalGraphOptions} data={graphData} />
+              ) : null}
+            </Box>
 
-              <SubmitButton colorScheme={"green"}>Finish</SubmitButton>
-            </Container>
-          )}
-        </Formik>
+            <Button onClick={onFinish} colorScheme={"green"}>
+              Finish
+            </Button>
+          </Container>
+        )}
       </Container>
     </ProtectedRoute>
   );

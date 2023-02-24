@@ -19,6 +19,7 @@ export enum TransactionCategories {
   EDUCATION = "Education",
   INTEREST = "Interest",
   SAVINGS = "Savings",
+  INCOME = "Income",
 }
 
 export const getTransactionCategoriesArray = () => {

@@ -12,16 +12,17 @@ import {
   AlertTitle,
 } from "@chakra-ui/react";
 import { useAuth } from "../../../src/auth/auth";
+import { AssetTypes } from "../../../src/models/AccountModel";
 import { Formik } from "formik";
 import {
   InputControl,
   NumberInputControl,
+  SelectControl,
   SubmitButton,
 } from "formik-chakra-ui";
 import { addAccount } from "../../../src/firebase/UserActions";
-import { Timestamp } from "firebase/firestore";
 
-export default function FixedInvestmentsModal(props: {
+export default function OtherAssetsModal(props: {
   isOpen: boolean;
   onClose: () => void;
   uid: string | undefined;
@@ -33,16 +34,14 @@ export default function FixedInvestmentsModal(props: {
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add a fixed investment account</ModalHeader>
+        <ModalHeader>Add an asset</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Formik
             initialValues={{
               name: "",
-              startDate: "",
-              maturityDate: "",
-              startingValue: 0,
-              interestRate: 0,
+              type: AssetTypes.HOUSE,
+              value: 0,
               error: null,
             }}
             onSubmit={(values, actions) => {
@@ -50,19 +49,11 @@ export default function FixedInvestmentsModal(props: {
                 addAccount(
                   userData.uid,
                   userData.financialInfo.accounts,
-                  "FixedInvestment",
+                  "OtherAsset",
                   {
                     name: values.name,
-                    startDate: new Timestamp(
-                      Date.parse(values.startDate) / 1000,
-                      0
-                    ),
-                    maturityDate: new Timestamp(
-                      Date.parse(values.maturityDate) / 1000,
-                      0
-                    ),
-                    startingValue: values.startingValue,
-                    interestRate: values.interestRate,
+                    type: values.type,
+                    value: values.value,
                   }
                 );
                 actions.resetForm;
@@ -78,35 +69,33 @@ export default function FixedInvestmentsModal(props: {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
-                <InputControl name="name" label="Account Name" />
-                <InputControl
-                  inputProps={{ type: "date" }}
-                  name="startDate"
-                  label="Start date"
-                />
-                <InputControl
-                  inputProps={{ type: "date" }}
-                  name="maturityDate"
-                  label="Maturity date"
-                />
+                <InputControl name="name" label="Asset Name" />
                 <NumberInputControl
-                  name="startingValue"
-                  label="Starting value"
+                  name="value"
+                  label="Asset Value"
                   numberInputProps={{
                     min: 0,
                     step: 1,
                     precision: 2,
                   }}
                 />
-                <NumberInputControl
-                  name="interestRate"
-                  label="Fixed Investment Interest Rate (%)"
-                  numberInputProps={{
-                    min: 0,
-                    step: 1,
-                    precision: 2,
-                  }}
-                />
+                <SelectControl 
+                    name="type" 
+                    label="Asset Type"
+                    selectProps={{ placeholder: "Select other asset type" }}
+                >
+                  <option value={AssetTypes.HOUSE}>{AssetTypes.HOUSE}</option>
+                  <option value={AssetTypes.VEHICLE}>
+                    {AssetTypes.VEHICLE}
+                  </option>
+                  <option value={AssetTypes.COLLECTIBLES}>
+                    {AssetTypes.COLLECTIBLES}
+                  </option>
+                  <option value={AssetTypes.ART}>{AssetTypes.ART}</option>
+                  <option value={AssetTypes.VALUABLES}>
+                    {AssetTypes.VALUABLES}
+                  </option>
+                </SelectControl>
                 {values.error !== null ? (
                   <Alert status="error">
                     <AlertIcon />
@@ -116,7 +105,7 @@ export default function FixedInvestmentsModal(props: {
                   <></>
                 )}
                 <SubmitButton mt={"20px"} colorScheme={"green"}>
-                  Add fixed investment
+                  Add other asset
                 </SubmitButton>
               </Box>
             )}

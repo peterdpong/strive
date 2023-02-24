@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 
-export type BankAccount = {
+export type BankInvestmentAccount = {
   name: string;
   type: string;
   value: number;
@@ -25,10 +25,16 @@ export type LoanAccount = {
 
 export type FixedInvestment = {
   name: string;
-  startDate: Date | Timestamp;
-  maturityDate: Date | Timestamp;
+  startDate: Timestamp;
+  maturityDate: Timestamp;
   interestRate: number;
   startingValue: number;
+};
+
+export type OtherAsset = {
+  type: AssetTypes;
+  name: string;
+  value: number;
 };
 
 //TODO(peter): future implementations
@@ -44,10 +50,24 @@ export type RRSPAccount = {
 
 export enum AccountType {
   SAVINGS = "Savings",
-  CHEQUINGS = "Chequings",
+  CHEQUINGS = "Chequing",
   CREDITCARD = "Credit Card",
   LOAN = "Loan",
   TFSA = "TFSA",
   RRSP = "RRSP",
   GIC = "GIC",
+}
+
+export enum AssetTypes {
+  VEHICLE = "Vehicle",
+  HOUSE = "House",
+  COLLECTIBLES = "Collectibles",
+  ART = "Art",
+  VALUABLES = "Valuables",
+}
+
+export enum LoanTypes {
+  MORTGAGE = "Mortgage",
+  STUDENT = "Student Loan",
+  CAR = "Car Loan",
 }

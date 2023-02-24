@@ -14,6 +14,11 @@ import {
   TableContainer,
   Select,
   Flex,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import {
@@ -25,14 +30,13 @@ import {
   TransactionCategories,
 } from "../../../src/models/BudgetModel";
 import { UserModel } from "../../../src/models/UserModel";
-import { getCurrentDate, getMonth } from "../../../src/DateTimeUtils";
+import { getCurrentDate, getMonthFromString } from "../../../src/DateTimeUtils";
 
 const AddTransactionsForm = ({ data }: { data: UserModel }) => {
   const dataAccounts = data.financialInfo.accounts;
   const accounts = [
     ...Object.keys(dataAccounts.bankAccounts),
     ...Object.keys(dataAccounts.creditCards),
-    ...Object.keys(dataAccounts.fixedInvestments),
     ...Object.keys(dataAccounts.loans),
   ];
   const categories = Object.values(TransactionCategories);
@@ -41,7 +45,7 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
   const [account, setAccount] = useState<string>(accounts[0]);
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>(categories[0]);
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>("");
 
   const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -60,13 +64,14 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
       isMonthly: false,
       name: name,
       category: category as TransactionCategories,
-      amount: amount,
+      amount: parseFloat(amount),
     };
 
     if (data) {
       addTransaction(
         data.uid,
         data.monthTransactionsMap,
+        data.financialInfo.accounts,
         monthAndYear,
         transaction
       );
@@ -76,7 +81,7 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
     setAccount(accounts[0]);
     setName("");
     setCategory(categories[0]);
-    setAmount(0);
+    setAmount("");
   };
 
   return (
@@ -156,13 +161,17 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
               </Td>
               <Td isNumeric>
                 <FormControl id="transaction-value" isRequired>
-                  <Input
-                    size="sm"
-                    type="number"
-                    value={amount}
-                    placeholder="125"
-                    onChange={(e) => setAmount(parseFloat(e.target.value))}
-                  />
+                  <NumberInput
+                    size={"sm"}
+                    value={amount ? amount : ""}
+                    onChange={(e) => setAmount(e)}
+                  >
+                    <NumberInputField />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
                 </FormControl>
               </Td>
             </Tr>
@@ -203,9 +212,6 @@ const MonthTransaction = ({
     transaction: Transaction
   ) => void;
 }) => {
-  const dateParts = monthSection.split("-");
-  const year = parseInt(dateParts[1]);
-  const month = parseInt(dateParts[0]) - 1;
   const sortedTransactions = data.sort((a, b) => {
     return b.date.localeCompare(a.date);
   });
@@ -213,7 +219,7 @@ const MonthTransaction = ({
   return (
     <Box>
       <Heading size={"sm"} my="10px">
-        {getMonth(month, year)}
+        {getMonthFromString(monthSection)}
       </Heading>
       <TableContainer>
         <Table size="sm">
@@ -254,22 +260,18 @@ const MonthTransaction = ({
   );
 };
 
-const MonthlyTransactions = ({ userData }: { userData: UserModel }) => {
+const MonthlyTransactions = ({
+  userData,
+  monthAndYear,
+}: {
+  userData: UserModel;
+  monthAndYear: string;
+}) => {
   const [showAddTransactionsForm, setShowAddTransactionsForm] = useState(false);
   const [editingTransactions, setEditingTransactions] = useState(false);
 
   if (!userData) return null;
   const transactions = userData.monthTransactionsMap || {};
-  const transactionMonths = Object.keys(transactions);
-  const sortedTransactionMonths = transactionMonths.sort((a, b) => {
-    const date1 = b.split("-");
-    const date2 = a.split("-");
-    const compareYear = date1[1].localeCompare(date2[1]);
-    if (compareYear !== 0) {
-      return compareYear;
-    }
-    return date1[0].localeCompare(date2[0]);
-  });
 
   const deleteTransactionHandler = (
     e: React.MouseEvent<HTMLElement>,
@@ -282,6 +284,7 @@ const MonthlyTransactions = ({ userData }: { userData: UserModel }) => {
       deleteTransaction(
         userData.uid,
         userData.monthTransactionsMap,
+        userData.financialInfo.accounts,
         monthAndYear,
         transaction
       );
@@ -309,25 +312,22 @@ const MonthlyTransactions = ({ userData }: { userData: UserModel }) => {
           </Button>
           <Button
             size="sm"
-            colorScheme="linkedin"
+            colorScheme="green"
             onClick={() => setShowAddTransactionsForm(!showAddTransactionsForm)}
           >
-            {showAddTransactionsForm ? "Hide Form" : "New Transaction"}
+            {showAddTransactionsForm ? "Hide Form" : "New transaction"}
           </Button>
         </Flex>
       </HStack>
       {showAddTransactionsForm && <AddTransactionsForm data={userData} />}
       <Box>
-        {transactions &&
-          sortedTransactionMonths.map((monthSection) => (
-            <MonthTransaction
-              key={monthSection}
-              monthSection={monthSection}
-              data={transactions[monthSection]}
-              editing={editingTransactions}
-              deleteTransactionHandler={deleteTransactionHandler}
-            />
-          ))}
+        <MonthTransaction
+          key={monthAndYear}
+          monthSection={monthAndYear}
+          data={transactions[monthAndYear]}
+          editing={editingTransactions}
+          deleteTransactionHandler={deleteTransactionHandler}
+        />
       </Box>
     </Box>
   );

@@ -9,16 +9,25 @@ import {
   Td,
 } from "@chakra-ui/react";
 import { Transaction } from "../../../src/models/BudgetModel";
-import { getMonth } from "../../../src/DateTimeUtils";
+import { getMonthFromString } from "../../../src/DateTimeUtils";
 
-const TopExpenses = ({ transactions }: { transactions: Transaction[] }) => {
+const TopExpenses = ({
+  transactions,
+  monthAndYear,
+}: {
+  transactions: Transaction[];
+  monthAndYear: string;
+}) => {
   if (!transactions) return null;
 
   transactions.sort((a, b) => {
     return b.amount - a.amount;
   });
 
-  const topFiveExpenses = transactions.slice(0, 5);
+  const topFiveExpenses = transactions
+    .sort((a: Transaction, b: Transaction) => a.amount - b.amount)
+    .filter((transaction: Transaction) => transaction.amount < 0)
+    .slice(0, 5);
 
   return (
     <Box
@@ -31,7 +40,7 @@ const TopExpenses = ({ transactions }: { transactions: Transaction[] }) => {
       borderColor={"gray.300"}
     >
       <Heading size="md" mb="10px">
-        Top expenses in {getMonth(undefined, undefined)}
+        Top expenses in {getMonthFromString(monthAndYear)}
       </Heading>
 
       <Table size="sm">

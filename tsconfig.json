@@ -19,7 +19,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "components/modals/AccountModals/BankAccountModal.tsx"
+    "components/modals/AccountModals/BankInvestmentAccountModal.tsx"
   ],
   "exclude": ["node_modules"]
 }

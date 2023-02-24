@@ -16,3 +16,10 @@ export const getMonth = (
   }
   return date.toLocaleString("default", { month: "long", year: "numeric" });
 };
+
+export const getMonthFromString = (monthAndYear: string) => {
+  const dateParts = monthAndYear.split("-");
+  const date = new Date(parseInt(dateParts[1]), parseInt(dateParts[0]) - 1, 1);
+
+  return date.toLocaleString("default", { month: "long", year: "numeric" });
+};

@@ -22,32 +22,13 @@ import {
 } from "formik-chakra-ui";
 import { addAccount } from "../../../src/firebase/UserActions";
 
-export default function BankAccountModal(props: {
+export default function BankInvestmentAccountModal(props: {
   isOpen: boolean;
   onClose: () => void;
   uid: string | undefined;
 }) {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
-
-  // const submitHandler = (e: React.MouseEvent<HTMLElement>) => {
-  //   e.preventDefault();
-
-  //   if (name === null || type === null || value === null) {
-  //     setError("A field is missing");
-  //     return;
-  //   }
-
-  //   if (userData) {
-  //     addAccount(userData.uid, userData.financialInfo.accounts, {
-  //       name: name,
-  //       type: type as AccountType,
-  //       accountValue: value,
-  //       accountInfo: {},
-  //     });
-  //   }
-  //   props.onClose();
-  // };
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
@@ -69,7 +50,7 @@ export default function BankAccountModal(props: {
                 addAccount(
                   userData.uid,
                   userData.financialInfo.accounts,
-                  "BankAccount",
+                  "BankInvestmentAccount",
                   {
                     name: values.name,
                     type: values.type,
@@ -111,6 +92,8 @@ export default function BankAccountModal(props: {
                   <option value={AccountType.CHEQUINGS}>
                     {AccountType.CHEQUINGS}
                   </option>
+                  <option value={AccountType.TFSA}>{AccountType.TFSA}</option>
+                  <option value={AccountType.RRSP}>{AccountType.RRSP}</option>
                 </SelectControl>
                 <NumberInputControl
                   name="interestRate"

@@ -1,6 +1,6 @@
 import { Box, Flex, Heading, Tag, Spacer, HStack } from "@chakra-ui/react";
 import { Transaction } from "../../../src/models/BudgetModel";
-import { getMonth } from "../../../src/DateTimeUtils";
+import { getMonthFromString } from "../../../src/DateTimeUtils";
 
 const tagColors = [
   "#C4EFFE",
@@ -27,16 +27,22 @@ type CategoryType = {
 const ExpenseCategories = ({
   transactions,
   monthlyBudget,
+  monthAndYear,
 }: {
   transactions: Transaction[];
   monthlyBudget: number;
+  monthAndYear: string;
 }) => {
   if (!transactions) return null;
 
   const totalSpent = transactions.reduce((sum, expense) => {
-    return sum + expense.amount;
+    if (expense.amount < 0) {
+      return sum + expense.amount;
+    } else {
+      return sum;
+    }
   }, 0);
-  const remainingBudget = monthlyBudget - totalSpent;
+  const remainingBudget = monthlyBudget + totalSpent;
 
   const categories = () => {
     const categoryList: Array<CategoryType> = [];
@@ -44,13 +50,13 @@ const ExpenseCategories = ({
     transactions.forEach((expense) => {
       for (let i = 0; i < categoryList.length; i++) {
         if (expense.category === categoryList[i].name) {
-          categoryList[i].amount += expense.amount;
+          categoryList[i].amount += -expense.amount;
           return;
         }
       }
       categoryList.push({
         name: expense.category,
-        amount: expense.amount,
+        amount: -expense.amount,
       });
     });
 
@@ -60,10 +66,10 @@ const ExpenseCategories = ({
   return (
     <Box rounded={"5px"} p={"0px"} mt="10px">
       <Heading size="md" mb="10px">
-        {getMonth(undefined, undefined)}
+        {getMonthFromString(monthAndYear)}
       </Heading>
       <Heading size="xl" my="5px">
-        ${totalSpent.toFixed(2)} spent
+        ${-totalSpent.toFixed(2)} spent
       </Heading>
       <Heading size="md">${remainingBudget.toFixed(2)} remaining</Heading>
       <Box mt="20px">

@@ -8,10 +8,11 @@ import {
 } from "firebase/firestore";
 import { BudgetEngineUtils } from "../engine/BudgetEngineUtils";
 import {
-  BankAccount,
+  BankInvestmentAccount,
   CreditCardAccount,
   FixedInvestment,
   LoanAccount,
+  OtherAsset,
 } from "../models/AccountModel";
 import { BudgetModel, Transaction } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
@@ -22,7 +23,8 @@ export const addNewUser = (
   uid: string,
   email: string,
   firstName: string,
-  lastName: string
+  lastName: string,
+  age: number
 ) => {
   const initMonthTransactionsMap: { [key: string]: Transaction[] } = {};
   const currentDate = new Date();
@@ -39,18 +41,20 @@ export const addNewUser = (
     email,
     firstName,
     lastName,
+    age,
     onboardingStatus: {
       finished: false,
       stageNum: -1,
     },
     financialInfo: {
-      monthlyIncome: 0,
+      annualIncome: 0,
       monthlyTransactions: [],
       accounts: {
         bankAccounts: {},
         creditCards: {},
         loans: {},
         fixedInvestments: {},
+        otherAssets: {},
       },
     },
     budgetInfo: {
@@ -59,12 +63,12 @@ export const addNewUser = (
       monthlyVariableBudgetUnallocated: 0,
     },
     goalInfo: {
-      goalType: "timeframe",
-      goalValue: 25000,
-      monthlyAmount: 500,
-      timeframeValue: 5,
+      monthlyAmount: 0,
+      networthGoal: 0,
+      timelineGoal: 0,
     },
     monthTransactionsMap: initMonthTransactionsMap,
+    suggestions: {},
   };
 
   try {
@@ -130,9 +134,9 @@ export const getFinancialInfo = (uid: string | undefined) => {
   });
 };
 
-export const setMonthlyIncome = (uid: string, monthlyIncome: number) => {
+export const setAnnualIncome = (uid: string, annualIncome: number) => {
   const userDataRef = doc(firestoreDB, "users", uid);
-  updateDoc(userDataRef, { "financialInfo.monthlyIncome": monthlyIncome });
+  updateDoc(userDataRef, { "financialInfo.annualIncome": annualIncome });
 };
 
 export const addBudgetInfo = (uid: string, budgetInfo: BudgetModel) => {
@@ -170,16 +174,27 @@ export const addAccount = (
   uid: string,
   accounts: AccountMap,
   type: string,
-  newAccount: BankAccount | CreditCardAccount | LoanAccount | FixedInvestment
+  newAccount:
+    | BankInvestmentAccount
+    | CreditCardAccount
+    | LoanAccount
+    | FixedInvestment
+    | OtherAsset
 ) => {
-  if (type === "BankAccount") {
-    accounts.bankAccounts[newAccount.name] = newAccount as BankAccount;
+  if (type === "BankInvestmentAccount") {
+    accounts.bankAccounts[newAccount.name] =
+      newAccount as BankInvestmentAccount;
   } else if (type === "CreditCard") {
     accounts.creditCards[newAccount.name] = newAccount as CreditCardAccount;
   } else if (type === "Loan") {
     accounts.loans[newAccount.name] = newAccount as LoanAccount;
   } else if (type === "FixedInvestment") {
     accounts.fixedInvestments[newAccount.name] = newAccount as FixedInvestment;
+  } else if (type === "OtherAsset") {
+    if (accounts.otherAssets === undefined) {
+      accounts["otherAssets"] = {};
+    }
+    accounts.otherAssets[newAccount.name] = newAccount as OtherAsset;
   }
 
   const userDataRef = doc(firestoreDB, "users", uid);
@@ -202,6 +217,8 @@ export const deleteAccount = (
     delete accounts.loans[key];
   } else if (type === "FixedInvestment") {
     delete accounts.fixedInvestments[key];
+  } else if (type === "OtherAsset") {
+    delete accounts.otherAssets[key];
   }
 
   const userDataRef = doc(firestoreDB, "users", uid);
@@ -211,19 +228,15 @@ export const deleteAccount = (
 };
 
 export const updateMonthlyVariableBudget = (userData: UserModel) => {
-  const balanceAfterFixed =
-    userData?.financialInfo.monthlyIncome -
-    BudgetEngineUtils.calculateFixedMonthlyExpenses(
-      userData?.financialInfo.monthlyTransactions
-    );
+  const monthlyVariableBudget = userData?.financialInfo.annualIncome / 12;
 
   const balanceAfterAllocate =
-    balanceAfterFixed -
+    monthlyVariableBudget -
     BudgetEngineUtils.calculateBudgetExpenses(userData?.budgetInfo);
 
   const userDataRef = doc(firestoreDB, "users", userData.uid);
   updateDoc(userDataRef, {
-    "budgetInfo.monthlyVariableBudget": balanceAfterFixed,
+    "budgetInfo.monthlyVariableBudget": monthlyVariableBudget,
     "budgetInfo.monthlyVariableBudgetUnallocated": balanceAfterAllocate,
   });
 };
@@ -265,6 +278,7 @@ export const addTransaction = (
   monthTransactionsMap: {
     [monthAndYear: string]: Transaction[];
   },
+  accounts: AccountMap,
   monthAndYear: string,
   transaction: Transaction
 ) => {
@@ -274,9 +288,36 @@ export const addTransaction = (
     monthTransactionsMap[monthAndYear].push(transaction);
   }
 
+  const accountAndType = new Map<string, string>();
+  for (let i = 0; i < Object.keys(accounts.bankAccounts).length; i++) {
+    accountAndType.set(Object.keys(accounts.bankAccounts)[i], "bankAccount");
+  }
+
+  for (let i = 0; i < Object.keys(accounts.creditCards).length; i++) {
+    accountAndType.set(Object.keys(accounts.creditCards)[i], "creditCard");
+  }
+
+  for (let i = 0; i < Object.keys(accounts.loans).length; i++) {
+    accountAndType.set(Object.keys(accounts.loans)[i], "loan");
+  }
+
+  const accountType: string | undefined = accountAndType.get(
+    transaction.account
+  );
+
+  if (accountType === "bankAccount") {
+    accounts.bankAccounts[transaction.account].value += transaction.amount;
+  } else if (accountType === "creditCard") {
+    accounts.creditCards[transaction.account].amountOwned +=
+      -transaction.amount;
+  } else if (accountType === "loan") {
+    accounts.loans[transaction.account].remainingAmount += -transaction.amount;
+  }
+
   const userDataRef = doc(firestoreDB, "users", uid);
   updateDoc(userDataRef, {
     monthTransactionsMap: monthTransactionsMap,
+    "financialInfo.accounts": accounts,
   });
 };
 
@@ -285,6 +326,7 @@ export const deleteTransaction = (
   monthTransactionsMap: {
     [monthAndYear: string]: Transaction[];
   },
+  accounts: AccountMap,
   monthAndYear: string,
   transaction: Transaction
 ) => {
@@ -293,8 +335,35 @@ export const deleteTransaction = (
     monthTransactionsMap[monthAndYear].splice(index, 1);
   }
 
+  const accountAndType = new Map<string, string>();
+  for (let i = 0; i < Object.keys(accounts.bankAccounts).length; i++) {
+    accountAndType.set(Object.keys(accounts.bankAccounts)[i], "bankAccount");
+  }
+
+  for (let i = 0; i < Object.keys(accounts.creditCards).length; i++) {
+    accountAndType.set(Object.keys(accounts.creditCards)[i], "creditCard");
+  }
+
+  for (let i = 0; i < Object.keys(accounts.loans).length; i++) {
+    accountAndType.set(Object.keys(accounts.loans)[i], "loan");
+  }
+
+  const accountType: string | undefined = accountAndType.get(
+    transaction.account
+  );
+
+  if (accountType === "bankAccount") {
+    accounts.bankAccounts[transaction.account].value -= transaction.amount;
+  } else if (accountType === "creditCard") {
+    accounts.creditCards[transaction.account].amountOwned -=
+      -transaction.amount;
+  } else if (accountType === "loan") {
+    accounts.loans[transaction.account].remainingAmount -= -transaction.amount;
+  }
+
   const userDataRef = doc(firestoreDB, "users", uid);
   updateDoc(userDataRef, {
     monthTransactionsMap: monthTransactionsMap,
+    "financialInfo.accounts": accounts,
   });
 };
