@@ -70,7 +70,7 @@ export default function SuggestionsPage() {
     undefined
   );
 
-  // Hardcoded to 1 which is neutral goal (0 - less agrressive, 2 more aggressive)
+  // Hardcoded to 1 which is neutral goal (0 - less aggressive, 2 more aggressive)
   const [selectedGoalIndex, setSelectedGoalIndex] = useState<number>(1);
   const [graphData, setGraphData] = useState<ChartData<
     "line",
@@ -125,7 +125,7 @@ export default function SuggestionsPage() {
           Back
         </Button>
         <Heading>Choose your goal</Heading>
-        <Text fontSize={"md"}>Choose your net worth and timeline goal.</Text>
+        <Text fontSize={"md"}>Choose your net worth and timeline goals.</Text>
         <Box
           bg={"gray.100"}
           rounded={"5px"}
@@ -153,7 +153,7 @@ export default function SuggestionsPage() {
               </NumberInput>
             </Stack>
             <Stack flex={1}>
-              <Heading size="md">Timeline Goal in years</Heading>
+              <Heading size="md">Timeline Goal in Years</Heading>
               <NumberInput
                 min={0}
                 defaultValue={timelineYears}
