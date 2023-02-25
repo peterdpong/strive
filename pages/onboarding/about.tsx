@@ -3,6 +3,9 @@ import {
     Container,
     Heading,
     Text,
+    Flex,
+    Spacer,
+    VStack
   } from "@chakra-ui/react";
 
 import { useRouter } from "next/router";
@@ -24,9 +27,9 @@ return (
             sources where appropriate.  Disclaimer: the outputs are suggestions and should not be
             taken as financial advice.
             </Text>
-            <Button size="sm" onClick={() => router.push("/onboarding/finances/")}>
-            Get Started
-            </Button>        
+                <Button size="sm" onClick={() => router.push("/onboarding/finances/")}>
+                    Get Started
+                </Button>      
         </Container>
     </ProtectedRoute>
 );
