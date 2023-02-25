@@ -79,16 +79,15 @@ export default function BudgetPage() {
             <Box flex="2">
               <VStack align="flex-start">
                 <Stat>
-                  <StatLabel fontSize="xl">Monthly Balance</StatLabel>
+                  <StatLabel fontSize="xl">
+                    Balance before Category Allocations
+                  </StatLabel>
                   <StatNumber fontSize="3xl">
-                    ${userData?.budgetInfo.monthlyVariableBudget.toFixed(2)}
+                    ${userData?.budgetInfo.monthlyVariableBudget}
                   </StatNumber>
-                  <StatLabel fontSize="xl">Balance left to allocate</StatLabel>
+                  <StatLabel fontSize="xl">Balance after Category Allocations</StatLabel>
                   <StatNumber fontSize="3xl">
-                    $
-                    {userData?.budgetInfo.monthlyVariableBudgetUnallocated.toFixed(
-                      2
-                    )}
+                    ${userData?.budgetInfo.monthlyVariableBudgetUnallocated}
                   </StatNumber>
                 </Stat>
               </VStack>
@@ -164,7 +163,7 @@ export default function BudgetPage() {
                             <Stat>
                               <StatLabel>Monthly Allocation</StatLabel>
                               <StatNumber>
-                                ${currentCategory.allocation.toFixed(2)}
+                                ${currentCategory.allocation}
                               </StatNumber>
                             </Stat>
                           </CardBody>

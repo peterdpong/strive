@@ -326,7 +326,7 @@ export default function SuggestionsPage() {
               borderColor={"gray.300"}
             >
               <Heading mb={"8px"} fontSize={"xl"}>
-                Overview of selected goal
+                Overview of Selected Goal
               </Heading>
               {graphData !== undefined && graphData !== null ? (
                 <Line options={goalGraphOptions} data={graphData} />
