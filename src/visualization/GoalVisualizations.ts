@@ -31,12 +31,17 @@ export const buildGoalGraphData = (
   );
 
   // Generate goal data array size mapped to timeline goal(years)
-  const valueEveryYear: number =
+  /*const valueEveryYear: number =
     selectedGoal.networthGoal / selectedGoal.timelineGoal;
 
   const goalData = xAxisLabels.map((element) => {
     return element * valueEveryYear;
   });
+  */
+
+  const valueEveryYear: number;
+
+  const goalData;
 
   return {
     labels: xAxisLabels,
