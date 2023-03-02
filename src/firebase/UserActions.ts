@@ -93,11 +93,37 @@ export const getUserData = async (
     (userDataSnapshot: DocumentSnapshot<DocumentData>) => {
       if (userDataSnapshot.exists()) {
         userData = userDataSnapshot.data() as UserModel;
+        updateMonthsMap(uid, userData.monthTransactionsMap);
       }
     }
   );
 
   return userData;
+};
+
+export const updateMonthsMap = (
+  uid: string,
+  monthTransactionsMap: {
+    [key: string]: Transaction[];
+  }
+) => {
+  const currentDate = new Date();
+  if (
+    monthTransactionsMap[
+      (currentDate.getUTCMonth() + 1).toString() +
+        "-" +
+        currentDate.getUTCFullYear().toString()
+    ] === undefined
+  ) {
+    monthTransactionsMap[
+      (currentDate.getUTCMonth() + 1).toString() +
+        "-" +
+        currentDate.getUTCFullYear().toString()
+    ] = [];
+
+    const userDataRef = doc(firestoreDB, "users", uid);
+    setDoc(userDataRef, { monthTransactionsMap: monthTransactionsMap });
+  }
 };
 
 export const addUserGoal = async (uid: string, goalInfo: GoalModel) => {
