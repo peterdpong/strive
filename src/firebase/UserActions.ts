@@ -122,7 +122,7 @@ export const updateMonthsMap = (
     ] = [];
 
     const userDataRef = doc(firestoreDB, "users", uid);
-    setDoc(userDataRef, { monthTransactionsMap: monthTransactionsMap });
+    updateDoc(userDataRef, { monthTransactionsMap: monthTransactionsMap });
   }
 };
 
