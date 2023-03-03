@@ -226,7 +226,7 @@ export default function SuggestionsPage() {
               <SimpleGrid columns={3} spacing={3}>
                 <Card>
                   <CardBody>
-                    <Heading size="sm"> Passive Goal </Heading>
+                    <Heading size="sm"> Conservative Goal </Heading>
                     <Stat>
                       <StatLabel>Monthly Savings</StatLabel>
                       <StatNumber>
@@ -256,7 +256,7 @@ export default function SuggestionsPage() {
                 <Card>
                   <CardBody>
                     <Box>
-                      <Heading size="sm">Neutral Goal</Heading>
+                      <Heading size="sm">Base Goal</Heading>
                       <Stat>
                         <StatLabel>Monthly Savings</StatLabel>
                         <StatNumber>

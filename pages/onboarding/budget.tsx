@@ -80,13 +80,13 @@ export default function BudgetPage() {
               <VStack align="flex-start">
                 <Stat>
                   <StatLabel fontSize="xl">
-                    Balance before Category Allocations
+                    Balance before Expense Categories
                   </StatLabel>
                   <StatNumber fontSize="3xl">
                     ${userData?.budgetInfo.monthlyVariableBudget.toFixed(2)}
                   </StatNumber>
                   <StatLabel fontSize="xl">
-                    Balance after Category Allocations
+                    Balance after Expense Categories
                   </StatLabel>
                   <StatNumber fontSize="3xl">
                     $
@@ -116,7 +116,7 @@ export default function BudgetPage() {
             borderColor={"gray.300"}
           >
             <HStack justifyContent="space-between" my={2}>
-              <FormLabel fontSize={"xl"}>Category allocations</FormLabel>
+              <FormLabel fontSize={"xl"}>Expense Categories</FormLabel>
               <Button
                 onClick={budgetAllocationModalProps.onOpen}
                 colorScheme={"green"}
