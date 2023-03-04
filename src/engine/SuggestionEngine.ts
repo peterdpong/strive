@@ -5,23 +5,22 @@
 //   Transaction,
 // } from "../models/BudgetModel";
 
-/*
-export enum TransactionCategories {
-  GROCERIES = "Groceries", 10%
-  ENTERTAINMENT = "Entertainment", 5%
-  UTILITIES = "Utilities", 4%
-  MOBILEPLAN = "Mobile Plan", 1%
-  RENT = "Rent", 35%
-  TRANSPORTATION = "Transportation", 15%
-  DININGOUT = "Dining Out", 5%
-  CLOTHING = "Clothing", 5%
-  TRAVEL = "Travel", 5%
-  EDUCATION = "Education", 7.5%
-  INTEREST = "Interest", 5%
-  SAVINGS = "Savings", 7.5%
-  INCOME = "Income",
+
+enum TransactionCategories {
+  GROCERIES = 10,
+  ENTERTAINMENT = 5,
+  UTILITIES = 4,
+  MOBILEPLAN = 1,
+  RENT = 35,
+  TRANSPORTATION = 15,
+  DININGOUT = 5,
+  CLOTHING = 5,
+  TRAVEL = 5,
+  EDUCATION = 7.5,
+  INTEREST = 5,
+  SAVINGS = 7.5
 }
-*/
+
 // type TransactionType = {
 //   category: TransactionCategories;
 //   amount: number;
