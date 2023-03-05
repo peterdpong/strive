@@ -1,6 +1,20 @@
 import { ScriptableContext } from "chart.js";
 
 export const goalGraphOptions = {
+  scales: {
+    x: {
+      title: {
+        display: true,
+        text: 'Timeline Period',
+      }
+    },
+    y: {
+      title: {
+        display: true,
+        text: 'Net Worth',
+      }
+    },
+  },
   responsive: true,
   plugins: {
     legend: {
@@ -9,7 +23,7 @@ export const goalGraphOptions = {
     title: {
       display: true,
       text: "Net worth goal visualization",
-    },
+    }
   },
 };
 
@@ -50,6 +64,28 @@ export const buildGoalGraphData = (
         label: "Net Worth",
         //data needs to be dynamic - port in a list of any size
         data: goalData,
+        options: {
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Timeline Period',
+                font: {
+                  size: 25
+                }
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Net Worth',
+                font: {
+                  size: 25
+                }
+              }
+            }
+          }
+        },
         borderColor: "rgb(30, 159, 92)",
         backgroundColor: (context: ScriptableContext<"line">) => {
           const ctx = context.chart.ctx;
@@ -60,6 +96,5 @@ export const buildGoalGraphData = (
         },
       },
     ],
-    //options scale from link peter sent
   };
 };
