@@ -60,5 +60,6 @@ export const buildGoalGraphData = (
         },
       },
     ],
+    //options scale from link peter sent
   };
 };
