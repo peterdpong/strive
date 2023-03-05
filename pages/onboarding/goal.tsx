@@ -20,8 +20,19 @@ import {
   AlertTitle,
   AlertDescription,
 } from "@chakra-ui/react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  Portal,
+} from '@chakra-ui/react'
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -45,6 +56,7 @@ import {
   buildGoalGraphData,
   goalGraphOptions,
 } from "../../src/visualization/GoalVisualizations";
+import ReactDOM from "react-dom/client";
 
 // Boilerplate data
 ChartJS.register(
@@ -214,6 +226,28 @@ export default function SuggestionsPage() {
           // </Formik>
           <Container maxW="container.xl" as="form" p={"0px"}>
             <Heading fontSize={"xl"}>Select a suggested goal</Heading>
+              <Popover closeOnBlur={false} placement='bottom'>
+                {({ isOpen, onClose }) => (
+                <>
+              <PopoverTrigger>
+                <Button colorScheme={"green"}>{isOpen ? 'Close' : 'More information'}</Button>
+                  </PopoverTrigger>
+                  <Portal>
+                    <PopoverContent>
+                      <PopoverHeader>Calculation details</PopoverHeader>
+                      <PopoverCloseButton />
+                      <PopoverBody>
+                        <Box>
+                          The three goals below take into account your inputted information and use an assumed 5% rate-of-return assumption, 
+                          which encompasses a diversified portfolio and current economic conditions.
+                        </Box>
+                      </PopoverBody>
+                      <PopoverFooter>Citations: TBD</PopoverFooter>
+                    </PopoverContent>
+                  </Portal>
+                </>
+              )}
+            </Popover>
 
             <Box
               bg={"gray.100"}
