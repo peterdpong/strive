@@ -1,74 +1,107 @@
-// import { Suggestion, UserModel } from "../models/UserModel";
-// import {
-//   getTransactionCategoriesSpend,
-//   TransactionCategories,
-//   Transaction,
-// } from "../models/BudgetModel";
+import { Suggestion, UserModel } from "../models/UserModel";
+import {
+    getTransactionCategoriesSpend,
+    TransactionCategories,
+    Transaction,
+} from "../models/BudgetModel";
+import { Transaction } from "firebase/firestore";
 
-/*
-export enum TransactionCategories {
-  GROCERIES = "Groceries", 10%
-  ENTERTAINMENT = "Entertainment", 5%
-  UTILITIES = "Utilities", 4%
-  MOBILEPLAN = "Mobile Plan", 1%
-  RENT = "Rent", 35%
-  TRANSPORTATION = "Transportation", 15%
-  DININGOUT = "Dining Out", 5%
-  CLOTHING = "Clothing", 5%
-  TRAVEL = "Travel", 5%
-  EDUCATION = "Education", 7.5%
-  INTEREST = "Interest", 5%
-  SAVINGS = "Savings", 7.5%
-  INCOME = "Income",
+enum CategoryPercentages {
+    GROCERIES = 10,
+    ENTERTAINMENT = 5,
+    UTILITIES = 4,
+    MOBILEPLAN = 1,
+    RENT = 35,
+    TRANSPORTATION = 15,
+    DININGOUT = 5,
+    CLOTHING = 5,
+    TRAVEL = 5,
+    EDUCATION = 7.5,
+    INTEREST = 5,
+    SAVINGS = 7.5
 }
-*/
-// type TransactionType = {
-//   category: TransactionCategories;
-//   amount: number;
-// };
+
+let categorySpend: [TransactionCategories, number][] = [
+    [TransactionCategories.GROCERIES, 0],
+    [TransactionCategories.ENTERTAINMENT, 0],
+    [TransactionCategories.UTILITIES, 0],
+    [TransactionCategories.MOBILEPLAN, 0],
+    [TransactionCategories.RENT, 0],
+    [TransactionCategories.TRANSPORTATION, 0],
+    [TransactionCategories.DININGOUT, 0],
+    [TransactionCategories.CLOTHING, 0],
+    [TransactionCategories.TRAVEL, 0],
+    [TransactionCategories.EDUCATION, 0],
+    [TransactionCategories.INTEREST, 0],
+    [TransactionCategories.SAVINGS, 0],
+];
+
+let suggestion: [TransactionCategories, number][] = [
+  [TransactionCategories.GROCERIES, 0],
+  [TransactionCategories.ENTERTAINMENT, 0],
+  [TransactionCategories.UTILITIES, 0],
+  [TransactionCategories.MOBILEPLAN, 0],
+  [TransactionCategories.RENT, 0],
+  [TransactionCategories.TRANSPORTATION, 0],
+  [TransactionCategories.DININGOUT, 0],
+  [TransactionCategories.CLOTHING, 0],
+  [TransactionCategories.TRAVEL, 0],
+  [TransactionCategories.EDUCATION, 0],
+  [TransactionCategories.INTEREST, 0],
+  [TransactionCategories.SAVINGS, 0],
+];
 
 export class SuggestionEngine {
-  // static generateSuggestions( userData: UserModel | null ) {
-  //     if (userData == null) {
-  //         return undefined;
-  //     }
-  //     // generate spending suggestions by category (make this into function later)
-  //     let suggestions: {
-  //         [suggestionType: string]: Suggestion[];
-  //     };
-  //     suggestions = userData.suggestions
-  //     const targetPercent = [10, 5, 4, 1, 35, 15, 5, 5, 5, 7.5, 5, 7.5, 100]
-  //     const availableFunds = userData.budgetInfo.monthlyVariableBudget; // total funds available for allocation
-  //     let categories: { value: number; key: TransactionCategories; }[] = [];
-  //     categories = getTransactionCategoriesSpend()
-  //     let transactions: TransactionType[] //fetch all transaction;
-  //     //need a function to populate TransactionType[] with all transactions
-  //     for (let i = 0; i < transactions.length; i++) {
-  //         if (categories.find(element => element.category === transactions[i].category)) {
-  //             categories[transactions[i].category].value += transactions[i].amount;
-  //         }
-  //     }
-  //     let suggestionArray: { value: number; key: TransactionCategories; }[] = [];
-  //     for (let i = 0; i < targetPercent.length; i++) {
-  //         //for each Transaction Category, match with a target percent
-  //         Object.values(userData.budgetInfo.monthlyAllocations).map((spending) => {
-  //             const categoryPercent = categories[TransactionCategories[i]].value / availableFunds;
-  //             if (categoryPercent > targetPercent[i]) {
-  //                 suggestionArray.push(TransactionCategories[i]: -((categoryPercent - targetPercent[i]) * availableFunds / 100));
-  //             }
-  //             else {
-  //                 suggestionArray.push(TransactionCategories[i]: 0);
-  //             }
-  //         });
-  //     }
-  //     suggestions['Category Spending'] = suggestionArray; //suggestion array takes single element arrays, not mapped ones
-  //     //for each actual spending in category, generate list of suggestions for each category to reach target percentage
-  //     //for categories with less than target percentage spending, ignore
-  //     //display additional savings from current spending practices
-  //     //more functions for each type of suggestion
-  //     //append each type of suggestion into userData.suggestions
-  //     //return the entire suggestion at the end of this function
-  //     userData.suggestions = suggestions;
-  //     return userData.suggestions
-  // }
+  static generateCategorySuggestions( userData: UserModel | null ) {
+      if (userData == null) {
+          return undefined;
+      }
+      const availableFunds = userData.budgetInfo.monthlyVariableBudgetUnallocated; // total funds available for allocation
+      let categories: { value: number; key: TransactionCategories; }[] = [];
+      const now: Date = new Date();
+      let lastMonthDate = (now.getUTCMonth() - 1).toString() +
+                          "-" +
+                          now.getUTCFullYear().toString();
+      let index: number;
+      // loop through every transaction ever made by this user
+      userData.financialInfo.monthlyTransactions.forEach(transaction => {
+          // for each transaction made in the last month
+          if (transaction.date === lastMonthDate) {
+              // loop through each transaction category until it matches the category of the transaction made
+              for (const transactionCategory in TransactionCategories) {
+                  if (transaction.category === transactionCategory) {
+                    // add the value of the transaction to the array of transactions in categorySpend to keep track of total spend in each category by month
+                    index = categorySpend.findIndex(([category]) => category === transactionCategory);
+                    if (index != -1) {
+                      categorySpend[index][1] += transaction.amount;
+                    }
+                  }
+              }
+          }
+      });
+
+      for (const transactionCategory in CategoryPercentages) {
+          index = categorySpend.findIndex(([category]) => category === transactionCategory);
+          let totalCategorySpendPercentage: number = categorySpend[index][1] / availableFunds * 100;
+          let targetPercent: number = CategoryPercentages[transactionCategory] as unknown as number; // error as it doesn't know that this is a number
+          if (totalCategorySpendPercentage > targetPercent) {
+              //create a suggestion
+              let reduceAmount = (totalCategorySpendPercentage - targetPercent) * availableFunds;
+              suggestion[index][1] += reduceAmount;
+          }
+      }
+      
+      
+      // for reference
+      // suggestions: {
+      //   [suggestionType: string]: Suggestion[];
+      // };
+      
+      // export type Suggestion = {
+      //   suggestionType: string;
+      //   suggestionTitle: string;
+      //   suggestionBadge: string;
+      //   suggestionDescription: string;
+      // };
+  }
 }
