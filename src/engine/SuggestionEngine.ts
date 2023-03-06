@@ -1,10 +1,7 @@
 import { Suggestion, UserModel } from "../models/UserModel";
 import {
-    getTransactionCategoriesSpend,
     TransactionCategories,
-    Transaction,
 } from "../models/BudgetModel";
-import { Transaction } from "firebase/firestore";
 
 enum CategoryPercentages {
     GROCERIES = 10,
@@ -37,61 +34,85 @@ let categorySpend: [TransactionCategories, number][] = [
 ];
 
 let suggestion: [TransactionCategories, number][] = [
-  [TransactionCategories.GROCERIES, 0],
-  [TransactionCategories.ENTERTAINMENT, 0],
-  [TransactionCategories.UTILITIES, 0],
-  [TransactionCategories.MOBILEPLAN, 0],
-  [TransactionCategories.RENT, 0],
-  [TransactionCategories.TRANSPORTATION, 0],
-  [TransactionCategories.DININGOUT, 0],
-  [TransactionCategories.CLOTHING, 0],
-  [TransactionCategories.TRAVEL, 0],
-  [TransactionCategories.EDUCATION, 0],
-  [TransactionCategories.INTEREST, 0],
-  [TransactionCategories.SAVINGS, 0],
+    [TransactionCategories.GROCERIES, 0],
+    [TransactionCategories.ENTERTAINMENT, 0],
+    [TransactionCategories.UTILITIES, 0],
+    [TransactionCategories.MOBILEPLAN, 0],
+    [TransactionCategories.RENT, 0],
+    [TransactionCategories.TRANSPORTATION, 0],
+    [TransactionCategories.DININGOUT, 0],
+    [TransactionCategories.CLOTHING, 0],
+    [TransactionCategories.TRAVEL, 0],
+    [TransactionCategories.EDUCATION, 0],
+    [TransactionCategories.INTEREST, 0],
+    [TransactionCategories.SAVINGS, 0],
 ];
 
-export class SuggestionEngine {
-  static generateCategorySuggestions( userData: UserModel | null ) {
-      if (userData == null) {
-          return undefined;
-      }
-      const availableFunds = userData.budgetInfo.monthlyVariableBudgetUnallocated; // total funds available for allocation
-      let categories: { value: number; key: TransactionCategories; }[] = [];
-      const now: Date = new Date();
-      let lastMonthDate = (now.getUTCMonth() - 1).toString() +
-                          "-" +
-                          now.getUTCFullYear().toString();
-      let index: number;
-      // loop through every transaction ever made by this user
-      userData.financialInfo.monthlyTransactions.forEach(transaction => {
-          // for each transaction made in the last month
-          if (transaction.date === lastMonthDate) {
-              // loop through each transaction category until it matches the category of the transaction made
-              for (const transactionCategory in TransactionCategories) {
-                  if (transaction.category === transactionCategory) {
-                    // add the value of the transaction to the array of transactions in categorySpend to keep track of total spend in each category by month
-                    index = categorySpend.findIndex(([category]) => category === transactionCategory);
-                    if (index != -1) {
-                      categorySpend[index][1] += transaction.amount;
-                    }
-                  }
-              }
-          }
-      });
+type Suggestion = {
+  suggestionType: string;
+  suggestionTitle: string;
+  suggestionBadge: string;
+  suggestionDescription: string;
+};
 
-      for (const transactionCategory in CategoryPercentages) {
-          index = categorySpend.findIndex(([category]) => category === transactionCategory);
-          let totalCategorySpendPercentage: number = categorySpend[index][1] / availableFunds * 100;
-          let targetPercent: number = CategoryPercentages[transactionCategory] as unknown as number; // error as it doesn't know that this is a number
-          if (totalCategorySpendPercentage > targetPercent) {
-              //create a suggestion
-              let reduceAmount = (totalCategorySpendPercentage - targetPercent) * availableFunds;
-              suggestion[index][1] += reduceAmount;
-          }
-      }
-      
-      
+export class SuggestionEngine {
+
+    static generateCategorySuggestions( userData: UserModel | null ) {
+        if (userData == null) {
+            return undefined;
+        }
+
+        const availableFunds = userData.budgetInfo.monthlyVariableBudgetUnallocated; // total funds available for allocation
+        let categories: { value: number; key: TransactionCategories; }[] = [];
+        const now: Date = new Date();
+        let lastMonthDate = (now.getUTCMonth() - 1).toString() +
+                            "-" +
+                            now.getUTCFullYear().toString();
+        let index: number;
+        // loop through every transaction ever made by this user
+        userData.financialInfo.monthlyTransactions.forEach(transaction => {
+            // for each transaction made in the last month
+            if (transaction.date === lastMonthDate) {
+                // loop through each transaction category until it matches the category of the transaction made
+                for (const transactionCategory in TransactionCategories) {
+                    if (transaction.category === transactionCategory) {
+                      // add the value of the transaction to the array of transactions in categorySpend to keep track of total spend in each category by month
+                      index = categorySpend.findIndex(([category]) => category === transactionCategory);
+                      if (index != -1) {
+                        categorySpend[index][1] += transaction.amount;
+                      }
+                    }
+                }
+            }
+        });
+
+        for (const transactionCategory in CategoryPercentages) {
+            index = categorySpend.findIndex(([category]) => category === transactionCategory);
+            let totalCategorySpendPercentage: number = categorySpend[index][1] / availableFunds * 100;
+            let targetPercent: number = CategoryPercentages[transactionCategory] as unknown as number; // to suppress error as it doesn't know that this is a number
+            if (totalCategorySpendPercentage > targetPercent) {
+                //create a suggestion
+                let reduceAmount = (totalCategorySpendPercentage - targetPercent) * availableFunds;
+                suggestion[index][1] += reduceAmount;
+            }
+        }
+
+        let suggestionArray: Suggestion[];
+
+        // 
+        SuggestionEngine.addToSuggestions(suggestionArray);
+    }
+
+    static generateDemographicSuggestions( userData: UserModel | null) {
+        //do something
+    }
+
+    static addToSuggestions = (
+      suggestion: Suggestion[]
+    ) => {
+      // add this suggestion to the UserModel
+    };
+
       // for reference
       // suggestions: {
       //   [suggestionType: string]: Suggestion[];
@@ -103,5 +124,4 @@ export class SuggestionEngine {
       //   suggestionBadge: string;
       //   suggestionDescription: string;
       // };
-  }
 }
