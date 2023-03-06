@@ -1,5 +1,10 @@
 import { ScriptableContext } from "chart.js";
 
+// Holds all budget optimization functions
+import { GoalModel } from "../models/GoalModel";
+import { UserModel } from "../models/UserModel";
+
+
 export const goalGraphOptions = {
   scales: {
     x: {
@@ -28,33 +33,43 @@ export const goalGraphOptions = {
 };
 
 export const buildGoalGraphData = (
-  selectedGoal:
-    | {
-        monthlyAmount: number;
-        networthGoal: number;
-        timelineGoal: number;
-      }
-    | undefined
+  userInfo: 
+    {
+      userData: UserModel | null,
+      goalNetWorth: number,
+      goalTimeline: number
+    }
+  // selectedGoal:
+  //   {
+  //     monthlyAmount: number;
+  //     networthGoal: number;
+  //     timelineGoal: number;
+  //   }
+  //   | undefined
 ) => {
-  if (selectedGoal === undefined) return null;
+  // if (selectedGoal === undefined) return null;
+
+  if (userInfo.userData == null) {
+    return undefined;
+  }
 
   // Year timeline labels -> from 1 to timelineGoal
   const xAxisLabels = Array.from(
-    new Array(selectedGoal.timelineGoal),
-    (x, i) => i + 1
+    new Array(userInfo.goalTimeline),
+    (x, i) => i
   );
 
+  // Current net worth generation
+
+  
+
   // Generate goal data array size mapped to timeline goal(years)
-  const valueEveryYear: number =
-    selectedGoal.networthGoal / selectedGoal.timelineGoal;
+  // const valueEveryYear: number =
+  //   selectedGoal.networthGoal / selectedGoal.timelineGoal;
 
-  const goalData = xAxisLabels.map((element) => {
-    return element * valueEveryYear;
-  });
-
-  // const valueEveryYear: number;
-
-  // const goalData;
+  // const goalData = xAxisLabels.map((element) => {
+  //   return element * valueEveryYear;
+  // });
 
   return {
     labels: xAxisLabels,
