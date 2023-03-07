@@ -98,12 +98,14 @@ export default function BudgetPage() {
               </VStack>
             </Box>
             <Box flex="3">
-              <Doughnut
-                data={buildDoughnutGraphData(userData?.budgetInfo)}
-                options={{
-                  aspectRatio: 2,
-                }}
-              />
+              {userData && (
+                <Doughnut
+                  data={buildDoughnutGraphData(userData.budgetInfo)}
+                  options={{
+                    aspectRatio: 2,
+                  }}
+                />
+              )}
             </Box>
           </Flex>
 

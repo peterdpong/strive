@@ -281,7 +281,7 @@ export class BudgetEngine {
     return;
   }
 
-  static generateBudgetSelfComparisons() {
+  static generateBudgetSuggestions() {
     return;
   }
 

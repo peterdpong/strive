@@ -1,31 +1,8 @@
+import { BudgetEngineUtils } from "../engine/BudgetEngineUtils";
 import { BudgetModel } from "../models/BudgetModel";
+import { UserModel } from "../models/UserModel";
 
-export const buildDoughnutGraphData = (budgetInfo: BudgetModel | undefined) => {
-  if (budgetInfo === undefined) {
-    return {
-      labels: ["Food", "Entertainment", "Savings", "Unallocated"],
-      datasets: [
-        {
-          label: "$ Dollars",
-          data: [123, 23, 34, 45],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-          ],
-          borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)",
-            "rgba(75, 192, 192, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    };
-  }
-
+export const buildDoughnutGraphData = (budgetInfo: BudgetModel) => {
   const labels = ["Unallocated"];
   const data = [budgetInfo.monthlyVariableBudgetUnallocated];
   const backgroundColor = ["#4BC0C0"];
@@ -43,6 +20,58 @@ export const buildDoughnutGraphData = (budgetInfo: BudgetModel | undefined) => {
         label: "$ Dollars",
         data: data,
         backgroundColor: backgroundColor,
+      },
+    ],
+  };
+};
+
+export const buildBudgetCategoryBarGraphData = (userData: UserModel) => {
+  const userBudgetInfo = userData.budgetInfo;
+
+  const labels = ["Non-budgetted spending"];
+  const allocationData = [0];
+  const backgroundColor = ["#4BC0C0"];
+
+  for (const allocationKey of Object.keys(userBudgetInfo.monthlyAllocations)) {
+    labels.push(allocationKey);
+    allocationData.push(
+      userBudgetInfo.monthlyAllocations[allocationKey].allocation
+    );
+    backgroundColor.push(
+      userBudgetInfo.monthlyAllocations[allocationKey].color
+    );
+  }
+
+  const userCurrentMonthTransactions =
+    BudgetEngineUtils.getCurrentMonthTransactions(userData);
+
+  // Note we do negative of amount since transactions of spending will be entered as a negative value
+  const transactionData = new Array(labels.length).fill(0);
+  for (const transaction of userCurrentMonthTransactions) {
+    const categoryIndex = labels.indexOf(
+      transaction.category.toLocaleUpperCase()
+    );
+    if (categoryIndex !== -1) {
+      transactionData[categoryIndex] += -transaction.amount;
+    } else {
+      transactionData[0] += -transaction.amount;
+    }
+  }
+
+  return {
+    labels: labels,
+    datasets: [
+      {
+        labels: "",
+        data: transactionData,
+        backgroundColor: new Array(transactionData.length).fill("#e3250b"),
+        borderWidth: 1,
+      },
+      {
+        data: allocationData,
+        backgroundColor: backgroundColor,
+        borderWidth: 1,
+        grouped: false,
       },
     ],
   };

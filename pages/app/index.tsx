@@ -40,48 +40,28 @@ import Sidebar from "../../components/app/Sidebar";
 import MonthlyTransactions from "./budget/MonthlyTransactions";
 import { useAuth } from "../../src/auth/auth";
 import { getCurrentDate } from "../../src/DateTimeUtils";
+import { buildBudgetCategoryBarGraphData } from "../../src/visualization/BudgetVisualizationsHelpers";
+import { BudgetEngineUtils } from "../../src/engine/BudgetEngineUtils";
 
-// Boilerplate data
-const labels = [
-  "Groceries",
-  "Transportation",
-  "Entertainment",
-  "Rent",
-  "Travel",
-  "Gifts",
-];
 const horizontalOptions = {
   indexAxis: "y" as const,
   responsive: true,
   borderRadius: 100,
-};
-const data = {
-  labels: labels,
-  datasets: [
-    {
-      label: "Categories",
-      data: [65, 59, 80, 81, 56, 55, 40],
-      backgroundColor: [
-        "rgba(255, 99, 132, 0.2)",
-        "rgba(255, 159, 64, 0.2)",
-        "rgba(255, 205, 86, 0.2)",
-        "rgba(75, 192, 192, 0.2)",
-        "rgba(54, 162, 235, 0.2)",
-        "rgba(153, 102, 255, 0.2)",
-        "rgba(201, 203, 207, 0.2)",
-      ],
-      borderColor: [
-        "rgb(255, 99, 132)",
-        "rgb(255, 159, 64)",
-        "rgb(255, 205, 86)",
-        "rgb(75, 192, 192)",
-        "rgb(54, 162, 235)",
-        "rgb(153, 102, 255)",
-        "rgb(201, 203, 207)",
-      ],
-      borderWidth: 1,
+  plugins: {
+    legend: {
+      display: false,
     },
-  ],
+  },
+  options: {
+    scales: {
+      y: {
+        stacked: true,
+      },
+      x: {
+        beginAtZero: true,
+      },
+    },
+  },
 };
 
 const dataLine = {
@@ -154,53 +134,75 @@ export default function Dashboard() {
               borderColor={"gray.300"}
             >
               <HStack justifyContent="space-between" mb={"10px"}>
-                <Heading size={"md"}>Your Goal</Heading>
-                <Button
-                  colorScheme={"green"}
-                  onClick={() => router.push("app/goal")}
-                  size="sm"
-                >
-                  Explore goal
-                </Button>
+                <Heading size={"md"}>Goal Overview</Heading>
+                <HStack spacing={"5px"}>
+                  <Button
+                    colorScheme={"green"}
+                    onClick={() => router.push("app/goal")}
+                    size="sm"
+                  >
+                    Explore goal
+                  </Button>
+                </HStack>
+              </HStack>
+              <Divider my={1} />
+              <HStack
+                justifyContent="space-around"
+                mb="1rem"
+                align="flex-start"
+              >
+                <VStack align="flex-start">
+                  <Stat>
+                    <StatLabel fontSize="xl">Current Net Worth</StatLabel>
+                    <StatNumber fontSize="2xl">
+                      {userData
+                        ? `$${BudgetEngineUtils.calculateNetWorth(
+                            userData.financialInfo.accounts
+                          ).toFixed(2)}`
+                        : "Error"}
+                    </StatNumber>
+                  </Stat>
+                </VStack>
+                <VStack align="flex-start">
+                  <Stat>
+                    <StatLabel fontSize="xl">Current Month Savings</StatLabel>
+                    <StatNumber fontSize="2xl">
+                      {userData
+                        ? `$${BudgetEngineUtils.calculateCurrentMonthSavings(
+                            userData
+                          ).toFixed(2)}`
+                        : "Error"}
+                    </StatNumber>
+                  </Stat>
+                </VStack>
               </HStack>
               <Divider my={1} />
               <HStack justifyContent="space-between" align="flex-start">
                 <VStack align="flex-start">
-                  <Heading size="md">Long-term goal</Heading>
                   <Stat>
-                    <StatLabel fontSize="xl">Net Worth</StatLabel>
-                    <StatNumber fontSize="3xl">$123.56</StatNumber>
-                    <StatHelpText fontSize="lg">
-                      <CheckIcon mr={2} />
-                      On track
-                    </StatHelpText>
+                    <StatLabel fontSize="xl">Net Worth Goal</StatLabel>
+                    <StatNumber fontSize="2xl">
+                      ${userData?.goalInfo.networthGoal}
+                    </StatNumber>
                   </Stat>
                 </VStack>
                 <VStack align="flex-start">
-                  <Heading size="md">Monthly goal</Heading>
                   <Stat>
-                    <StatLabel fontSize="xl">Lower food spending</StatLabel>
-                    <StatNumber fontSize="3xl">$123.56</StatNumber>
-                    <StatHelpText fontSize="lg">
-                      <CheckIcon mr={2} />
-                      On track
-                    </StatHelpText>
+                    <StatLabel fontSize="xl">Monthly savings target</StatLabel>
+                    <StatNumber fontSize="2xl">
+                      ${userData?.goalInfo.monthlyAmount.toFixed(2)}
+                    </StatNumber>
                   </Stat>
                 </VStack>
 
-                <Box>
-                  <HStack>
-                    <Heading size="md">Goal Information</Heading>
-                    <Button size="sm" variant="outline">
-                      Adjust goals
-                    </Button>
-                  </HStack>
-
-                  <Text>Net worth of $xxxx in x years</Text>
-                  <Text>Savings of $xxxx per month</Text>
-                  <Text>Net worth of $xxxx saving $xxxx per month</Text>
-                  <Text>x years and x months to reach goal</Text>
-                </Box>
+                <VStack align="flex-start">
+                  <Stat>
+                    <StatLabel fontSize="xl">Goal Timeline</StatLabel>
+                    <StatNumber fontSize="2xl">
+                      {userData?.goalInfo.timelineGoal} years
+                    </StatNumber>
+                  </Stat>
+                </VStack>
               </HStack>
             </Box>
             <Box
@@ -318,7 +320,12 @@ export default function Dashboard() {
                   View budget
                 </Button>
               </HStack>
-              <Bar data={data} options={horizontalOptions} />
+              {userData && (
+                <Bar
+                  data={buildBudgetCategoryBarGraphData(userData)}
+                  options={horizontalOptions}
+                />
+              )}
             </Box>
           </VStack>
         </Flex>
