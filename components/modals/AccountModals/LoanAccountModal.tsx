@@ -88,6 +88,7 @@ export default function LoanAccountModal(props: {
                   </option>
                   <option value={LoanTypes.CAR}>{LoanTypes.CAR}</option>
                   <option value={LoanTypes.STUDENT}>{LoanTypes.STUDENT}</option>
+                  <option value={LoanTypes.LOC}>{LoanTypes.LOC}</option>
                 </SelectControl>
                 <NumberInputControl
                   name="remainingAmount"

@@ -64,7 +64,7 @@ export default function BudgetPage() {
         </Button>
         <Heading>Create a budget</Heading>
         <Text fontSize={"md"}>
-          Budget your variable expenses, no need to allocate it all!
+          Budget your expenses - no need to allocate it all!
         </Text>
 
         <Container maxW="container.xl" as="form" p={"0px"}>
@@ -80,13 +80,13 @@ export default function BudgetPage() {
               <VStack align="flex-start">
                 <Stat>
                   <StatLabel fontSize="xl">
-                    Balance before Expense Categories
+                    Monthly Income before Expense Categories
                   </StatLabel>
                   <StatNumber fontSize="3xl">
                     ${userData?.budgetInfo.monthlyVariableBudget.toFixed(2)}
                   </StatNumber>
                   <StatLabel fontSize="xl">
-                    Balance after Expense Categories
+                    Monthly Income after Expense Categories
                   </StatLabel>
                   <StatNumber fontSize="3xl">
                     $

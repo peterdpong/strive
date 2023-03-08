@@ -70,4 +70,5 @@ export enum LoanTypes {
   MORTGAGE = "Mortgage",
   STUDENT = "Student Loan",
   CAR = "Car Loan",
+  LOC = "Line of Credit"
 }

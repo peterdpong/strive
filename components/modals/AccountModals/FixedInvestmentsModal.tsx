@@ -100,7 +100,7 @@ export default function FixedInvestmentsModal(props: {
                 />
                 <NumberInputControl
                   name="interestRate"
-                  label="Fixed Investment Interest Rate (%)"
+                  label="Fixed Term Investment Interest Rate (%)"
                   numberInputProps={{
                     min: 0,
                     step: 1,
@@ -116,7 +116,7 @@ export default function FixedInvestmentsModal(props: {
                   <></>
                 )}
                 <SubmitButton mt={"20px"} colorScheme={"green"}>
-                  Add fixed investment
+                  Add fixed term investment
                 </SubmitButton>
               </Box>
             )}

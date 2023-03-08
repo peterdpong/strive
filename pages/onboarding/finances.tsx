@@ -14,6 +14,11 @@ import {
   StatNumber,
   Text,
   useDisclosure,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper
 } from "@chakra-ui/react";
 import { Timestamp } from "firebase/firestore";
 import { Formik } from "formik";
@@ -72,7 +77,7 @@ export default function FinancesPages() {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onSubmit={handleSubmit as any}
             >
-              <Box
+              {/* <Box
                 bg={"gray.100"}
                 rounded={"5px"}
                 my={"25px"}
@@ -89,10 +94,55 @@ export default function FinancesPages() {
                     min: 1,
                     max: 1000000000,
                     step: 50,
-                    precision: 2,
-                    value: values.annualIncome,
+                    // precision: 2,
+                    // value: values.annualIncome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    value: Math.floor(values.annualIncome).toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
                   }}
                 />
+              </Box> */}
+
+              <Box
+                bg={"gray.100"}
+                rounded={"5px"}
+                my={"25px"}
+                p={"20px"}
+                border={"1px"}
+                borderColor={"gray.300"}
+              >
+                <Heading mb={"5px"} fontSize={"xl"}>
+                  Net Take Home Pay ($)
+                </Heading>
+                <NumberInputControl
+                  name="annualIncome"
+                  numberInputProps={{
+                    min: 1,
+                    max: 1000000000,
+                    step: 50,
+                    precision: 2,
+                    value: Math.floor(values.annualIncome).toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                  }}
+                />
+              </Box>
+
+              <Box
+                bg={"gray.100"}
+                rounded={"5px"}
+                my={"25px"}
+                p={"20px"}
+                border={"1px"}
+                borderColor={"gray.300"}
+              >
+                <Heading mb={"5px"} fontSize={"xl"}>
+                  Pay Frequency
+                </Heading>
+                
+                <NumberInput defaultValue={12} min={1} max={365}>
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
               </Box>
 
               <Box
@@ -115,6 +165,20 @@ export default function FinancesPages() {
                     </Button>
                     <Button
                       colorScheme={"green"}
+                      onClick={fixedInvestmentsModalProps.onOpen}
+                      size="sm"
+                    >
+                      Add fixed term investment
+                    </Button>
+                    <Button
+                      colorScheme={"green"}
+                      onClick={otherAssetsModalProps.onOpen}
+                      size="sm"
+                    >
+                      Add other asset
+                    </Button>
+                    <Button
+                      colorScheme={"green"}
                       onClick={creditCardModalProps.onOpen}
                       size="sm"
                     >
@@ -126,20 +190,6 @@ export default function FinancesPages() {
                       size="sm"
                     >
                       Add loan
-                    </Button>
-                    <Button
-                      colorScheme={"green"}
-                      onClick={fixedInvestmentsModalProps.onOpen}
-                      size="sm"
-                    >
-                      Add fixed investment
-                    </Button>
-                    <Button
-                      colorScheme={"green"}
-                      onClick={otherAssetsModalProps.onOpen}
-                      size="sm"
-                    >
-                      Add other asset
                     </Button>
                   </HStack>
                 </HStack>
@@ -223,7 +273,7 @@ export default function FinancesPages() {
 
                 {/* Fixed investments */}
                 <Heading mb={"10px"} fontSize={"lg"}>
-                  Fixed Investment accounts
+                  Fixed Term Investment accounts
                 </Heading>
                 {userData &&
                 Object.keys(userData.financialInfo.accounts.fixedInvestments)

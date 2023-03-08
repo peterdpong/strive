@@ -60,6 +60,20 @@ export default function AccountsPage() {
               </Button>
               <Button
                 colorScheme={"green"}
+                onClick={fixedInvestmentsModalProps.onOpen}
+                size="sm"
+              >
+                Add fixed term investment
+              </Button>
+              <Button
+                colorScheme={"green"}
+                onClick={otherAssetsModalProps.onOpen}
+                size="sm"
+              >
+                Add other asset
+              </Button>
+              <Button
+                colorScheme={"green"}
                 onClick={creditCardModalProps.onOpen}
                 size="sm"
               >
@@ -71,20 +85,6 @@ export default function AccountsPage() {
                 size="sm"
               >
                 Add loan
-              </Button>
-              <Button
-                colorScheme={"green"}
-                onClick={fixedInvestmentsModalProps.onOpen}
-                size="sm"
-              >
-                Add fixed investment
-              </Button>
-              <Button
-                colorScheme={"green"}
-                onClick={otherAssetsModalProps.onOpen}
-                size="sm"
-              >
-                Add other asset
               </Button>
             </HStack>
           </HStack>

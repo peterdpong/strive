@@ -1,6 +1,7 @@
-import { Button, ButtonGroup, Container, Heading, Text } from "@chakra-ui/react";
+import { Button, ButtonGroup, Container, Heading, Text, Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
+import { Image } from '@chakra-ui/react'
 
 export default function OnboardingIndex() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function OnboardingIndex() {
       >
         <Heading textAlign={"center"}>Welcome to Strive.</Heading>
         <Text fontSize={"md"}>
-          The financial budget tool that helps you to reach your goals.
+          The budgeting tool that helps you to reach your financial goals.
         </Text>
         <ButtonGroup variant = 'outline' spacing = '6'>
         <Button
@@ -37,6 +38,24 @@ export default function OnboardingIndex() {
           About
         </Button>
         </ButtonGroup>
+      </Container>
+
+      <Container
+        maxW="container.xl"
+        rounded={"5px"}
+        bg={"gray.100"}
+        my={"25px"}
+        p={"20px"}
+        border={"1px"}
+        borderColor={"gray.300"}
+        centerContent
+      >
+        <Box boxSize='sm'>
+          <Image src='C:\Users\Joel Lotzkar\Downloads\homepic1.png' alt='Pic 1' />
+          <Text>
+            To Do: add graphics.
+          </Text>
+        </Box>
       </Container>
     </ProtectedRoute>
   );
