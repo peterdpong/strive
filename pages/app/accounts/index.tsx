@@ -23,6 +23,7 @@ import BankInvestmentAccountModal from "../../../components/modals/AccountModals
 import CreditCardModal from "../../../components/modals/AccountModals/CreditCardModal";
 import FixedInvestmentsModal from "../../../components/modals/AccountModals/FixedInvestmentsModal";
 import OtherAssetsModal from "../../../components/modals/AccountModals/OtherAssetsModal";
+import { BudgetEngineUtils } from "../../../src/engine/BudgetEngineUtils";
 
 export default function AccountsPage() {
   const { useRequiredAuth } = useAuth();
@@ -97,9 +98,18 @@ export default function AccountsPage() {
           mx={"15px"}
           my={"2rem"}
         >
-          <Heading size="lg" mr="2.5rem">
-            Net worth
+          <Heading size="md" mr="2.5rem">
+            Current Total Net Worth
           </Heading>
+          <Stat>
+            <StatNumber fontSize="2xl">
+              {userData
+                ? `$${BudgetEngineUtils.calculateNetWorth(
+                    userData.financialInfo.accounts
+                  ).toFixed(2)}`
+                : "Error"}
+            </StatNumber>
+          </Stat>
         </Box>
 
         <Box
