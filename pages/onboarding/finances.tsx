@@ -119,7 +119,9 @@ export default function FinancesPages() {
                     max: 1000000000,
                     step: 50,
                     precision: 2,
-                    value: Math.floor(values.annualIncome).toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    // value: Math.floor(values.annualIncome).toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    // TO DO: add decimal points
+                    value: Intl.NumberFormat('en-US').format(values.annualIncome),
                   }}
                 />
               </Box>
