@@ -221,31 +221,6 @@ export default function SuggestionsPage() {
         ) : null}
 
         {goals === undefined || goals === null ? null : (
-          // <Formik
-          //   initialValues={{
-          //     selectedGoalIndex: 1, // 1 is the neutral aggresiveness
-          //   }}
-          //   onSubmit={(values, actions) => {
-          //     if (userData) {
-          //       // if (
-          //       //   values.selectedGoalInfo &&
-          //       //   getUserGoal(userData.uid) !== values.selectedGoalInfo
-          //       // ) {
-          //       //   addUserGoal(userData.uid, values.selectedGoalInfo);
-          //       // }
-          //       actions.resetForm;
-          //       console.log(values);
-          //       router.push("/app");
-          //     } else {
-          //       alert("Error: User not logged in...");
-          //       router.push("/login");
-          //     }
-          //   }}
-          // >
-          //   {({ handleSubmit }) => (
-
-          //   )}
-          // </Formik>
           <Container maxW="container.xl" as="form" p={"0px"}>
             <Heading fontSize={"xl"}>Select a suggested goal</Heading>
             <Popover closeOnBlur={false} placement="bottom">
