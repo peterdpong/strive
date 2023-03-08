@@ -27,12 +27,11 @@ import {
   PopoverHeader,
   PopoverBody,
   PopoverFooter,
-  PopoverArrow,
   PopoverCloseButton,
   Portal,
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -56,7 +55,6 @@ import {
   buildGoalGraphData,
   goalGraphOptions,
 } from "../../src/visualization/GoalVisualizations";
-import ReactDOM from "react-dom/client";
 
 // Boilerplate data
 ChartJS.register(
@@ -97,7 +95,13 @@ export default function SuggestionsPage() {
       timelineYears
     );
     setGoals(generateGoalsResult);
-    setGraphData(buildGoalGraphData(generateGoalsResult?.neutralGoal));
+    setGraphData(
+      buildGoalGraphData({
+        userData: userData,
+        monthlySavings: generateGoalsResult?.neutralGoal.monthlyAmount,
+        goalTimeline: generateGoalsResult?.neutralGoal.timelineGoal,
+      })
+    );
   };
 
   const onSelectGoal = (goalIndex: number) => {
@@ -105,11 +109,29 @@ export default function SuggestionsPage() {
 
     // Super spaghetti code but im too lazy to figure out a better way rn (peter)
     if (goalIndex === 0) {
-      setGraphData(buildGoalGraphData(goals?.lessAggressiveGoal));
+      setGraphData(
+        buildGoalGraphData({
+          userData: userData,
+          monthlySavings: goals?.lessAggressiveGoal.monthlyAmount,
+          goalTimeline: goals?.lessAggressiveGoal.timelineGoal,
+        })
+      );
     } else if (goalIndex === 1) {
-      setGraphData(buildGoalGraphData(goals?.neutralGoal));
+      setGraphData(
+        buildGoalGraphData({
+          userData: userData,
+          monthlySavings: goals?.neutralGoal.monthlyAmount,
+          goalTimeline: goals?.neutralGoal.timelineGoal,
+        })
+      );
     } else {
-      setGraphData(buildGoalGraphData(goals?.moreAggressiveGoal));
+      setGraphData(
+        buildGoalGraphData({
+          userData: userData,
+          monthlySavings: goals?.moreAggressiveGoal.monthlyAmount,
+          goalTimeline: goals?.moreAggressiveGoal.timelineGoal,
+        })
+      );
     }
   };
 
@@ -226,11 +248,13 @@ export default function SuggestionsPage() {
           // </Formik>
           <Container maxW="container.xl" as="form" p={"0px"}>
             <Heading fontSize={"xl"}>Select a suggested goal</Heading>
-              <Popover closeOnBlur={false} placement='bottom'>
-                {({ isOpen, onClose }) => (
+            <Popover closeOnBlur={false} placement="bottom">
+              {({ isOpen, onClose }) => (
                 <>
-              <PopoverTrigger>
-                <Button colorScheme={"green"}>{isOpen ? 'Close' : 'More information'}</Button>
+                  <PopoverTrigger>
+                    <Button colorScheme={"green"}>
+                      {isOpen ? "Close" : "More information"}
+                    </Button>
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent>
@@ -238,8 +262,10 @@ export default function SuggestionsPage() {
                       <PopoverCloseButton />
                       <PopoverBody>
                         <Box>
-                          The three goals below take into account your inputted information and use an assumed 5% rate-of-return assumption, 
-                          which encompasses a diversified portfolio and current economic conditions.
+                          The three goals below take into account your inputted
+                          information and use an assumed 5% rate-of-return
+                          assumption, which encompasses a diversified portfolio
+                          and current economic conditions.
                         </Box>
                       </PopoverBody>
                       <PopoverFooter>Citations: TBD</PopoverFooter>
