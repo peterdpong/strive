@@ -158,7 +158,7 @@ export default function Dashboard() {
                       {userData
                         ? `$${BudgetEngineUtils.calculateNetWorth(
                             userData.financialInfo.accounts
-                          ).toFixed(2)}`
+                          ).toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`
                         : "Error"}
                     </StatNumber>
                   </Stat>
@@ -170,7 +170,7 @@ export default function Dashboard() {
                       {userData
                         ? `$${BudgetEngineUtils.calculateCurrentMonthSavings(
                             userData
-                          ).toFixed(2)}`
+                          ).toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`
                         : "Error"}
                     </StatNumber>
                   </Stat>
@@ -182,15 +182,15 @@ export default function Dashboard() {
                   <Stat>
                     <StatLabel fontSize="xl">Net Worth Goal</StatLabel>
                     <StatNumber fontSize="2xl">
-                      ${userData?.goalInfo.networthGoal}
+                      ${userData?.goalInfo.networthGoal.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                     </StatNumber>
                   </Stat>
                 </VStack>
                 <VStack align="flex-start">
                   <Stat>
-                    <StatLabel fontSize="xl">Monthly savings target</StatLabel>
+                    <StatLabel fontSize="xl">Target Monthly Savings</StatLabel>
                     <StatNumber fontSize="2xl">
-                      ${userData?.goalInfo.monthlyAmount.toFixed(2)}
+                      ${userData?.goalInfo.monthlyAmount.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                     </StatNumber>
                   </Stat>
                 </VStack>
