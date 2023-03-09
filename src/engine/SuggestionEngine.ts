@@ -1,4 +1,4 @@
-import { Suggestion, UserModel } from "../models/UserModel";
+import { UserModel } from "../models/UserModel";
 import {
     TransactionCategories,
 } from "../models/BudgetModel";
