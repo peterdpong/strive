@@ -130,7 +130,7 @@ export default function FinancesPages() {
                     max: 1000000000,
                     step: 50,
                     precision: 2,
-                    value: values.annualIncome,
+                    value: values.annualIncome.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","),
                   }}
                 />
               </Box>

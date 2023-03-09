@@ -127,16 +127,14 @@ export default function BudgetPage() {
                     Monthly Income before Expenses
                   </StatLabel>
                   <StatNumber fontSize="3xl">
-                    ${userData?.budgetInfo.monthlyVariableBudget.toFixed(2)}
+                    ${userData?.budgetInfo.monthlyVariableBudget.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                   </StatNumber>
                   <StatLabel fontSize="xl">
                     Monthly Income after Expenses
                   </StatLabel>
                   <StatNumber fontSize="3xl">
                     $
-                    {userData?.budgetInfo.monthlyVariableBudgetUnallocated.toFixed(
-                      2
-                    )}
+                    {userData?.budgetInfo.monthlyVariableBudgetUnallocated.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                   </StatNumber>
                 </Stat>
               </VStack>
