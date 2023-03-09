@@ -41,8 +41,8 @@ export default function BankInvestmentAccountModal(props: {
             initialValues={{
               name: "",
               type: AccountType.SAVINGS,
-              value: 0,
-              interestRate: 0,
+              value: "0",
+              interestRate: "0",
               error: null,
             }}
             onSubmit={(values, actions) => {
@@ -54,8 +54,8 @@ export default function BankInvestmentAccountModal(props: {
                   {
                     name: values.name,
                     type: values.type,
-                    value: values.value,
-                    interestRate: values.interestRate,
+                    value: parseFloat(values.value),
+                    interestRate: parseFloat(values.interestRate),
                   }
                 );
                 actions.resetForm;
@@ -92,10 +92,8 @@ export default function BankInvestmentAccountModal(props: {
                   <option value={AccountType.CHEQUINGS}>
                     {AccountType.CHEQUINGS}
                   </option>
-                  <option value={AccountType.TFSA}>
-                    {AccountType.TFSA}</option>
-                  <option value={AccountType.RRSP}>
-                    {AccountType.RRSP}</option>
+                  <option value={AccountType.TFSA}>{AccountType.TFSA}</option>
+                  <option value={AccountType.RRSP}>{AccountType.RRSP}</option>
                 </SelectControl>
                 <NumberInputControl
                   name="interestRate"

@@ -41,7 +41,7 @@ export default function OtherAssetsModal(props: {
             initialValues={{
               name: "",
               type: AssetTypes.HOUSE,
-              value: 0,
+              value: "0",
               error: null,
             }}
             onSubmit={(values, actions) => {
@@ -53,7 +53,7 @@ export default function OtherAssetsModal(props: {
                   {
                     name: values.name,
                     type: values.type,
-                    value: values.value,
+                    value: parseFloat(values.value),
                   }
                 );
                 actions.resetForm;
@@ -79,10 +79,10 @@ export default function OtherAssetsModal(props: {
                     precision: 2,
                   }}
                 />
-                <SelectControl 
-                    name="type" 
-                    label="Asset Type"
-                    selectProps={{ placeholder: "Select other asset type" }}
+                <SelectControl
+                  name="type"
+                  label="Asset Type"
+                  selectProps={{ placeholder: "Select other asset type" }}
                 >
                   <option value={AssetTypes.HOUSE}>{AssetTypes.HOUSE}</option>
                   <option value={AssetTypes.VEHICLE}>

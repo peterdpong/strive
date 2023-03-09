@@ -39,9 +39,9 @@ export default function CreditCardModal(props: {
           <Formik
             initialValues={{
               name: "",
-              interestRate: 0,
-              amountOwned: 0,
-              nextPaymentAmount: 0,
+              interestRate: "0",
+              amountOwned: "0",
+              nextPaymentAmount: "0",
               nextPaymentDate: "",
               error: null,
             }}
@@ -53,9 +53,9 @@ export default function CreditCardModal(props: {
                   "CreditCard",
                   {
                     name: values.name,
-                    interestRate: values.interestRate,
-                    amountOwned: values.amountOwned,
-                    nextPaymentAmount: values.nextPaymentAmount,
+                    interestRate: parseFloat(values.interestRate),
+                    amountOwned: parseFloat(values.amountOwned),
+                    nextPaymentAmount: parseFloat(values.nextPaymentAmount),
                     nextPaymentDate: new Timestamp(
                       Date.parse(values.nextPaymentDate) / 1000,
                       0

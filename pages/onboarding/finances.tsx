@@ -18,7 +18,7 @@ import {
   NumberInputField,
   NumberInputStepper,
   NumberIncrementStepper,
-  NumberDecrementStepper
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import {
   Popover,
@@ -26,7 +26,6 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverBody,
-  PopoverFooter,
   PopoverCloseButton,
   Portal,
 } from "@chakra-ui/react";
@@ -66,11 +65,13 @@ export default function FinancesPages() {
 
         <Formik
           initialValues={{
-            annualIncome: userData ? userData.financialInfo.annualIncome : 0,
+            annualIncome: userData
+              ? userData.financialInfo.annualIncome.toString()
+              : "0",
           }}
           onSubmit={(values, actions) => {
             if (userData) {
-              setAnnualIncome(userData.uid, values.annualIncome);
+              setAnnualIncome(userData.uid, parseFloat(values.annualIncome));
               actions.resetForm;
               router.push("/onboarding/budget");
             } else {
@@ -129,9 +130,7 @@ export default function FinancesPages() {
                     max: 1000000000,
                     step: 50,
                     precision: 2,
-                    // value: Math.floor(values.annualIncome).toLocaleString('en', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-                    // TO DO: add decimal points
-                    value: Intl.NumberFormat('en-US').format(values.annualIncome),
+                    value: values.annualIncome,
                   }}
                 />
               </Box>
@@ -147,7 +146,7 @@ export default function FinancesPages() {
                 <Heading mb={"5px"} fontSize={"xl"}>
                   Pay Frequency
                 </Heading>
-                
+
                 <NumberInput defaultValue={12} min={1} max={365}>
                   <NumberInputField />
                   <NumberInputStepper>
@@ -158,30 +157,34 @@ export default function FinancesPages() {
               </Box>
 
               <Popover closeOnBlur={false} placement="bottom">
-              {({ isOpen, onClose }) => (
-                <>
-                  <PopoverTrigger>
-                    <Button colorScheme={"green"}>
-                      {isOpen ? "Close" : "More information"}
-                    </Button>
-                  </PopoverTrigger>
-                  <Portal>
-                    <PopoverContent>
-                      <PopoverHeader fontWeight={ 'bold' }>Input details</PopoverHeader>
-                      <PopoverCloseButton />
-                      <PopoverBody>
-                        <Box>
-                          In the first field above, please enter your net take home pay amount.
-                          In the second field above, please enter the frequency of your payments (for example, 12 for monthly).
-                          Below, please add your bank accounts, fixed term investments, any other assets,
-                          credit card and other loans outstanding.
-                        </Box>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Portal>
-                </>
-              )}
-            </Popover>
+                {({ isOpen, onClose }) => (
+                  <>
+                    <PopoverTrigger>
+                      <Button colorScheme={"green"}>
+                        {isOpen ? "Close" : "More information"}
+                      </Button>
+                    </PopoverTrigger>
+                    <Portal>
+                      <PopoverContent>
+                        <PopoverHeader fontWeight={"bold"}>
+                          Input details
+                        </PopoverHeader>
+                        <PopoverCloseButton />
+                        <PopoverBody>
+                          <Box>
+                            In the first field above, please enter your net take
+                            home pay amount. In the second field above, please
+                            enter the frequency of your payments (for example,
+                            12 for monthly). Below, please add your bank
+                            accounts, fixed term investments, any other assets,
+                            credit card and other loans outstanding.
+                          </Box>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Portal>
+                  </>
+                )}
+              </Popover>
 
               <Box
                 bg={"gray.100"}

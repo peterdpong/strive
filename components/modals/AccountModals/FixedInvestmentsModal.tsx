@@ -41,8 +41,8 @@ export default function FixedInvestmentsModal(props: {
               name: "",
               startDate: "",
               maturityDate: "",
-              startingValue: 0,
-              interestRate: 0,
+              startingValue: "0",
+              interestRate: "0",
               error: null,
             }}
             onSubmit={(values, actions) => {
@@ -61,8 +61,8 @@ export default function FixedInvestmentsModal(props: {
                       Date.parse(values.maturityDate) / 1000,
                       0
                     ),
-                    startingValue: values.startingValue,
-                    interestRate: values.interestRate,
+                    startingValue: parseFloat(values.startingValue),
+                    interestRate: parseFloat(values.interestRate),
                   }
                 );
                 actions.resetForm;

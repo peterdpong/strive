@@ -41,9 +41,9 @@ export default function LoanAccountModal(props: {
           <Formik
             initialValues={{
               name: "",
-              remainingAmount: 0,
-              minimumPayment: 0,
-              interestRate: 0,
+              remainingAmount: "0",
+              minimumPayment: "0",
+              interestRate: "0",
               paymentDate: "",
               error: null,
             }}
@@ -55,9 +55,9 @@ export default function LoanAccountModal(props: {
                   "Loan",
                   {
                     name: values.name,
-                    remainingAmount: values.remainingAmount,
-                    minimumPayment: values.minimumPayment,
-                    interestRate: values.interestRate,
+                    remainingAmount: parseFloat(values.remainingAmount),
+                    minimumPayment: parseFloat(values.minimumPayment),
+                    interestRate: parseFloat(values.interestRate),
                     paymentDate: new Timestamp(
                       Date.parse(values.paymentDate) / 1000,
                       0
@@ -78,8 +78,8 @@ export default function LoanAccountModal(props: {
                 onSubmit={handleSubmit as any}
               >
                 <InputControl name="name" label="Loan Name" />
-                <SelectControl 
-                  name="type" 
+                <SelectControl
+                  name="type"
                   label="Loan Type"
                   selectProps={{ placeholder: "Select loan type" }}
                 >
