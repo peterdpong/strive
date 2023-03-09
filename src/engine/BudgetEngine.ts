@@ -160,13 +160,14 @@ export class BudgetEngine {
     let currNetWorth = 0;
     currNetWorth = totalAssets - totalLiabilities;
 
-    //return ("this is curr net worth: ") + currNetWorth;
+    //console.log("this is curr net worth: " + currNetWorth);
 
     //present net worth future valued
     let currNetWorthFV = 0;
-    currNetWorthFV = currNetWorth * 1.05 ** goalTimeline; //5% RoR assumption
+    currNetWorthFV = currNetWorth*(1+0.05/12)**(12*goalTimeline); //5% RoR assumption
 
-    //return ("this is FV currNW: ") + currNetWorthFV;
+    //console.log("this is FV currNW: " + currNetWorthFV);
+    //console.log("goalTimeline" + goalTimeline);
 
     //net worth differential
     let netWorthDiff = 0;
