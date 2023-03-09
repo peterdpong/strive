@@ -104,7 +104,28 @@ export class SuggestionEngine {
     }
 
     const suggestionArray: Suggestion[] = [];
-
+    for (const suggestions in suggestion) {
+      var temp_type = "Category Suggestions";
+      var temp_title = suggestions[0]; //should be "Groceries, Entertainment, ..."
+      if (suggestions[1] as unknown as number > 0) {
+        var temp_badge = "Increased Spending";
+      }
+      else {
+        var temp_badge = "Good Job!"; //not really sure what to put here
+      }
+      if (suggestions[1] as unknown as number === 0) {
+        var temp_description = "Maintain this spending!";
+      }
+      else {
+        var temp_description = "Spend " + suggestions[1] + "less each month in this category.";
+      }
+      let temp_suggestion!: Suggestion;
+      temp_suggestion.suggestionType = temp_type;
+      temp_suggestion.suggestionTitle = temp_title;
+      temp_suggestion.suggestionBadge = temp_badge;
+      temp_suggestion.suggestionDescription = temp_description;
+      suggestionArray.push(temp_suggestion);
+    }
     //
     SuggestionEngine.addToSuggestions(suggestionArray);
   }
