@@ -233,7 +233,7 @@ export default function SuggestionsPage() {
                   </PopoverTrigger>
                   <Portal>
                     <PopoverContent>
-                      <PopoverHeader>Calculation details</PopoverHeader>
+                      <PopoverHeader fontWeight={ 'bold' }>Calculation details</PopoverHeader>
                       <PopoverCloseButton />
                       <PopoverBody>
                         <Box>

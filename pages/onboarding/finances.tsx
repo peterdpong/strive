@@ -20,6 +20,16 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper
 } from "@chakra-ui/react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverCloseButton,
+  Portal,
+} from "@chakra-ui/react";
 import { Timestamp } from "firebase/firestore";
 import { Formik } from "formik";
 import { NumberInputControl, SubmitButton } from "formik-chakra-ui";
@@ -146,6 +156,32 @@ export default function FinancesPages() {
                   </NumberInputStepper>
                 </NumberInput>
               </Box>
+
+              <Popover closeOnBlur={false} placement="bottom">
+              {({ isOpen, onClose }) => (
+                <>
+                  <PopoverTrigger>
+                    <Button colorScheme={"green"}>
+                      {isOpen ? "Close" : "More information"}
+                    </Button>
+                  </PopoverTrigger>
+                  <Portal>
+                    <PopoverContent>
+                      <PopoverHeader fontWeight={ 'bold' }>Input details</PopoverHeader>
+                      <PopoverCloseButton />
+                      <PopoverBody>
+                        <Box>
+                          In the first field above, please enter your net take home pay amount.
+                          In the second field above, please enter the frequency of your payments (for example, 12 for monthly).
+                          Below, please add your bank accounts, fixed term investments, any other assets,
+                          credit card and other loans outstanding.
+                        </Box>
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Portal>
+                </>
+              )}
+            </Popover>
 
               <Box
                 bg={"gray.100"}
