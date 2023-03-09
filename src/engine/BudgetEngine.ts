@@ -104,7 +104,7 @@ export class BudgetEngine {
 
     //summation
     let totalAssets = 0;
-    totalAssets = +bankAcctTotal + +fixedInvTotal + +otherAssetsTotal;
+    totalAssets = bankAcctTotal + fixedInvTotal + otherAssetsTotal;
 
     //return ("this is total assets: ") + totalAssets;
 
@@ -147,7 +147,7 @@ export class BudgetEngine {
     //summation
 
     let totalLiabilities = 0;
-    totalLiabilities = +creditCardTotal + +loansTotal;
+    totalLiabilities = creditCardTotal + loansTotal;
 
     //return ("this is totalLiabilities: ") + totalLiabilities;
 
@@ -272,6 +272,7 @@ export class BudgetEngine {
         moreAggressiveGoal: {
           monthlyAmount: calcMonthlySavings * 1.05,
           networthGoal: moreAggressiveNW,
+          timelineGoal: goalTimeline,
         },
       };
     }
