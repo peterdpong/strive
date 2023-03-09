@@ -32,6 +32,8 @@ export class BudgetEngine {
       }
     );
 
+    //return ("this is bankaacctotal:" ) + bankAcctTotal;
+
     //fv bank account assets
     //const bankAcctTotalInterest = bankAcctTotal*(1+(userData.financialInfo.accounts.bankAccounts.BankInvestmentAccount.interestRate)/100)**goalTimeline;
 
@@ -102,7 +104,7 @@ export class BudgetEngine {
 
     //summation
     let totalAssets = 0;
-    totalAssets = bankAcctTotal + fixedInvTotal + otherAssetsTotal;
+    totalAssets = +bankAcctTotal + +fixedInvTotal + +otherAssetsTotal;
 
     //return ("this is total assets: ") + totalAssets;
 
@@ -145,7 +147,7 @@ export class BudgetEngine {
     //summation
 
     let totalLiabilities = 0;
-    totalLiabilities = creditCardTotal + loansTotal;
+    totalLiabilities = +creditCardTotal + +loansTotal;
 
     //return ("this is totalLiabilities: ") + totalLiabilities;
 
@@ -254,6 +256,7 @@ export class BudgetEngine {
 
     if (calcMonthlySavings > monthlySavingsAvail) {
       return null;
+      //TO DO: return suggestions
     } else {
       return {
         lessAggressiveGoal: {
@@ -269,7 +272,6 @@ export class BudgetEngine {
         moreAggressiveGoal: {
           monthlyAmount: calcMonthlySavings * 1.05,
           networthGoal: moreAggressiveNW,
-          timelineGoal: goalTimeline,
         },
       };
     }
@@ -279,7 +281,7 @@ export class BudgetEngine {
     return;
   }
 
-  static generateBudgetSuggestions() {
+  static generateBudgetSelfComparisons() {
     return;
   }
 

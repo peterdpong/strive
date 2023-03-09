@@ -9,13 +9,13 @@ export const goalGraphOptions = {
     x: {
       title: {
         display: true,
-        text: "Timeline Period",
+        text: "Timeline Period (Months)",
       },
     },
     y: {
       title: {
         display: true,
-        text: "Net Worth",
+        text: "Net Worth ($)",
       },
     },
   },
@@ -52,7 +52,7 @@ export const buildGoalGraphData = (userInfo: {
 
   // Year timeline labels -> from 1 to timelineGoal
   const xAxisLabels = Array.from(
-    new Array(userInfo.goalTimeline * 12), //converted goalTimeline in years to months
+    new Array(userInfo.goalTimeline * 12 + 1), //converted goalTimeline in years to months
     (x, i) => i
   );
 
@@ -171,28 +171,28 @@ export const buildGoalGraphData = (userInfo: {
         label: "Net Worth",
         //data needs to be dynamic - port in a list of any size
         data: NetWorthData,
-        options: {
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: "Timeline Period",
-                font: {
-                  size: 25,
-                },
-              },
-            },
-            y: {
-              title: {
-                display: true,
-                text: "Net Worth",
-                font: {
-                  size: 25,
-                },
-              },
-            },
-          },
-        },
+        // options: {
+        //   scales: {
+        //     x: {
+        //       title: {
+        //         display: true,
+        //         text: "Timeline Period (Months)",
+        //         font: {
+        //           size: 25,
+        //         },
+        //       },
+        //     },
+        //     y: {
+        //       title: {
+        //         display: true,
+        //         text: "Net Worth ($)",
+        //         font: {
+        //           size: 25,
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
         borderColor: "rgb(30, 159, 92)",
         backgroundColor: (context: ScriptableContext<"line">) => {
           const ctx = context.chart.ctx;
