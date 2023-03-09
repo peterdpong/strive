@@ -18,6 +18,16 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverCloseButton,
+  Portal,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
@@ -62,12 +72,46 @@ export default function BudgetPage() {
         <Button size="sm" onClick={() => router.push("/onboarding/finances")}>
           Back
         </Button>
-        <Heading>Create a budget</Heading>
+        <Heading>Create a monthly budget</Heading>
         <Text fontSize={"md"}>
           Budget your expenses - no need to allocate it all!
         </Text>
 
         <Container maxW="container.xl" as="form" p={"0px"}>
+
+        <Popover closeOnBlur={false} placement="bottom">
+              {({ isOpen, onClose }) => (
+                <>
+                  <PopoverTrigger>
+                    <Button colorScheme={"green"}>
+                      {isOpen ? "Close" : "More information"}
+                    </Button>
+                  </PopoverTrigger>
+                  <Portal>
+                    <PopoverContent>
+                      <PopoverHeader fontWeight={ 'bold' }>Expense details</PopoverHeader>
+                      <PopoverCloseButton />
+                      <PopoverBody>
+                        <Box>
+                          {/* <Text>The top number is your take home pay, adjusted monthly.
+                          The second number is that amount minus any monthly recurring expenses, 
+                          which you can add below in the </Text>
+                          <Text fontStyle={ 'italic' }>Expense Categories</Text>
+                          <Text>section via the </Text>
+                          <Text fontStyle={ 'italic' }>Add a category</Text>
+                          <Text>button.  This second number is the money you have available to save to reach your budgeting goal.</Text> */}
+                          The top number is your take home pay, adjusted monthly.
+                          The second number is that amount minus any monthly recurring expenses, 
+                          which you can add below in the 'Expense Categories' section via the 'Add a category' button.
+                          This second number is the money you have available to save to reach your budgeting goal.
+                        </Box>
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Portal>
+                </>
+              )}
+            </Popover>
+
           <Flex
             bg={"gray.100"}
             rounded={"5px"}
@@ -80,13 +124,13 @@ export default function BudgetPage() {
               <VStack align="flex-start">
                 <Stat>
                   <StatLabel fontSize="xl">
-                    Monthly Income before Expense Categories
+                    Monthly Income before Expenses
                   </StatLabel>
                   <StatNumber fontSize="3xl">
                     ${userData?.budgetInfo.monthlyVariableBudget.toFixed(2)}
                   </StatNumber>
                   <StatLabel fontSize="xl">
-                    Monthly Income after Expense Categories
+                    Monthly Income after Expenses
                   </StatLabel>
                   <StatNumber fontSize="3xl">
                     $
@@ -168,7 +212,7 @@ export default function BudgetPage() {
                               {key}
                             </Heading>
                             <Stat>
-                              <StatLabel>Monthly Allocation</StatLabel>
+                              <StatLabel>Expense Category</StatLabel>
                               <StatNumber>
                                 ${currentCategory.allocation.toFixed(2)}
                               </StatNumber>

@@ -78,7 +78,7 @@ export default function BudgetAllocationModal(props: {
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add category allocation</ModalHeader>
+        <ModalHeader>Add expense category</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl id="category" isRequired>
