@@ -24,7 +24,6 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverBody,
-  PopoverFooter,
   PopoverCloseButton,
   Portal,
 } from "@chakra-ui/react";
@@ -78,39 +77,42 @@ export default function BudgetPage() {
         </Text>
 
         <Container maxW="container.xl" as="form" p={"0px"}>
-
-        <Popover closeOnBlur={false} placement="bottom">
-              {({ isOpen, onClose }) => (
-                <>
-                  <PopoverTrigger>
-                    <Button colorScheme={"green"}>
-                      {isOpen ? "Close" : "More information"}
-                    </Button>
-                  </PopoverTrigger>
-                  <Portal>
-                    <PopoverContent>
-                      <PopoverHeader fontWeight={ 'bold' }>Expense details</PopoverHeader>
-                      <PopoverCloseButton />
-                      <PopoverBody>
-                        <Box>
-                          {/* <Text>The top number is your take home pay, adjusted monthly.
+          <Popover closeOnBlur={false} placement="bottom">
+            {({ isOpen }: { isOpen: boolean }) => (
+              <>
+                <PopoverTrigger>
+                  <Button colorScheme={"green"}>
+                    {isOpen ? "Close" : "More information"}
+                  </Button>
+                </PopoverTrigger>
+                <Portal>
+                  <PopoverContent>
+                    <PopoverHeader fontWeight={"bold"}>
+                      Expense details
+                    </PopoverHeader>
+                    <PopoverCloseButton />
+                    <PopoverBody>
+                      <Box>
+                        {/* <Text>The top number is your take home pay, adjusted monthly.
                           The second number is that amount minus any monthly recurring expenses, 
                           which you can add below in the </Text>
                           <Text fontStyle={ 'italic' }>Expense Categories</Text>
                           <Text>section via the </Text>
                           <Text fontStyle={ 'italic' }>Add a category</Text>
                           <Text>button.  This second number is the money you have available to save to reach your budgeting goal.</Text> */}
-                          The top number is your take home pay, adjusted monthly.
-                          The second number is that amount minus any monthly recurring expenses, 
-                          which you can add below in the 'Expense Categories' section via the 'Add a category' button.
-                          This second number is the money you have available to save to reach your budgeting goal.
-                        </Box>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Portal>
-                </>
-              )}
-            </Popover>
+                        The top number is your take home pay, adjusted monthly.
+                        The second number is that amount minus any monthly
+                        recurring expenses, which you can add below in the
+                        &apos;Expense Categories&apos; section via the &apos;Add
+                        a category&apos; button. This second number is the money
+                        you have available to save to reach your budgeting goal.
+                      </Box>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Portal>
+              </>
+            )}
+          </Popover>
 
           <Flex
             bg={"gray.100"}
@@ -127,14 +129,19 @@ export default function BudgetPage() {
                     Monthly Income before Expenses
                   </StatLabel>
                   <StatNumber fontSize="3xl">
-                    ${userData?.budgetInfo.monthlyVariableBudget.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                    $
+                    {userData?.budgetInfo.monthlyVariableBudget
+                      .toFixed(2)
+                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                   </StatNumber>
                   <StatLabel fontSize="xl">
                     Monthly Income after Expenses
                   </StatLabel>
                   <StatNumber fontSize="3xl">
                     $
-                    {userData?.budgetInfo.monthlyVariableBudgetUnallocated.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                    {userData?.budgetInfo.monthlyVariableBudgetUnallocated
+                      .toFixed(2)
+                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                   </StatNumber>
                 </Stat>
               </VStack>

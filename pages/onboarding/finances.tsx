@@ -130,7 +130,10 @@ export default function FinancesPages() {
                     max: 1000000000,
                     step: 50,
                     precision: 2,
-                    value: values.annualIncome.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","),
+                    value: values.annualIncome.replace(
+                      /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                      ","
+                    ),
                   }}
                 />
               </Box>
@@ -157,7 +160,7 @@ export default function FinancesPages() {
               </Box>
 
               <Popover closeOnBlur={false} placement="bottom">
-                {({ isOpen, onClose }) => (
+                {({ isOpen }: { isOpen: boolean }) => (
                   <>
                     <PopoverTrigger>
                       <Button colorScheme={"green"}>

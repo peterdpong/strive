@@ -224,7 +224,7 @@ export default function SuggestionsPage() {
           <Container maxW="container.xl" as="form" p={"0px"}>
             <Heading fontSize={"xl"}>Select a suggested goal</Heading>
             <Popover closeOnBlur={false} placement="bottom">
-              {({ isOpen, onClose }) => (
+              {({ isOpen }: { isOpen: boolean }) => (
                 <>
                   <PopoverTrigger>
                     <Button colorScheme={"green"}>
