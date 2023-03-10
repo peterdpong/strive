@@ -265,13 +265,13 @@ export default function SuggestionsPage() {
                   <CardBody>
                     <Heading size="sm"> Conservative Goal </Heading>
                     <Stat>
-                      <StatLabel>Monthly Savings</StatLabel>
+                      <StatLabel>Monthly Savings Required</StatLabel>
                       <StatNumber>
                         ${goals.lessAggressiveGoal.monthlyAmount.toFixed(2)}
                       </StatNumber>
                       <StatLabel>
-                        Net Worth Goal in{" "}
-                        {goals.lessAggressiveGoal.timelineGoal} years
+                        Expected Goal $ Amount in{" "}
+                        {goals.lessAggressiveGoal.timelineGoal} years:
                       </StatLabel>
                       <StatNumber fontSize="md">
                         ${goals.lessAggressiveGoal.networthGoal.toFixed(2)}
@@ -295,13 +295,13 @@ export default function SuggestionsPage() {
                     <Box>
                       <Heading size="sm">Base Goal</Heading>
                       <Stat>
-                        <StatLabel>Monthly Savings</StatLabel>
+                        <StatLabel>Monthly Savings Required</StatLabel>
                         <StatNumber>
                           ${goals.neutralGoal.monthlyAmount.toFixed(2)}
                         </StatNumber>
                         <StatLabel>
-                          Net Worth Goal in {goals.neutralGoal.timelineGoal}{" "}
-                          years
+                          Expected Goal $ Amount in {goals.neutralGoal.timelineGoal}{" "}
+                          years:
                         </StatLabel>
                         <StatNumber fontSize="md">
                           ${goals.neutralGoal.networthGoal.toFixed(2)}
@@ -326,13 +326,13 @@ export default function SuggestionsPage() {
                     <Box>
                       <Heading size="sm"> Aggressive Goal </Heading>
                       <Stat>
-                        <StatLabel>Monthly Savings</StatLabel>
+                        <StatLabel>Monthly Savings Required</StatLabel>
                         <StatNumber>
                           ${goals.moreAggressiveGoal.monthlyAmount.toFixed(2)}
                         </StatNumber>
                         <StatLabel>
-                          Net Worth Goal in{" "}
-                          {goals.moreAggressiveGoal.timelineGoal} years
+                          Expected Goal $ Amount in{" "}
+                          {goals.moreAggressiveGoal.timelineGoal} years:
                         </StatLabel>
                         <StatNumber fontSize="md">
                           ${goals.moreAggressiveGoal.networthGoal.toFixed(2)}
