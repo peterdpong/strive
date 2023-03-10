@@ -48,6 +48,11 @@ export type RRSPAccount = {
   value: number;
 };
 
+export type FHSAAccount = {
+  name: string;
+  value: number;
+};
+
 export enum AccountType {
   SAVINGS = "Savings",
   CHEQUINGS = "Chequing",
@@ -55,6 +60,7 @@ export enum AccountType {
   LOAN = "Loan",
   TFSA = "TFSA",
   RRSP = "RRSP",
+  FHSA = "FHSA",
   GIC = "GIC",
 }
 

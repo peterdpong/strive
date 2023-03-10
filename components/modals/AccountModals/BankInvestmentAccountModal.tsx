@@ -86,14 +86,11 @@ export default function BankInvestmentAccountModal(props: {
                   label="Account Type"
                   selectProps={{ placeholder: "Select account type" }}
                 >
-                  <option value={AccountType.SAVINGS}>
-                    {AccountType.SAVINGS}
-                  </option>
-                  <option value={AccountType.CHEQUINGS}>
-                    {AccountType.CHEQUINGS}
-                  </option>
+                  <option value={AccountType.SAVINGS}>{AccountType.SAVINGS}</option>
+                  <option value={AccountType.CHEQUINGS}>{AccountType.CHEQUINGS}</option>
                   <option value={AccountType.TFSA}>{AccountType.TFSA}</option>
                   <option value={AccountType.RRSP}>{AccountType.RRSP}</option>
+                  <option value={AccountType.FHSA}>{AccountType.FHSA}</option>
                 </SelectControl>
                 <NumberInputControl
                   name="interestRate"
