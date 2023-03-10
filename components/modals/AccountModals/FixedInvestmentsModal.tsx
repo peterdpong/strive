@@ -16,8 +16,10 @@ import { Formik } from "formik";
 import {
   InputControl,
   NumberInputControl,
+  SelectControl,
   SubmitButton,
 } from "formik-chakra-ui";
+import { AccountType } from "../../../src/models/AccountModel";
 import { addAccount } from "../../../src/firebase/UserActions";
 import { Timestamp } from "firebase/firestore";
 
@@ -79,6 +81,17 @@ export default function FixedInvestmentsModal(props: {
                 onSubmit={handleSubmit as any}
               >
                 <InputControl name="name" label="Account Name" />
+                <SelectControl
+                  name="type"
+                  label="Account Type"
+                  selectProps={{ placeholder: "Select account type" }}
+                >
+                  <option value={AccountType.TFSA}>{AccountType.TFSA}</option>
+                  <option value={AccountType.RRSP}>{AccountType.RRSP}</option>
+                  <option value={AccountType.FHSA}>{AccountType.FHSA}</option>
+                  <option value={AccountType.GIC}>{AccountType.GIC}</option>
+                  <option value={AccountType.NR}>{AccountType.NR}</option>
+                </SelectControl>
                 <InputControl
                   inputProps={{ type: "date" }}
                   name="startDate"

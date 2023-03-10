@@ -53,6 +53,16 @@ export type FHSAAccount = {
   value: number;
 };
 
+export type GICACcount = {
+  name: string;
+  value: number;
+};
+
+export type NRAccount = {
+  name: string;
+  value: number;
+};
+
 export enum AccountType {
   SAVINGS = "Savings",
   CHEQUINGS = "Chequing",
@@ -62,6 +72,7 @@ export enum AccountType {
   RRSP = "RRSP",
   FHSA = "FHSA",
   GIC = "GIC",
+  NR = "Non-Registered",
 }
 
 export enum AssetTypes {

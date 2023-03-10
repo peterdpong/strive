@@ -173,9 +173,9 @@ export default function FinancesPages() {
                         <PopoverBody>
                           <Box>
                             In the first field above, please enter your net take
-                            home pay amount. In the second field above, please
+                            home, after tax pay amount. In the second field above, please
                             enter the frequency of your payments (for example,
-                            12 for monthly). Below, please add your bank
+                            2 for biweekly or 1 for monthly). Below, please add your bank
                             accounts, fixed term investments, any other assets,
                             credit card and other loans outstanding.
                           </Box>
@@ -202,7 +202,7 @@ export default function FinancesPages() {
                       onClick={bankInvestmentAccountModalProps.onOpen}
                       size="sm"
                     >
-                      Add bank/investment account
+                      Add bank account
                     </Button>
                     <Button
                       colorScheme={"green"}
@@ -237,7 +237,7 @@ export default function FinancesPages() {
 
                 {/* Bank accounts */}
                 <Heading mb={"10px"} fontSize={"lg"}>
-                  Bank/Investment accounts
+                  Bank accounts
                 </Heading>
                 {userData &&
                 Object.keys(userData.financialInfo.accounts.bankAccounts)
