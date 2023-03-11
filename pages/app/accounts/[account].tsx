@@ -12,12 +12,16 @@ import {
   HStack,
   Flex,
   Button,
+  Stat,
+  StatLabel,
+  StatNumber,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import Sidebar from "../../../components/app/Sidebar";
 import { useAuth } from "../../../src/auth/auth";
 import ProtectedRoute from "../../../src/auth/ProtectedRoute";
 import { Transaction } from "../../../src/models/BudgetModel";
+import { Timestamp } from "firebase/firestore";
 
 function getDisplayDate(dateString: string) {
   const date = new Date(dateString);
@@ -30,12 +34,13 @@ function getDisplayDate(dateString: string) {
   return displayDate;
 }
 
-const AccountTransactions = ({ account }: { account: string | string[] }) => {
-  const { useRequiredAuth } = useAuth();
-  const userData = useRequiredAuth();
-  const accountData = userData?.financialInfo.accounts;
-  const monthTransactionsMap = userData?.monthTransactionsMap;
-
+const AccountTransactions = ({
+  account,
+  monthTransactionsMap,
+}: {
+  account: string | string[];
+  monthTransactionsMap: { [key: string]: Transaction[] };
+}) => {
   if (!monthTransactionsMap) {
     return <Box>Loading data...</Box>;
   }
@@ -44,8 +49,7 @@ const AccountTransactions = ({ account }: { account: string | string[] }) => {
     (allMonths: Transaction[], currMonth) => {
       return allMonths.concat(
         monthTransactionsMap[currMonth].filter(
-          (transaction) =>
-            transaction.account.toLowerCase().split(" ").join("-") === account
+          (transaction) => transaction.account.split(" ").join("-") === account
         )
       );
     },
@@ -76,17 +80,6 @@ const AccountTransactions = ({ account }: { account: string | string[] }) => {
               <Td isNumeric>
                 {parseFloat(transaction.amount.toString()).toFixed(2)}
               </Td>
-              {/* {editing && (
-                <Button
-                  size="xs"
-                  colorScheme="linkedin"
-                  onClick={(e) =>
-                    deleteTransactionHandler(e, monthSection, transaction)
-                  }
-                >
-                  Delete
-                </Button>
-              )} */}
             </Tr>
           ))}
         </Tbody>
@@ -98,15 +91,74 @@ const AccountTransactions = ({ account }: { account: string | string[] }) => {
 export default function AccountPage() {
   const router = useRouter();
   const { account } = router.query;
+  const accountName =
+    typeof account === "string" ? account.split("-").join(" ") : "";
+
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
+  const accountData = userData?.financialInfo.accounts;
+
+  if (!accountData) return null;
+
+  let accountDetails = {};
+  Object.keys(accountData).forEach((account) => {
+    if (accountName in accountData[account]) {
+      accountDetails = accountData[account][accountName];
+    }
+  });
 
   return (
     <ProtectedRoute>
       <Sidebar>
-        <Heading>Account Page</Heading>
+        <Box
+          bgColor="gray.100"
+          padding="6"
+          rounded={"5px"}
+          border={"1px"}
+          borderColor={"gray.300"}
+          mx={"15px"}
+          my={"2rem"}
+        >
+          <HStack justifyContent="space-between">
+            <Heading size="lg" mr="2.5rem">
+              {accountName} Transactions
+            </Heading>
+          </HStack>
+        </Box>
+        <Box
+          bgColor="gray.100"
+          padding="6"
+          rounded={"5px"}
+          border={"1px"}
+          borderColor={"gray.300"}
+          mx={"15px"}
+          my={"2rem"}
+        >
+          {Object.entries(accountDetails).map(([detail, data]) => {
+            if (detail !== ("name" || "type"))
+              return (
+                <Box>
+                  <Stat>
+                    <StatLabel>{detail}</StatLabel>
+                    <StatNumber>
+                      {detail === "value" && "$"}
+                      {typeof data === "string" || typeof data === "number"
+                        ? data
+                        : (data as Timestamp)
+                            .toDate()
+                            .toISOString()
+                            .substring(0, 10)}
+                      {detail === "interestRate" && "%"}
+                    </StatNumber>
+                  </Stat>
+                </Box>
+              );
+          })}
+        </Box>
         <Box
           bg={"gray.100"}
           rounded={"5px"}
-          p={"20px"}
+          padding="6"
           width={"100%"}
           border={"1px"}
           borderColor={"gray.300"}
@@ -116,7 +168,12 @@ export default function AccountPage() {
           <HStack justifyContent="space-between">
             <Heading size={"md"}>Account Transactions</Heading>
           </HStack>
-          {account && <AccountTransactions account={account} />}
+          {account && userData && userData.monthTransactionsMap && (
+            <AccountTransactions
+              account={account}
+              monthTransactionsMap={userData?.monthTransactionsMap}
+            />
+          )}
         </Box>
       </Sidebar>
     </ProtectedRoute>

@@ -134,7 +134,6 @@ export default function AccountsPage() {
                   return (
                     <Link
                       href={`/app/accounts/${currAccount.name
-                        .toLowerCase()
                         .split(" ")
                         .join("-")}`}
                       key={accountKey}
@@ -185,7 +184,6 @@ export default function AccountsPage() {
                   return (
                     <Link
                       href={`/app/accounts/${currAccount.name
-                        .toLowerCase()
                         .split(" ")
                         .join("-")}`}
                       key={accountKey}
@@ -259,7 +257,6 @@ export default function AccountsPage() {
                   return (
                     <Link
                       href={`/app/accounts/${currAccount.name
-                        .toLowerCase()
                         .split(" ")
                         .join("-")}`}
                       key={accountKey}
@@ -303,7 +300,6 @@ export default function AccountsPage() {
                   return (
                     <Link
                       href={`/app/accounts/${currAccount.name
-                        .toLowerCase()
                         .split(" ")
                         .join("-")}`}
                       key={accountKey}
@@ -370,7 +366,6 @@ export default function AccountsPage() {
                   return (
                     <Link
                       href={`/app/accounts/${currAccount.name
-                        .toLowerCase()
                         .split(" ")
                         .join("-")}`}
                       key={accountKey}
