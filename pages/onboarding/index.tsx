@@ -37,6 +37,13 @@ export default function OnboardingIndex() {
         >
           About
         </Button>
+        <Button
+          mt={"15px"}
+          colorScheme={"green"}
+          onClick={() => router.push("onboarding/instructions")}
+        >
+          Instructions
+        </Button>
         </ButtonGroup>
       </Container>
 
