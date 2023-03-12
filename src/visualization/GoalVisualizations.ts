@@ -31,6 +31,92 @@ export const goalGraphOptions = {
   },
 };
 
+export const calculateNetWorth = (userData: UserModel | null) => {
+  if (userData === null) {
+    return 0;
+  }
+
+  // Current net worth generation
+  // total assets
+  // goal timeline is in number of years
+
+  // bank accounts
+  let bankAcctTotal = 0;
+
+  Object.values(userData.financialInfo.accounts.bankAccounts).map((account) => {
+    bankAcctTotal += account.value;
+  });
+
+  //fixed investments
+  let fixedInvTotal = 0;
+
+  Object.values(userData.financialInfo.accounts.fixedInvestments).map(
+    (account) => {
+      fixedInvTotal += account.startingValue;
+    }
+  );
+
+  //other assets
+  let houseTotal = 0;
+  let vehicleTotal = 0;
+  let collectiblesTotal = 0;
+  let artTotal = 0;
+  let valuablesTotal = 0;
+
+  Object.values(userData.financialInfo.accounts.otherAssets).map((account) => {
+    if (account.type == "House") {
+      houseTotal += account.value;
+    } else if (account.type == "Vehicle") {
+      vehicleTotal += account.value;
+    } else if (account.type == "Collectibles") {
+      collectiblesTotal += account.value;
+    } else if (account.type == "Art") {
+      artTotal += account.value;
+    } else if (account.type == "Valuables") {
+      valuablesTotal += account.value;
+    }
+  });
+
+  //total other assets
+  const otherAssetsTotal =
+    +houseTotal +
+    +vehicleTotal +
+    +collectiblesTotal +
+    +artTotal +
+    +valuablesTotal;
+
+  //summation
+  let totalAssets = 0;
+  totalAssets = +bankAcctTotal + +fixedInvTotal + +otherAssetsTotal;
+
+  //total liabilities
+
+  //credit card debt
+  let creditCardTotal = 0;
+
+  Object.values(userData.financialInfo.accounts.creditCards).map((account) => {
+    creditCardTotal += account.amountOwned;
+  });
+
+  //loans debt
+  let loansTotal = 0;
+
+  Object.values(userData.financialInfo.accounts.loans).map((account) => {
+    loansTotal += account.remainingAmount;
+  });
+
+  //summation
+
+  let totalLiabilities = 0;
+  totalLiabilities = +creditCardTotal + +loansTotal;
+
+  //present net worth
+
+  let currNetWorth = totalAssets - totalLiabilities;
+
+  return currNetWorth;
+};
+
 export const buildGoalGraphData = (userInfo: {
   userData: UserModel | null;
   monthlySavings: number | undefined;
@@ -56,92 +142,7 @@ export const buildGoalGraphData = (userInfo: {
     (x, i) => i
   );
 
-  // Current net worth generation
-  //total assets
-  //goal timeline is in number of years
-
-  //bank accounts
-  let bankAcctTotal = 0;
-
-  Object.values(userInfo.userData.financialInfo.accounts.bankAccounts).map(
-    (account) => {
-      bankAcctTotal += account.value;
-    }
-  );
-
-  //fixed investments
-  let fixedInvTotal = 0;
-
-  Object.values(userInfo.userData.financialInfo.accounts.fixedInvestments).map(
-    (account) => {
-      fixedInvTotal += account.startingValue;
-    }
-  );
-
-  //other assets
-  let houseTotal = 0;
-  let vehicleTotal = 0;
-  let collectiblesTotal = 0;
-  let artTotal = 0;
-  let valuablesTotal = 0;
-
-  Object.values(userInfo.userData.financialInfo.accounts.otherAssets).map(
-    (account) => {
-      if (account.type == "House") {
-        houseTotal += account.value;
-      } else if (account.type == "Vehicle") {
-        vehicleTotal += account.value;
-      } else if (account.type == "Collectibles") {
-        collectiblesTotal += account.value;
-      } else if (account.type == "Art") {
-        artTotal += account.value;
-      } else if (account.type == "Valuables") {
-        valuablesTotal += account.value;
-      }
-    }
-  );
-
-  //total other assets
-  const otherAssetsTotal =
-    +houseTotal +
-    +vehicleTotal +
-    +collectiblesTotal +
-    +artTotal +
-    +valuablesTotal;
-
-  //summation
-  let totalAssets = 0;
-  totalAssets = +bankAcctTotal + +fixedInvTotal + +otherAssetsTotal;
-
-  //total liabilities
-
-  //credit card debt
-  let creditCardTotal = 0;
-
-  Object.values(userInfo.userData.financialInfo.accounts.creditCards).map(
-    (account) => {
-      creditCardTotal += account.amountOwned;
-    }
-  );
-
-  //loans debt
-  let loansTotal = 0;
-
-  Object.values(userInfo.userData.financialInfo.accounts.loans).map(
-    (account) => {
-      loansTotal += account.remainingAmount;
-    }
-  );
-
-  //summation
-
-  let totalLiabilities = 0;
-  totalLiabilities = +creditCardTotal + +loansTotal;
-
-  //present net worth
-
-  let currNetWorth = 0;
-  currNetWorth = totalAssets - totalLiabilities;
+  let currNetWorth = calculateNetWorth(userInfo.userData);
 
   // Generate goal data array size mapped to timeline goal (months)
 
@@ -161,7 +162,7 @@ export const buildGoalGraphData = (userInfo: {
   // const goalData = xAxisLabels.map((element) => {
   //   return element * valueEveryYear;
   // });
-  console.log(NetWorthData);
+  // console.log(NetWorthData);
 
   return {
     labels: xAxisLabels,

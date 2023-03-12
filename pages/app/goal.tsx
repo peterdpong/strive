@@ -15,6 +15,12 @@ import {
 import { Line } from "react-chartjs-2";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import Sidebar from "../../components/app/Sidebar";
+import { useAuth } from "../../src/auth/auth";
+import {
+  buildGoalGraphData,
+  calculateNetWorth,
+  goalGraphOptions,
+} from "../../src/visualization/GoalVisualizations";
 
 ChartJS.register(
   ArcElement,
@@ -28,43 +34,32 @@ ChartJS.register(
   Legend
 );
 
-//labels need to be dynamic - port in a list of any size
-const labels = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const data_static = {
-  labels,
-  datasets: [
-    {
-      fill: true,
-      label: "Net Worth",
-      //data needs to be dynamic - port in a list of any size
-      data: [1, 2, 4, 16, 32, 64, 128, 1, 2, 4, 16, 32],
-      borderColor: "rgb(30, 159, 92)",
-      backgroundColor: (context: ScriptableContext<"line">) => {
-        const ctx = context.chart.ctx;
-        const gradient = ctx.createLinearGradient(0, 0, 0, 500);
-        gradient.addColorStop(0, "rgba(45,216,129,1)");
-        gradient.addColorStop(1, "rgba(45,216,129,0)");
-        return gradient;
-      },
-    },
-  ],
-};
-
 export default function GoalPage() {
+  const { useRequiredAuth } = useAuth();
+  const userData = useRequiredAuth();
+
+  let graphData = buildGoalGraphData({
+    userData: userData,
+    monthlySavings: userData?.goalInfo.monthlyAmount,
+    goalTimeline: userData?.goalInfo.timelineGoal,
+  });
+
+  let currNetWorth = calculateNetWorth(userData);
+
+  graphData?.datasets.unshift({
+    fill: true,
+    label: "Current Net Worth",
+    data: [currNetWorth],
+    borderColor: "rgb(60, 20, 240)",
+    backgroundColor: (context: ScriptableContext<"line">) => {
+      const ctx = context.chart.ctx;
+      const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+      gradient.addColorStop(0, "rgba(140, 80, 240, 1)");
+      gradient.addColorStop(1, "rgba(140, 80, 240, 0)");
+      return gradient;
+    },
+  });
+
   return (
     <ProtectedRoute>
       <Sidebar>
@@ -74,34 +69,22 @@ export default function GoalPage() {
               <Heading size="lg" mr="2.5rem">
                 Goal
               </Heading>
-
-              <Box
-                bg={"gray.100"}
-                rounded={"5px"}
-                p={"20px"}
-                width={"100%"}
-                border={"1px"}
-                borderColor={"gray.300"}
-              >
-                <Heading size={"md"}>Current Goal</Heading>
-                <Line
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      legend: {
-                        position: "top" as const,
-                      },
-                      title: {
-                        display: true,
-                        text: "Path to Goal",
-                      },
-                    },
-                  }}
-                  data={data_static}
-                />
-              </Box>
             </VStack>
           </HStack>
+        </Box>
+        <Box
+          bgColor="gray.100"
+          padding="6"
+          rounded={"5px"}
+          border={"1px"}
+          borderColor={"gray.300"}
+          mx={"15px"}
+          my={"2rem"}
+        >
+          <Heading size={"md"}>Current Goal</Heading>
+          {graphData !== undefined && graphData !== null ? (
+            <Line options={goalGraphOptions} data={graphData} />
+          ) : null}
         </Box>
       </Sidebar>
     </ProtectedRoute>
