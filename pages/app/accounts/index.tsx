@@ -153,9 +153,8 @@ export default function AccountsPage() {
                             >
                               <Box>
                                 <Badge>{currAccount.type}</Badge>
-                                <Heading size="sm">
-                                  {" "}
-                                  {currAccount.name}{" "}
+                                <Heading size="sm" mt="6px">
+                                  {currAccount.name}
                                 </Heading>
                                 <Stat>
                                   <StatLabel>Account Value</StatLabel>
@@ -218,9 +217,8 @@ export default function AccountsPage() {
                             >
                               <Box>
                                 <Badge>FIXED INVESTMENT</Badge>
-                                <Heading size="sm">
-                                  {" "}
-                                  {currAccount.name}{" "}
+                                <Heading size="sm" mt="6px">
+                                  {currAccount.name}
                                 </Heading>
                                 <Stat>
                                   <StatLabel>Account Value</StatLabel>
@@ -306,9 +304,8 @@ export default function AccountsPage() {
                             >
                               <Box>
                                 <Badge>OTHER ASSET</Badge>
-                                <Heading size="sm">
-                                  {" "}
-                                  {currAccount.name}{" "}
+                                <Heading size="sm" mt="6px">
+                                  {currAccount.name}
                                 </Heading>
                                 <Stat>
                                   <StatLabel>Asset Value</StatLabel>
@@ -364,9 +361,8 @@ export default function AccountsPage() {
                             >
                               <Box>
                                 <Badge>CREDIT CARD</Badge>
-                                <Heading size="sm">
-                                  {" "}
-                                  {currAccount.name}{" "}
+                                <Heading size="sm" mt="6px">
+                                  {currAccount.name}
                                 </Heading>
                                 <Stat>
                                   <StatLabel>Amount Owed</StatLabel>
@@ -445,7 +441,9 @@ export default function AccountsPage() {
                             >
                               <Box>
                                 <Badge>LOAN</Badge>
-                                <Heading size="sm">{currAccount.name}</Heading>
+                                <Heading size="sm" mt="6px">
+                                  {currAccount.name}
+                                </Heading>
                                 <Stat>
                                   <StatLabel>Account Value</StatLabel>
                                   <StatNumber>
