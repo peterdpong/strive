@@ -63,6 +63,36 @@ export default function FinancesPages() {
         <Heading>Your Monthly Finances</Heading>
         <Text fontSize={"md"}>What do your finances look like?</Text>
 
+        <Popover closeOnBlur={false} placement="bottom">
+                {({ isOpen }: { isOpen: boolean }) => (
+                  <>
+                    <PopoverTrigger>
+                      <Button colorScheme={"green"}>
+                        {isOpen ? "Close" : "More information"}
+                      </Button>
+                    </PopoverTrigger>
+                    <Portal>
+                      <PopoverContent>
+                        <PopoverHeader fontWeight={"bold"}>
+                          Input details
+                        </PopoverHeader>
+                        <PopoverCloseButton />
+                        <PopoverBody>
+                          <Box>
+                            In the first field below, please enter your net take
+                            home, after tax pay amount. In the second field below, please
+                            enter the frequency of your payments (for example,
+                            2 for biweekly or 1 for monthly). Then, please add your bank
+                            accounts, fixed term investments, any other assets,
+                            credit card and other loans outstanding.
+                          </Box>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Portal>
+                  </>
+                )}
+              </Popover>
+
         <Formik
           initialValues={{
             annualIncome: userData
@@ -155,36 +185,6 @@ export default function FinancesPages() {
                   </NumberInputStepper>
                 </NumberInput>
               </Box>
-
-              <Popover closeOnBlur={false} placement="bottom">
-                {({ isOpen }: { isOpen: boolean }) => (
-                  <>
-                    <PopoverTrigger>
-                      <Button colorScheme={"green"}>
-                        {isOpen ? "Close" : "More information"}
-                      </Button>
-                    </PopoverTrigger>
-                    <Portal>
-                      <PopoverContent>
-                        <PopoverHeader fontWeight={"bold"}>
-                          Input details
-                        </PopoverHeader>
-                        <PopoverCloseButton />
-                        <PopoverBody>
-                          <Box>
-                            In the first field above, please enter your net take
-                            home, after tax pay amount. In the second field above, please
-                            enter the frequency of your payments (for example,
-                            2 for biweekly or 1 for monthly). Below, please add your bank
-                            accounts, fixed term investments, any other assets,
-                            credit card and other loans outstanding.
-                          </Box>
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Portal>
-                  </>
-                )}
-              </Popover>
 
               <Box
                 bg={"gray.100"}
