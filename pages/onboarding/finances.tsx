@@ -200,11 +200,11 @@ export default function FinancesPages() {
                   Pay Frequency
                 </Heading>
                 <NumberInputControl
-                  name="payFreq"
+                  name="payfreq"
                   numberInputProps={{
                     min: 1,
                     max: 1000000000,
-                    step: 50,
+                    step: 1,
                     precision: 2,
                     value: values.payfreq,
                   }}
