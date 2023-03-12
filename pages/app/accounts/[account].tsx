@@ -101,11 +101,21 @@ export default function AccountPage() {
   if (!accountData) return null;
 
   let accountDetails = {};
-  Object.keys(accountData).forEach((account) => {
-    if (accountName in accountData[account]) {
-      accountDetails = accountData[account][accountName];
-    }
-  });
+  if (accountName in accountData.bankAccounts) {
+    accountDetails = accountData.bankAccounts[accountName];
+  }
+  if (accountName in accountData.creditCards) {
+    accountDetails = accountData.creditCards[accountName];
+  }
+  if (accountName in accountData.loans) {
+    accountDetails = accountData.loans[accountName];
+  }
+  if (accountName in accountData.fixedInvestments) {
+    accountDetails = accountData.fixedInvestments[accountName];
+  }
+  if (accountName in accountData.otherAssets) {
+    accountDetails = accountData.otherAssets[accountName];
+  }
 
   return (
     <ProtectedRoute>
