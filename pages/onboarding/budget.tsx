@@ -114,50 +114,6 @@ export default function BudgetPage() {
             )}
           </Popover>
 
-          <Flex
-            bg={"gray.100"}
-            rounded={"5px"}
-            my={"25px"}
-            p={"20px"}
-            border={"1px"}
-            borderColor={"gray.300"}
-          >
-            <Box flex="2">
-              <VStack align="flex-start">
-                <Stat>
-                  <StatLabel fontSize="xl">
-                    Monthly Income before Expenses
-                  </StatLabel>
-                  <StatNumber fontSize="3xl">
-                    $
-                    {userData?.budgetInfo.monthlyVariableBudget
-                      .toFixed(2)
-                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
-                  </StatNumber>
-                  <StatLabel fontSize="xl">
-                    Monthly Income after Expenses
-                  </StatLabel>
-                  <StatNumber fontSize="3xl">
-                    $
-                    {userData?.budgetInfo.monthlyVariableBudgetUnallocated
-                      .toFixed(2)
-                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
-                  </StatNumber>
-                </Stat>
-              </VStack>
-            </Box>
-            <Box flex="3">
-              {userData && (
-                <Doughnut
-                  data={buildDoughnutGraphData(userData.budgetInfo)}
-                  options={{
-                    aspectRatio: 2,
-                  }}
-                />
-              )}
-            </Box>
-          </Flex>
-
           <Box
             bg={"gray.100"}
             rounded={"5px"}
@@ -241,6 +197,50 @@ export default function BudgetPage() {
               </SimpleGrid>
             )}
           </Box>
+
+          <Flex
+            bg={"gray.100"}
+            rounded={"5px"}
+            my={"25px"}
+            p={"20px"}
+            border={"1px"}
+            borderColor={"gray.300"}
+          >
+            <Box flex="2">
+              <VStack align="flex-start">
+                <Stat>
+                  <StatLabel fontSize="xl">
+                    Monthly Income before Expenses
+                  </StatLabel>
+                  <StatNumber fontSize="3xl">
+                    $
+                    {userData?.budgetInfo.monthlyVariableBudget
+                      .toFixed(2)
+                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                  </StatNumber>
+                  <StatLabel fontSize="xl">
+                    Monthly Income after Expenses
+                  </StatLabel>
+                  <StatNumber fontSize="3xl">
+                    $
+                    {userData?.budgetInfo.monthlyVariableBudgetUnallocated
+                      .toFixed(2)
+                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                  </StatNumber>
+                </Stat>
+              </VStack>
+            </Box>
+            <Box flex="3">
+              {userData && (
+                <Doughnut
+                  data={buildDoughnutGraphData(userData.budgetInfo)}
+                  options={{
+                    aspectRatio: 2,
+                  }}
+                />
+              )}
+            </Box>
+          </Flex>
 
           <Button
             onClick={() => {
