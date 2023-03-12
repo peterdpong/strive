@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardBody,
+  Flex,
   Heading,
   HStack,
   SimpleGrid,
@@ -139,34 +140,49 @@ export default function AccountsPage() {
                       key={accountKey}
                     >
                       <a>
-                        <Card bgColor={"white"} justify="space-between">
+                        <Card
+                          bgColor={"white"}
+                          justify="space-between"
+                          height="100%"
+                        >
                           <CardBody>
-                            <Badge>{currAccount.type}</Badge>
-                            <Heading size="sm"> {currAccount.name} </Heading>
-                            <Stat>
-                              <StatLabel>Account Value</StatLabel>
-                              <StatNumber>${currAccount.value}</StatNumber>
-                            </Stat>
-                            <Stat>
-                              <StatLabel>Account Interest Rate</StatLabel>
-                              <StatNumber>
-                                {currAccount.interestRate}%
-                              </StatNumber>
-                            </Stat>
-                            <Button
-                              onClick={() => {
-                                deleteAccount(
-                                  userData.uid,
-                                  userData.financialInfo.accounts,
-                                  "BankAccount",
-                                  accountKey
-                                );
-                              }}
-                              size="xs"
-                              variant="link"
+                            <Flex
+                              height="100%"
+                              direction="column"
+                              justifyContent="space-between"
                             >
-                              Delete
-                            </Button>
+                              <Box>
+                                <Badge>{currAccount.type}</Badge>
+                                <Heading size="sm">
+                                  {" "}
+                                  {currAccount.name}{" "}
+                                </Heading>
+                                <Stat>
+                                  <StatLabel>Account Value</StatLabel>
+                                  <StatNumber>${currAccount.value}</StatNumber>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Account Interest Rate</StatLabel>
+                                  <StatNumber>
+                                    {currAccount.interestRate}%
+                                  </StatNumber>
+                                </Stat>
+                              </Box>
+                              <Button
+                                onClick={() => {
+                                  deleteAccount(
+                                    userData.uid,
+                                    userData.financialInfo.accounts,
+                                    "BankAccount",
+                                    accountKey
+                                  );
+                                }}
+                                size="xs"
+                                variant="link"
+                              >
+                                Delete
+                              </Button>
+                            </Flex>
                           </CardBody>
                         </Card>
                       </a>
@@ -189,57 +205,72 @@ export default function AccountsPage() {
                       key={accountKey}
                     >
                       <a>
-                        <Card bgColor={"white"} justify="space-between">
+                        <Card
+                          bgColor={"white"}
+                          justify="space-between"
+                          height="100%"
+                        >
                           <CardBody>
-                            <Badge>FIXED INVESTMENT</Badge>
-                            <Heading size="sm"> {currAccount.name} </Heading>
-                            <Stat>
-                              <StatLabel>Account Value</StatLabel>
-                              <Stat>
-                                <StatLabel>Start date</StatLabel>
-                                <StatLabel>
-                                  {(currAccount.startDate as Timestamp)
-                                    .toDate()
-                                    .toISOString()
-                                    .substring(0, 10)}
-                                </StatLabel>
-                              </Stat>
-                              <Stat>
-                                <StatLabel>Maturity date</StatLabel>
-                                <StatLabel>
-                                  {(currAccount.maturityDate as Timestamp)
-                                    .toDate()
-                                    .toISOString()
-                                    .substring(0, 10)}
-                                </StatLabel>
-                              </Stat>
-                              <Stat>
-                                <StatLabel>Starting value</StatLabel>
-                                <StatNumber>
-                                  ${currAccount.startingValue}
-                                </StatNumber>
-                              </Stat>
-                              <Stat>
-                                <StatLabel>Interest rate</StatLabel>
-                                <StatNumber>
-                                  {currAccount.interestRate}%
-                                </StatNumber>
-                              </Stat>
-                            </Stat>
-                            <Button
-                              onClick={() => {
-                                deleteAccount(
-                                  userData.uid,
-                                  userData.financialInfo.accounts,
-                                  "FixedInvestments",
-                                  accountKey
-                                );
-                              }}
-                              size="xs"
-                              variant="link"
+                            <Flex
+                              height="100%"
+                              direction="column"
+                              justifyContent="space-between"
                             >
-                              Delete
-                            </Button>
+                              <Box>
+                                <Badge>FIXED INVESTMENT</Badge>
+                                <Heading size="sm">
+                                  {" "}
+                                  {currAccount.name}{" "}
+                                </Heading>
+                                <Stat>
+                                  <StatLabel>Account Value</StatLabel>
+                                  <Stat>
+                                    <StatLabel>Start date</StatLabel>
+                                    <StatLabel>
+                                      {(currAccount.startDate as Timestamp)
+                                        .toDate()
+                                        .toISOString()
+                                        .substring(0, 10)}
+                                    </StatLabel>
+                                  </Stat>
+                                  <Stat>
+                                    <StatLabel>Maturity date</StatLabel>
+                                    <StatLabel>
+                                      {(currAccount.maturityDate as Timestamp)
+                                        .toDate()
+                                        .toISOString()
+                                        .substring(0, 10)}
+                                    </StatLabel>
+                                  </Stat>
+                                  <Stat>
+                                    <StatLabel>Starting value</StatLabel>
+                                    <StatNumber>
+                                      ${currAccount.startingValue}
+                                    </StatNumber>
+                                  </Stat>
+                                  <Stat>
+                                    <StatLabel>Interest rate</StatLabel>
+                                    <StatNumber>
+                                      {currAccount.interestRate}%
+                                    </StatNumber>
+                                  </Stat>
+                                </Stat>
+                              </Box>
+                              <Button
+                                onClick={() => {
+                                  deleteAccount(
+                                    userData.uid,
+                                    userData.financialInfo.accounts,
+                                    "FixedInvestments",
+                                    accountKey
+                                  );
+                                }}
+                                size="xs"
+                                variant="link"
+                              >
+                                Delete
+                              </Button>
+                            </Flex>
                           </CardBody>
                         </Card>
                       </a>
@@ -262,28 +293,43 @@ export default function AccountsPage() {
                       key={accountKey}
                     >
                       <a>
-                        <Card bgColor={"white"} justify="space-between">
+                        <Card
+                          bgColor={"white"}
+                          justify="space-between"
+                          height="100%"
+                        >
                           <CardBody>
-                            <Badge>OTHER ASSET</Badge>
-                            <Heading size="sm"> {currAccount.name} </Heading>
-                            <Stat>
-                              <StatLabel>Asset Value</StatLabel>
-                              <StatNumber>${currAccount.value}</StatNumber>
-                            </Stat>
-                            <Button
-                              onClick={() => {
-                                deleteAccount(
-                                  userData.uid,
-                                  userData.financialInfo.accounts,
-                                  "OtherAsset",
-                                  accountKey
-                                );
-                              }}
-                              size="xs"
-                              variant="link"
+                            <Flex
+                              height="100%"
+                              direction="column"
+                              justifyContent="space-between"
                             >
-                              Delete
-                            </Button>
+                              <Box>
+                                <Badge>OTHER ASSET</Badge>
+                                <Heading size="sm">
+                                  {" "}
+                                  {currAccount.name}{" "}
+                                </Heading>
+                                <Stat>
+                                  <StatLabel>Asset Value</StatLabel>
+                                  <StatNumber>${currAccount.value}</StatNumber>
+                                </Stat>
+                              </Box>
+                              <Button
+                                onClick={() => {
+                                  deleteAccount(
+                                    userData.uid,
+                                    userData.financialInfo.accounts,
+                                    "OtherAsset",
+                                    accountKey
+                                  );
+                                }}
+                                size="xs"
+                                variant="link"
+                              >
+                                Delete
+                              </Button>
+                            </Flex>
                           </CardBody>
                         </Card>
                       </a>
@@ -305,51 +351,66 @@ export default function AccountsPage() {
                       key={accountKey}
                     >
                       <a>
-                        <Card bgColor={"white"} justify="space-between">
+                        <Card
+                          bgColor={"white"}
+                          justify="space-between"
+                          height="100%"
+                        >
                           <CardBody>
-                            <Badge>CREDIT CARD</Badge>
-                            <Heading size="sm"> {currAccount.name} </Heading>
-                            <Stat>
-                              <StatLabel>Amount Owed</StatLabel>
-                              <StatNumber>
-                                ${currAccount.amountOwned}
-                              </StatNumber>
-                            </Stat>
-                            <Stat>
-                              <StatLabel>Account Interest Rate</StatLabel>
-                              <StatNumber>
-                                {currAccount.interestRate}%
-                              </StatNumber>
-                            </Stat>
-                            <Stat>
-                              <StatLabel>Next payment due</StatLabel>
-                              <StatLabel>
-                                {(currAccount.nextPaymentDate as Timestamp)
-                                  .toDate()
-                                  .toISOString()
-                                  .substring(0, 10)}
-                              </StatLabel>
-                            </Stat>
-                            <Stat>
-                              <StatLabel>Next payment amount</StatLabel>
-                              <StatNumber>
-                                ${currAccount.nextPaymentAmount}
-                              </StatNumber>
-                            </Stat>
-                            <Button
-                              onClick={() => {
-                                deleteAccount(
-                                  userData.uid,
-                                  userData.financialInfo.accounts,
-                                  "CreditCard",
-                                  accountKey
-                                );
-                              }}
-                              size="xs"
-                              variant="link"
+                            <Flex
+                              height="100%"
+                              direction="column"
+                              justifyContent="space-between"
                             >
-                              Delete
-                            </Button>
+                              <Box>
+                                <Badge>CREDIT CARD</Badge>
+                                <Heading size="sm">
+                                  {" "}
+                                  {currAccount.name}{" "}
+                                </Heading>
+                                <Stat>
+                                  <StatLabel>Amount Owed</StatLabel>
+                                  <StatNumber>
+                                    ${currAccount.amountOwned}
+                                  </StatNumber>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Account Interest Rate</StatLabel>
+                                  <StatNumber>
+                                    {currAccount.interestRate}%
+                                  </StatNumber>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Next payment due</StatLabel>
+                                  <StatLabel>
+                                    {(currAccount.nextPaymentDate as Timestamp)
+                                      .toDate()
+                                      .toISOString()
+                                      .substring(0, 10)}
+                                  </StatLabel>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Next payment amount</StatLabel>
+                                  <StatNumber>
+                                    ${currAccount.nextPaymentAmount}
+                                  </StatNumber>
+                                </Stat>
+                              </Box>
+                              <Button
+                                onClick={() => {
+                                  deleteAccount(
+                                    userData.uid,
+                                    userData.financialInfo.accounts,
+                                    "CreditCard",
+                                    accountKey
+                                  );
+                                }}
+                                size="xs"
+                                variant="link"
+                              >
+                                Delete
+                              </Button>
+                            </Flex>
                           </CardBody>
                         </Card>
                       </a>
@@ -371,51 +432,63 @@ export default function AccountsPage() {
                       key={accountKey}
                     >
                       <a>
-                        <Card bgColor={"white"} justify="space-between">
+                        <Card
+                          bgColor={"white"}
+                          justify="space-between"
+                          height="100%"
+                        >
                           <CardBody>
-                            <Badge>LOAN</Badge>
-                            <Heading size="sm">{currAccount.name}</Heading>
-                            <Stat>
-                              <StatLabel>Account Value</StatLabel>
-                              <StatNumber>
-                                ${currAccount.remainingAmount}
-                              </StatNumber>
-                            </Stat>
-                            <Stat>
-                              <StatLabel>Interest Rate</StatLabel>
-                              <StatNumber>
-                                {currAccount.interestRate}%
-                              </StatNumber>
-                            </Stat>
-                            <Stat>
-                              <StatLabel>Next payment due</StatLabel>
-                              <StatLabel>
-                                {(currAccount.paymentDate as Timestamp)
-                                  .toDate()
-                                  .toISOString()
-                                  .substring(0, 10)}
-                              </StatLabel>
-                            </Stat>
-                            <Stat>
-                              <StatLabel>Minimum Payment</StatLabel>
-                              <StatNumber>
-                                ${currAccount.minimumPayment}
-                              </StatNumber>
-                            </Stat>
-                            <Button
-                              onClick={() => {
-                                deleteAccount(
-                                  userData.uid,
-                                  userData.financialInfo.accounts,
-                                  "Loan",
-                                  accountKey
-                                );
-                              }}
-                              size="xs"
-                              variant="link"
+                            <Flex
+                              height="100%"
+                              direction="column"
+                              justifyContent="space-between"
                             >
-                              Delete
-                            </Button>
+                              <Box>
+                                <Badge>LOAN</Badge>
+                                <Heading size="sm">{currAccount.name}</Heading>
+                                <Stat>
+                                  <StatLabel>Account Value</StatLabel>
+                                  <StatNumber>
+                                    ${currAccount.remainingAmount}
+                                  </StatNumber>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Interest Rate</StatLabel>
+                                  <StatNumber>
+                                    {currAccount.interestRate}%
+                                  </StatNumber>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Next payment due</StatLabel>
+                                  <StatLabel>
+                                    {(currAccount.paymentDate as Timestamp)
+                                      .toDate()
+                                      .toISOString()
+                                      .substring(0, 10)}
+                                  </StatLabel>
+                                </Stat>
+                                <Stat>
+                                  <StatLabel>Minimum Payment</StatLabel>
+                                  <StatNumber>
+                                    ${currAccount.minimumPayment}
+                                  </StatNumber>
+                                </Stat>
+                              </Box>
+                              <Button
+                                onClick={() => {
+                                  deleteAccount(
+                                    userData.uid,
+                                    userData.financialInfo.accounts,
+                                    "Loan",
+                                    accountKey
+                                  );
+                                }}
+                                size="xs"
+                                variant="link"
+                              >
+                                Delete
+                              </Button>
+                            </Flex>
                           </CardBody>
                         </Card>
                       </a>
