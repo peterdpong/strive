@@ -129,7 +129,7 @@ export default function FixedInvestmentsModal(props: {
                   <></>
                 )}
                 <SubmitButton mt={"20px"} colorScheme={"green"}>
-                  Add fixed term investment
+                  Add investment account
                 </SubmitButton>
               </Box>
             )}

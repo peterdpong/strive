@@ -209,7 +209,7 @@ export default function FinancesPages() {
                       onClick={fixedInvestmentsModalProps.onOpen}
                       size="sm"
                     >
-                      Add fixed term investment
+                      Add investment account
                     </Button>
                     <Button
                       colorScheme={"green"}
@@ -314,7 +314,7 @@ export default function FinancesPages() {
 
                 {/* Fixed investments */}
                 <Heading mb={"10px"} fontSize={"lg"}>
-                  Fixed Term Investment accounts
+                  Investment accounts
                 </Heading>
                 {userData &&
                 Object.keys(userData.financialInfo.accounts.fixedInvestments)

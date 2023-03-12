@@ -95,6 +95,9 @@ export default function OtherAssetsModal(props: {
                   <option value={AssetTypes.VALUABLES}>
                     {AssetTypes.VALUABLES}
                   </option>
+                  <option value={AssetTypes.OTHERASSETS}>
+                    {AssetTypes.OTHERASSETS}
+                  </option>
                 </SelectControl>
                 {values.error !== null ? (
                   <Alert status="error">

@@ -81,11 +81,13 @@ export enum AssetTypes {
   COLLECTIBLES = "Collectibles",
   ART = "Art",
   VALUABLES = "Valuables",
+  OTHERASSETS = "Other"
 }
 
 export enum LoanTypes {
   MORTGAGE = "Mortgage",
   STUDENT = "Student Loan",
   CAR = "Car Loan",
-  LOC = "Line of Credit"
+  LOC = "Line of Credit",
+  OTHERLOANS = "Other"
 }

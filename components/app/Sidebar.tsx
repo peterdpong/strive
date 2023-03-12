@@ -93,7 +93,9 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       <Flex flexDir={"column"} height={"100%"}>
         <Flex h="20" alignItems="center" mx="4" justifyContent="space-between">
           <Text fontSize="xl" fontWeight="bold">
-            Strive
+            <Link href='/onboarding'>
+              Strive
+            </Link>
           </Text>
           <CloseButton
             display={{ base: "flex", md: "none" }}
