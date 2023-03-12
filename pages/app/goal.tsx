@@ -37,28 +37,93 @@ ChartJS.register(
 export default function GoalPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
+  if (userData === null) {
+    return null;
+  }
 
+  // graph for net worth goal
   let graphData = buildGoalGraphData({
+    title: "Net Worth Goal",
     userData: userData,
     monthlySavings: userData?.goalInfo.monthlyAmount,
     goalTimeline: userData?.goalInfo.timelineGoal,
   });
 
-  let currNetWorth = calculateNetWorth(userData);
+  if (graphData) {
+    // find the starting value for current net worth
+    let currNetWorth = calculateNetWorth(userData);
+    console.log(userData.monthTransactionsMap);
 
-  graphData?.datasets.unshift({
-    fill: true,
-    label: "Current Net Worth",
-    data: [currNetWorth],
-    borderColor: "rgb(60, 20, 240)",
-    backgroundColor: (context: ScriptableContext<"line">) => {
-      const ctx = context.chart.ctx;
-      const gradient = ctx.createLinearGradient(0, 0, 0, 500);
-      gradient.addColorStop(0, "rgba(140, 80, 240, 1)");
-      gradient.addColorStop(1, "rgba(140, 80, 240, 0)");
-      return gradient;
-    },
-  });
+    // find the month at the start of the goal graph
+    let startMonth = "100-100000";
+    Object.keys(userData.monthTransactionsMap).forEach((month) => {
+      let month1 = startMonth.split("-");
+      let month2 = month.split("-");
+      if (
+        parseInt(month2[1]) < parseInt(month1[1]) &&
+        parseInt(month2[0]) < parseInt(month1[0])
+      ) {
+        startMonth = month;
+      }
+    });
+
+    // construct the array of how net worth changes month-to-month
+    // only accounts for unallocated income + transactions
+    // no investments are factored into this calculation yet
+    let netWorthOverTime = [];
+    let currMonth = startMonth;
+    let currSpending = currNetWorth;
+    for (let i = 0; i < graphData.datasets[0].data.length; i++) {
+      // if graph month is in the future, stop recording net worth
+      let monthParts = currMonth.split("-").map((part) => parseInt(part));
+      var date = new Date(); // current date
+      if (
+        monthParts[0] === date.getMonth() + 1 &&
+        monthParts[1] === date.getFullYear()
+      ) {
+        break;
+      }
+
+      // add monthly income
+      currSpending += userData.budgetInfo.monthlyVariableBudgetUnallocated;
+
+      // add net transactions from the month
+      if (currMonth in userData.monthTransactionsMap) {
+        currSpending += userData.monthTransactionsMap[currMonth].reduce(
+          (netSpending, newTransaction) => {
+            return (netSpending += newTransaction.amount);
+          },
+          0
+        );
+      }
+
+      netWorthOverTime.push(currSpending);
+
+      // increase currMonth
+      if (monthParts[0] === 12) {
+        monthParts[0] = 1;
+        monthParts[1] += 1;
+      } else {
+        monthParts[0] += 1;
+      }
+      currMonth = monthParts.join("-");
+    }
+
+    // add current tracked net worth to the graph
+    graphData?.datasets.unshift({
+      fill: true,
+      label: "Current Net Worth",
+      data: netWorthOverTime,
+      borderColor: "rgb(60, 20, 240)",
+      backgroundColor: (context: ScriptableContext<"line">) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+        gradient.addColorStop(0, "rgba(140, 80, 240, 1)");
+        gradient.addColorStop(1, "rgba(140, 80, 240, 0)");
+        return gradient;
+      },
+    });
+  }
 
   return (
     <ProtectedRoute>
