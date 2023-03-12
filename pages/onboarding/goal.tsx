@@ -97,6 +97,7 @@ export default function SuggestionsPage() {
     setGoals(generateGoalsResult);
     setGraphData(
       buildGoalGraphData({
+        title: "Net Worth",
         userData: userData,
         monthlySavings: generateGoalsResult?.neutralGoal.monthlyAmount,
         goalTimeline: generateGoalsResult?.neutralGoal.timelineGoal,
@@ -111,6 +112,7 @@ export default function SuggestionsPage() {
     if (goalIndex === 0) {
       setGraphData(
         buildGoalGraphData({
+          title: "Net Worth",
           userData: userData,
           monthlySavings: goals?.lessAggressiveGoal.monthlyAmount,
           goalTimeline: goals?.lessAggressiveGoal.timelineGoal,
@@ -119,6 +121,7 @@ export default function SuggestionsPage() {
     } else if (goalIndex === 1) {
       setGraphData(
         buildGoalGraphData({
+          title: "Net Worth",
           userData: userData,
           monthlySavings: goals?.neutralGoal.monthlyAmount,
           goalTimeline: goals?.neutralGoal.timelineGoal,
@@ -127,6 +130,7 @@ export default function SuggestionsPage() {
     } else {
       setGraphData(
         buildGoalGraphData({
+          title: "Net Worth",
           userData: userData,
           monthlySavings: goals?.moreAggressiveGoal.monthlyAmount,
           goalTimeline: goals?.moreAggressiveGoal.timelineGoal,
@@ -161,39 +165,42 @@ export default function SuggestionsPage() {
         <Heading>Choose your goal</Heading>
         <Text fontSize={"md"}>Choose your financial and timeline goals.</Text>
         <Popover closeOnBlur={false} placement="bottom">
-              {({ isOpen }: { isOpen: boolean }) => (
-                <>
-                  <PopoverTrigger>
-                    <Button colorScheme={"green"}>
-                      {isOpen ? "Close" : "More information"}
-                    </Button>
-                  </PopoverTrigger>
-                  <Portal>
-                    <PopoverContent>
-                      <PopoverHeader fontWeight={"bold"}>
-                        Input details
-                      </PopoverHeader>
-                      <PopoverCloseButton />
-                      <PopoverBody>
-                        <Box>
-                          <Text>
-                          Here, you set your target financial goal (for example, a particular net worth,
-                          downpayment for a house or amount of money to purchase a new car) and the number
-                          of years you would like to achieve your goal in.
-                          </Text>
+          {({ isOpen }: { isOpen: boolean }) => (
+            <>
+              <PopoverTrigger>
+                <Button colorScheme={"green"}>
+                  {isOpen ? "Close" : "More information"}
+                </Button>
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent>
+                  <PopoverHeader fontWeight={"bold"}>
+                    Input details
+                  </PopoverHeader>
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <Box>
+                      <Text>
+                        Here, you set your target financial goal (for example, a
+                        particular net worth, downpayment for a house or amount
+                        of money to purchase a new car) and the number of years
+                        you would like to achieve your goal in.
+                      </Text>
 
-                          <Text>
-                          We will display three types of feasible savings options: conservative, base and aggressive.
-                          The three options take into account your inputted information and use an assumed 5% rate-of-return
-                          assumption, which encompasses a diversified portfolio and current economic conditions.
-                          </Text>
-                        </Box>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Portal>
-                </>
-              )}
-            </Popover>
+                      <Text>
+                        We will display three types of feasible savings options:
+                        conservative, base and aggressive. The three options
+                        take into account your inputted information and use an
+                        assumed 5% rate-of-return assumption, which encompasses
+                        a diversified portfolio and current economic conditions.
+                      </Text>
+                    </Box>
+                  </PopoverBody>
+                </PopoverContent>
+              </Portal>
+            </>
+          )}
+        </Popover>
         <Box
           bg={"gray.100"}
           rounded={"5px"}
@@ -257,7 +264,7 @@ export default function SuggestionsPage() {
         {goals === undefined || goals === null ? null : (
           <Container maxW="container.xl" as="form" p={"0px"}>
             <Heading fontSize={"xl"}>Select a suggested goal</Heading>
-            
+
             <Box
               bg={"gray.100"}
               rounded={"5px"}
@@ -306,8 +313,8 @@ export default function SuggestionsPage() {
                           ${goals.neutralGoal.monthlyAmount.toFixed(2)}
                         </StatNumber>
                         <StatLabel>
-                          Expected Goal $ Amount in {goals.neutralGoal.timelineGoal}{" "}
-                          years:
+                          Expected Goal $ Amount in{" "}
+                          {goals.neutralGoal.timelineGoal} years:
                         </StatLabel>
                         <StatNumber fontSize="md">
                           ${goals.neutralGoal.networthGoal.toFixed(2)}

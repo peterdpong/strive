@@ -118,6 +118,7 @@ export const calculateNetWorth = (userData: UserModel | null) => {
 };
 
 export const buildGoalGraphData = (userInfo: {
+  title: string;
   userData: UserModel | null;
   monthlySavings: number | undefined;
   goalTimeline: number | undefined;
@@ -169,7 +170,7 @@ export const buildGoalGraphData = (userInfo: {
     datasets: [
       {
         fill: true,
-        label: "Net Worth",
+        label: userInfo.title,
         //data needs to be dynamic - port in a list of any size
         data: NetWorthData,
         // options: {

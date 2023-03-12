@@ -43,6 +43,7 @@ export default function GoalPage() {
 
   // graph for net worth goal
   let graphData = buildGoalGraphData({
+    title: "Net Worth Goal",
     userData: userData,
     monthlySavings: userData?.goalInfo.monthlyAmount,
     goalTimeline: userData?.goalInfo.timelineGoal,
