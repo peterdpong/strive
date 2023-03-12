@@ -110,7 +110,7 @@ export default function BudgetAllocationModal(props: {
 
         <ModalFooter>
           <Button colorScheme="green" mr={3} onClick={submitHandler}>
-            Add allocation
+            Add category
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Container, Heading, Text, Box } from "@chakra-ui/react";
+import { Button, ButtonGroup, Container, Heading, Text, Box, Flex, Center } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { Image } from '@chakra-ui/react'
@@ -37,6 +37,13 @@ export default function OnboardingIndex() {
         >
           About
         </Button>
+        <Button
+          mt={"15px"}
+          colorScheme={"green"}
+          onClick={() => router.push("onboarding/instructions")}
+        >
+          Instructions
+        </Button>
         </ButtonGroup>
       </Container>
 
@@ -47,15 +54,30 @@ export default function OnboardingIndex() {
         my={"25px"}
         p={"20px"}
         border={"1px"}
+        h={"775px"}
         borderColor={"gray.300"}
         centerContent
       >
+        <Flex>
         <Box boxSize='sm'>
-          <Image src='C:\Users\Joel Lotzkar\Downloads\homepic1.png' alt='Pic 1' />
-          <Text>
-            To Do: add graphics.
-          </Text>
+          <Image style={{ alignSelf: 'flex-start' }} src='/homepic1.png' alt='Pic 1' />
+          <Heading size='lg' textAlign={"left"}>Visualize your monthly expenses.</Heading>
+
+          <Image style={{ alignSelf: 'flex-start' }} src='/dashboardvisual.png' alt='Pic 1' />
+          <Heading size='lg' textAlign={"center"}>All your budgeting information and alerts in one location.</Heading>
+
+          <Center>
+          <Button
+          mt={"15px"}
+          colorScheme={"green"}
+          onClick={() => router.push("onboarding/finances")}
+          >
+          Get Started
+          </Button>
+          </Center>
+
         </Box>
+        </Flex>
       </Container>
     </ProtectedRoute>
   );
