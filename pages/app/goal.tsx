@@ -74,34 +74,34 @@ export default function GoalPage() {
               <Heading size="lg" mr="2.5rem">
                 Goal
               </Heading>
-
-              <Box
-                bg={"gray.100"}
-                rounded={"5px"}
-                p={"20px"}
-                width={"100%"}
-                border={"1px"}
-                borderColor={"gray.300"}
-              >
-                <Heading size={"md"}>Current Goal</Heading>
-                <Line
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      legend: {
-                        position: "top" as const,
-                      },
-                      title: {
-                        display: true,
-                        text: "Path to Goal",
-                      },
-                    },
-                  }}
-                  data={data_static}
-                />
-              </Box>
             </VStack>
           </HStack>
+        </Box>
+        <Box
+          bgColor="gray.100"
+          padding="6"
+          rounded={"5px"}
+          border={"1px"}
+          borderColor={"gray.300"}
+          mx={"15px"}
+          my={"2rem"}
+        >
+          <Heading size={"md"}>Current Goal</Heading>
+          <Line
+            options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "top" as const,
+                },
+                title: {
+                  display: true,
+                  text: "Path to Goal",
+                },
+              },
+            }}
+            data={data_static}
+          />
         </Box>
       </Sidebar>
     </ProtectedRoute>
