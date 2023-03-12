@@ -14,11 +14,6 @@ import {
   StatNumber,
   Text,
   useDisclosure,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import {
   Popover,
@@ -40,7 +35,7 @@ import LoanAccountModal from "../../components/modals/AccountModals/LoanAccountM
 import OtherAssetsModal from "../../components/modals/AccountModals/OtherAssetsModal";
 import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import { deleteAccount, setAnnualIncome, setPayFreq } from "../../src/firebase/UserActions";
+import { deleteAccount, setIncome } from "../../src/firebase/UserActions";
 
 export default function FinancesPages() {
   const router = useRouter();
@@ -64,45 +59,51 @@ export default function FinancesPages() {
         <Text fontSize={"md"}>What do your finances look like?</Text>
 
         <Popover closeOnBlur={false} placement="bottom">
-                {({ isOpen }: { isOpen: boolean }) => (
-                  <>
-                    <PopoverTrigger>
-                      <Button colorScheme={"green"}>
-                        {isOpen ? "Close" : "More information"}
-                      </Button>
-                    </PopoverTrigger>
-                    <Portal>
-                      <PopoverContent>
-                        <PopoverHeader fontWeight={"bold"}>
-                          Input details
-                        </PopoverHeader>
-                        <PopoverCloseButton />
-                        <PopoverBody>
-                          <Box>
-                            In the first field below, please enter your net take
-                            home, after tax pay amount. In the second field below, please
-                            enter the frequency of your payments (for example,
-                            2 for biweekly or 1 for monthly). Then, please add your bank
-                            accounts, investment accounts, any other assets,
-                            credit cards and other loans outstanding.
-                          </Box>
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Portal>
-                  </>
-                )}
-              </Popover>
-
+          {({ isOpen }: { isOpen: boolean }) => (
+            <>
+              <PopoverTrigger>
+                <Button colorScheme={"green"}>
+                  {isOpen ? "Close" : "More information"}
+                </Button>
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent>
+                  <PopoverHeader fontWeight={"bold"}>
+                    Input details
+                  </PopoverHeader>
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <Box>
+                      In the first field below, please enter your net take home,
+                      after tax pay amount. In the second field below, please
+                      enter the frequency of your payments (for example, 2 for
+                      biweekly or 1 for monthly). Then, please add your bank
+                      accounts, investment accounts, any other assets, credit
+                      cards and other loans outstanding.
+                    </Box>
+                  </PopoverBody>
+                </PopoverContent>
+              </Portal>
+            </>
+          )}
+        </Popover>
         <Formik
-          initialValues={
+          initialValues={{
             annualIncome: userData
               ? userData.financialInfo.annualIncome.toString()
               : "0",
-            payFreq: userData.financialInfo.payFreq.toString(): "0",
-          }
+            payfreq:
+              userData && userData.financialInfo.payfreq
+                ? userData.financialInfo.payfreq.toString()
+                : "0",
+          }}
           onSubmit={(values, actions) => {
             if (userData) {
-              setAnnualIncome(userData.uid, parseFloat(values.annualIncome));
+              setIncome(
+                userData.uid,
+                parseFloat(values.annualIncome),
+                parseFloat(values.payfreq)
+              );
               actions.resetForm;
               router.push("/onboarding/budget");
             } else {
@@ -205,7 +206,7 @@ export default function FinancesPages() {
                     max: 1000000000,
                     step: 50,
                     precision: 2,
-                    value: values.,
+                    value: values.payfreq,
                   }}
                 />
               </Box>
