@@ -182,7 +182,8 @@ export class BudgetEngine {
     //const monthlySavingsAvail: number = userData.budgetInfo.monthlyVariableBudgetUnallocated
 
     let monthlyIncome = 0;
-    monthlyIncome = userData.financialInfo.annualIncome / 12;
+    //monthlyIncome = userData.financialInfo.annualIncome / 12;
+    monthlyIncome = userData.financialInfo.annualIncome * userData.financialInfo.payfreq;
 
     //return ("this is monthly income: ") + monthlyIncome;
 

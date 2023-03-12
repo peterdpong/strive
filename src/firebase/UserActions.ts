@@ -48,6 +48,7 @@ export const addNewUser = (
     },
     financialInfo: {
       annualIncome: 0,
+      payfreq: 0,
       monthlyTransactions: [],
       accounts: {
         bankAccounts: {},
@@ -165,6 +166,11 @@ export const setAnnualIncome = (uid: string, annualIncome: number) => {
   updateDoc(userDataRef, { "financialInfo.annualIncome": annualIncome });
 };
 
+export const setPayFreq = (uid: string, payfreq: number) => {
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, { "financialInfo.payfreq": payfreq });
+};
+
 export const addBudgetInfo = (uid: string, budgetInfo: BudgetModel) => {
   const userDataRef = doc(firestoreDB, "users", uid);
   setDoc(userDataRef, { budgetInfo: budgetInfo }, { merge: true });
@@ -254,8 +260,9 @@ export const deleteAccount = (
 };
 
 export const updateMonthlyVariableBudget = (userData: UserModel) => {
-  const monthlyVariableBudget = userData?.financialInfo.annualIncome / 12;
-
+  //const monthlyVariableBudget = userData.financialInfo.annualIncome / 12;
+  const monthlyVariableBudget = userData.financialInfo.annualIncome * userData.financialInfo.payfreq;
+  
   const balanceAfterAllocate =
     monthlyVariableBudget -
     BudgetEngineUtils.calculateBudgetExpenses(userData?.budgetInfo);

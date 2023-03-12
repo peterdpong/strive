@@ -40,7 +40,7 @@ import LoanAccountModal from "../../components/modals/AccountModals/LoanAccountM
 import OtherAssetsModal from "../../components/modals/AccountModals/OtherAssetsModal";
 import { useAuth } from "../../src/auth/auth";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import { deleteAccount, setAnnualIncome } from "../../src/firebase/UserActions";
+import { deleteAccount, setAnnualIncome, setPayFreq } from "../../src/firebase/UserActions";
 
 export default function FinancesPages() {
   const router = useRouter();
@@ -83,8 +83,8 @@ export default function FinancesPages() {
                             home, after tax pay amount. In the second field below, please
                             enter the frequency of your payments (for example,
                             2 for biweekly or 1 for monthly). Then, please add your bank
-                            accounts, fixed term investments, any other assets,
-                            credit card and other loans outstanding.
+                            accounts, investment accounts, any other assets,
+                            credit cards and other loans outstanding.
                           </Box>
                         </PopoverBody>
                       </PopoverContent>
@@ -94,11 +94,12 @@ export default function FinancesPages() {
               </Popover>
 
         <Formik
-          initialValues={{
+          initialValues={
             annualIncome: userData
               ? userData.financialInfo.annualIncome.toString()
               : "0",
-          }}
+            payFreq: userData.financialInfo.payFreq.toString(): "0",
+          }
           onSubmit={(values, actions) => {
             if (userData) {
               setAnnualIncome(userData.uid, parseFloat(values.annualIncome));
@@ -165,7 +166,7 @@ export default function FinancesPages() {
                 />
               </Box>
 
-              <Box
+              {/* <Box
                 bg={"gray.100"}
                 rounded={"5px"}
                 my={"25px"}
@@ -184,6 +185,29 @@ export default function FinancesPages() {
                     <NumberDecrementStepper />
                   </NumberInputStepper>
                 </NumberInput>
+              </Box> */}
+
+              <Box
+                bg={"gray.100"}
+                rounded={"5px"}
+                my={"25px"}
+                p={"20px"}
+                border={"1px"}
+                borderColor={"gray.300"}
+              >
+                <Heading mb={"5px"} fontSize={"xl"}>
+                  Pay Frequency
+                </Heading>
+                <NumberInputControl
+                  name="payFreq"
+                  numberInputProps={{
+                    min: 1,
+                    max: 1000000000,
+                    step: 50,
+                    precision: 2,
+                    value: values.,
+                  }}
+                />
               </Box>
 
               <Box

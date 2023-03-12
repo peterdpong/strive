@@ -113,7 +113,7 @@ export default function FixedInvestmentsModal(props: {
                 />
                 <NumberInputControl
                   name="interestRate"
-                  label="Fixed Term Investment Interest Rate (%)"
+                  label="Investment Interest Rate (%)"
                   numberInputProps={{
                     min: 0,
                     step: 1,
