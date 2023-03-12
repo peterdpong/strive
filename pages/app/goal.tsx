@@ -18,6 +18,7 @@ import Sidebar from "../../components/app/Sidebar";
 import { useAuth } from "../../src/auth/auth";
 import {
   buildGoalGraphData,
+  calculateNetWorth,
   goalGraphOptions,
 } from "../../src/visualization/GoalVisualizations";
 
@@ -41,6 +42,22 @@ export default function GoalPage() {
     userData: userData,
     monthlySavings: userData?.goalInfo.monthlyAmount,
     goalTimeline: userData?.goalInfo.timelineGoal,
+  });
+
+  let currNetWorth = calculateNetWorth(userData);
+
+  graphData?.datasets.unshift({
+    fill: true,
+    label: "Current Net Worth",
+    data: [currNetWorth],
+    borderColor: "rgb(60, 20, 240)",
+    backgroundColor: (context: ScriptableContext<"line">) => {
+      const ctx = context.chart.ctx;
+      const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+      gradient.addColorStop(0, "rgba(140, 80, 240, 1)");
+      gradient.addColorStop(1, "rgba(140, 80, 240, 0)");
+      return gradient;
+    },
   });
 
   return (
@@ -68,21 +85,6 @@ export default function GoalPage() {
           {graphData !== undefined && graphData !== null ? (
             <Line options={goalGraphOptions} data={graphData} />
           ) : null}
-          {/* <Line
-            options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: "top" as const,
-                },
-                title: {
-                  display: true,
-                  text: "Path to Goal",
-                },
-              },
-            }}
-            data={data_static}
-          /> */}
         </Box>
       </Sidebar>
     </ProtectedRoute>
