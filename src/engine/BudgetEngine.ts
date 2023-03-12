@@ -59,6 +59,7 @@ export class BudgetEngine {
     let collectiblesTotal = 0;
     let artTotal = 0;
     let valuablesTotal = 0;
+    let othersTotal = 0;
 
     Object.values(userData.financialInfo.accounts.otherAssets).map(
       (account) => {
@@ -72,6 +73,8 @@ export class BudgetEngine {
           artTotal += account.value;
         } else if (account.type == "Valuables") {
           valuablesTotal += account.value;
+        } else if (account.type == "Other") {
+          othersTotal += account.value;
         }
       }
     );
@@ -97,7 +100,8 @@ export class BudgetEngine {
       +vehicleTotal +
       +collectiblesTotal +
       +artTotal +
-      +valuablesTotal;
+      +valuablesTotal +
+      +othersTotal;
 
     //return ("artTotal: ") + artTotal;
     //return ("this is other assets: ") + otherAssetsTotal;
@@ -182,7 +186,8 @@ export class BudgetEngine {
     //const monthlySavingsAvail: number = userData.budgetInfo.monthlyVariableBudgetUnallocated
 
     let monthlyIncome = 0;
-    monthlyIncome = userData.financialInfo.annualIncome / 12;
+    //monthlyIncome = userData.financialInfo.annualIncome / 12;
+    monthlyIncome = userData.financialInfo.annualIncome * userData.financialInfo.payfreq;
 
     //return ("this is monthly income: ") + monthlyIncome;
 

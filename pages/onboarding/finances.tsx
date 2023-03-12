@@ -177,7 +177,7 @@ export default function FinancesPages() {
                   Pay Frequency
                 </Heading>
 
-                <NumberInput defaultValue={12} min={1} max={365}>
+                <NumberInput defaultValue={1} min={1} max={365}>
                   <NumberInputField />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
