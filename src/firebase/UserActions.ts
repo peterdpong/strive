@@ -16,7 +16,7 @@ import {
 } from "../models/AccountModel";
 import { BudgetModel, Transaction } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
-import { AccountMap, FinancialInfo, UserModel } from "../models/UserModel";
+import { AccountMap, FinancialInfo, Suggestion, UserModel } from "../models/UserModel";
 import { firestoreDB } from "./firebase";
 
 export const addNewUser = (
@@ -401,5 +401,20 @@ export const deleteTransaction = (
   updateDoc(userDataRef, {
     monthTransactionsMap: monthTransactionsMap,
     "financialInfo.accounts": accounts,
+  });
+};
+
+export const updateSuggestion = (
+  uid: string,
+  suggestionType: string,
+  SuggestionArray: Suggestion[],
+  suggestionMap: {
+    [suggestionType: string]: Suggestion[];
+  }
+) => {
+  suggestionMap[suggestionType] = SuggestionArray;
+  const userDataRef = doc(firestoreDB, "users", uid);
+  updateDoc(userDataRef, {
+    suggestions: suggestionMap
   });
 };

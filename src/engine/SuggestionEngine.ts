@@ -1,5 +1,6 @@
 import { UserModel } from "../models/UserModel";
 import { TransactionCategories } from "../models/BudgetModel";
+import { updateSuggestion } from "../firebase/UserActions";
 
 enum CategoryPercentages {
   GROCERIES = 10,
@@ -16,35 +17,38 @@ enum CategoryPercentages {
   SAVINGS = 7.5,
 }
 
-const categorySpend: [TransactionCategories, number][] = [
-  [TransactionCategories.GROCERIES, 0],
-  [TransactionCategories.ENTERTAINMENT, 0],
-  [TransactionCategories.UTILITIES, 0],
-  [TransactionCategories.MOBILEPLAN, 0],
-  [TransactionCategories.RENT, 0],
-  [TransactionCategories.TRANSPORTATION, 0],
-  [TransactionCategories.DININGOUT, 0],
-  [TransactionCategories.CLOTHING, 0],
-  [TransactionCategories.TRAVEL, 0],
-  [TransactionCategories.EDUCATION, 0],
-  [TransactionCategories.INTEREST, 0],
-  [TransactionCategories.SAVINGS, 0],
-];
 
-const suggestion: [TransactionCategories, number][] = [
-  [TransactionCategories.GROCERIES, 0],
-  [TransactionCategories.ENTERTAINMENT, 0],
-  [TransactionCategories.UTILITIES, 0],
-  [TransactionCategories.MOBILEPLAN, 0],
-  [TransactionCategories.RENT, 0],
-  [TransactionCategories.TRANSPORTATION, 0],
-  [TransactionCategories.DININGOUT, 0],
-  [TransactionCategories.CLOTHING, 0],
-  [TransactionCategories.TRAVEL, 0],
-  [TransactionCategories.EDUCATION, 0],
-  [TransactionCategories.INTEREST, 0],
-  [TransactionCategories.SAVINGS, 0],
-];
+
+
+// const categorySpend: [TransactionCategories, number][] = [
+//   [TransactionCategories.GROCERIES, 0],
+//   [TransactionCategories.ENTERTAINMENT, 0],
+//   [TransactionCategories.UTILITIES, 0],
+//   [TransactionCategories.MOBILEPLAN, 0],
+//   [TransactionCategories.RENT, 0],
+//   [TransactionCategories.TRANSPORTATION, 0],
+//   [TransactionCategories.DININGOUT, 0],
+//   [TransactionCategories.CLOTHING, 0],
+//   [TransactionCategories.TRAVEL, 0],
+//   [TransactionCategories.EDUCATION, 0],
+//   [TransactionCategories.INTEREST, 0],
+//   [TransactionCategories.SAVINGS, 0],
+// ];
+
+// const suggestion: [TransactionCategories, number][] = [
+//   [TransactionCategories.GROCERIES, 0],
+//   [TransactionCategories.ENTERTAINMENT, 0],
+//   [TransactionCategories.UTILITIES, 0],
+//   [TransactionCategories.MOBILEPLAN, 0],
+//   [TransactionCategories.RENT, 0],
+//   [TransactionCategories.TRANSPORTATION, 0],
+//   [TransactionCategories.DININGOUT, 0],
+//   [TransactionCategories.CLOTHING, 0],
+//   [TransactionCategories.TRAVEL, 0],
+//   [TransactionCategories.EDUCATION, 0],
+//   [TransactionCategories.INTEREST, 0],
+//   [TransactionCategories.SAVINGS, 0],
+// ];
 
 type Suggestion = {
   suggestionType: string;
@@ -58,40 +62,79 @@ export class SuggestionEngine {
     if (userData == null) {
       return undefined;
     }
+    
+    const categorySpend: {[categoryKey: string]: number} = {
+      [TransactionCategories.GROCERIES]: 0,
+      [TransactionCategories.ENTERTAINMENT]: 0,
+      [TransactionCategories.UTILITIES]: 0,
+      [TransactionCategories.MOBILEPLAN]: 0,
+      [TransactionCategories.RENT]: 0,
+      [TransactionCategories.TRANSPORTATION]: 0,
+      [TransactionCategories.DININGOUT]: 0,
+      [TransactionCategories.CLOTHING]: 0,
+      [TransactionCategories.TRAVEL]: 0,
+      [TransactionCategories.EDUCATION]: 0,
+      [TransactionCategories.INTEREST]: 0,
+      [TransactionCategories.SAVINGS]: 0,
+    }
+    
+    const suggestion: {[categoryKey: string]: number} = {
+      [TransactionCategories.GROCERIES]: 0,
+      [TransactionCategories.ENTERTAINMENT]: 0,
+      [TransactionCategories.UTILITIES]: 0,
+      [TransactionCategories.MOBILEPLAN]: 0,
+      [TransactionCategories.RENT]: 0,
+      [TransactionCategories.TRANSPORTATION]: 0,
+      [TransactionCategories.DININGOUT]: 0,
+      [TransactionCategories.CLOTHING]: 0,
+      [TransactionCategories.TRAVEL]: 0,
+      [TransactionCategories.EDUCATION]: 0,
+      [TransactionCategories.INTEREST]: 0,
+      [TransactionCategories.SAVINGS]: 0,
+    }
 
     const availableFunds = userData.budgetInfo.monthlyVariableBudgetUnallocated; // total funds available for allocation
-    const categories: { value: number; key: TransactionCategories }[] = [];
     const now: Date = new Date();
     const lastMonthDate =
       (now.getUTCMonth() - 1).toString() +
       "-" +
       now.getUTCFullYear().toString();
     let index: number;
+    if(userData.monthTransactionsMap[lastMonthDate] === undefined) {
+      console.log("No transactions in previous month");
+      return undefined;
+    }
+
+    console.log(userData.monthTransactionsMap[lastMonthDate])
+
     // loop through every transaction ever made by this user
-    userData.financialInfo.monthlyTransactions.forEach((transaction) => {
+    userData.monthTransactionsMap[lastMonthDate].forEach((transaction) => {
       // for each transaction made in the last month
       if (transaction.date === lastMonthDate) {
         // loop through each transaction category until it matches the category of the transaction made
         for (const transactionCategory in TransactionCategories) {
           if (transaction.category === transactionCategory) {
             // add the value of the transaction to the array of transactions in categorySpend to keep track of total spend in each category by month
-            index = categorySpend.findIndex(
-              ([category]) => category === transactionCategory
-            );
-            if (index != -1) {
-              categorySpend[index][1] += transaction.amount;
-            }
+            categorySpend[transaction.category] += transaction.amount;
+            // index = categorySpend.findIndex(
+            //   ([category]) => category === transactionCategory
+            // );
+            // if (index != -1) {
+            //   categorySpend[index][1] += transaction.amount;
+            // }
           }
         }
       }
     });
 
+    console.log(categorySpend)
+
     for (const transactionCategory in CategoryPercentages) {
-      index = categorySpend.findIndex(
-        ([category]) => category === transactionCategory
-      );
+      // index = categorySpend.findIndex(
+      //   ([category]) => category === transactionCategory
+      // );
       const totalCategorySpendPercentage: number =
-        (categorySpend[index][1] / availableFunds) * 100;
+        (categorySpend[transactionCategory] / availableFunds) * 100;
       const targetPercent: number = CategoryPercentages[
         transactionCategory
       ] as unknown as number; // to suppress error as it doesn't know that this is a number
@@ -99,25 +142,27 @@ export class SuggestionEngine {
         //create a suggestion
         const reduceAmount =
           (totalCategorySpendPercentage - targetPercent) * availableFunds;
-        suggestion[index][1] += reduceAmount;
+        suggestion[transactionCategory] += reduceAmount;
       }
     }
+
+    console.log(suggestion)
 
     const suggestionArray: Suggestion[] = [];
     for (const suggestions in suggestion) {
       var temp_type = "Category Suggestions";
-      var temp_title = suggestions[0]; //should be "Groceries, Entertainment, ..."
-      if (suggestions[1] as unknown as number > 0) {
+      var temp_title = suggestions; //should be "Groceries, Entertainment, ..."
+      if (suggestion[suggestions] > 0) {
         var temp_badge = "Increased Spending";
       }
       else {
         var temp_badge = "Good Job!"; //not really sure what to put here
       }
-      if (suggestions[1] as unknown as number === 0) {
+      if (suggestion[suggestions] === 0) {
         var temp_description = "Maintain this spending!";
       }
       else {
-        var temp_description = "Spend " + suggestions[1] + "less each month in this category.";
+        var temp_description = "Spend " + suggestion[suggestions] + "less each month in this category.";
       }
       let temp_suggestion!: Suggestion;
       temp_suggestion.suggestionType = temp_type;
@@ -127,16 +172,16 @@ export class SuggestionEngine {
       suggestionArray.push(temp_suggestion);
     }
     //
-    SuggestionEngine.addToSuggestions(suggestionArray);
+    updateSuggestion(userData.uid, "Category_Suggestion", suggestionArray, userData.suggestions)
   }
 
-  static generateDemographicSuggestions(userData: UserModel | null) {
-    //do something
-  }
+  // static generateDemographicSuggestions(userData: UserModel | null) {
+  //   //do something
+  // }
 
-  static addToSuggestions = (suggestion: Suggestion[]) => {
-    // add this suggestion to the UserModel
-  };
+  // static addToSuggestions = (suggestion: Suggestion[]) => {
+  //   // add this suggestion to the UserModel
+  // };
 
   // for reference
   // suggestions: {

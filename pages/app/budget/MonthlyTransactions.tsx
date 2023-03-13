@@ -31,6 +31,7 @@ import {
 } from "../../../src/models/BudgetModel";
 import { UserModel } from "../../../src/models/UserModel";
 import { getCurrentDate, getMonthFromString } from "../../../src/DateTimeUtils";
+import { SuggestionEngine } from "../../../src/engine/SuggestionEngine";
 
 const AddTransactionsForm = ({ data }: { data: UserModel }) => {
   const dataAccounts = data.financialInfo.accounts;
@@ -75,6 +76,7 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
         monthAndYear,
         transaction
       );
+      SuggestionEngine.generateCategorySuggestions(data);
     }
 
     setDate(getCurrentDate());
@@ -288,6 +290,7 @@ const MonthlyTransactions = ({
         monthAndYear,
         transaction
       );
+      SuggestionEngine.generateCategorySuggestions(userData);
     }
   };
 
