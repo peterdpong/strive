@@ -163,7 +163,7 @@ export default function SuggestionsPage() {
           Back
         </Button>
         <Heading>Choose your goal</Heading>
-        <Text fontSize={"md"}>Choose your financial and timeline goals.</Text>
+        <Text fontSize={"md"}>Choose your savings and timeline goals.</Text>
         <Popover closeOnBlur={false} placement="bottom">
           {({ isOpen }: { isOpen: boolean }) => (
             <>
@@ -211,7 +211,7 @@ export default function SuggestionsPage() {
         >
           <Flex gap="1rem" mb="1">
             <Stack flex={1}>
-              <Heading size="md">Net Worth Goal ($)</Heading>
+              <Heading size="md">Savings Goal ($)</Heading>
               <NumberInput
                 min={0}
                 defaultValue={netWorthGoal}
@@ -253,7 +253,7 @@ export default function SuggestionsPage() {
           <Alert status="error">
             <AlertIcon />
             <AlertTitle>
-              Set net worth goal and timeline not feasible
+              Set savings goal and timeline not feasible
             </AlertTitle>
             <AlertDescription>
               Goal is not possible given financial information.

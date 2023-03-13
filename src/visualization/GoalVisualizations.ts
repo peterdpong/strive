@@ -26,7 +26,7 @@ export const goalGraphOptions = {
     },
     title: {
       display: true,
-      text: "Net worth goal visualization",
+      text: "Savings goal visualization",
     },
   },
 };
@@ -112,7 +112,7 @@ export const calculateNetWorth = (userData: UserModel | null) => {
 
   //present net worth
 
-  let currNetWorth = totalAssets - totalLiabilities;
+  const currNetWorth = totalAssets - totalLiabilities;
 
   return currNetWorth;
 };
@@ -143,7 +143,7 @@ export const buildGoalGraphData = (userInfo: {
     (x, i) => i
   );
 
-  let currNetWorth = calculateNetWorth(userInfo.userData);
+  const currNetWorth = calculateNetWorth(userInfo.userData);
 
   // Generate goal data array size mapped to timeline goal (months)
 

@@ -180,7 +180,7 @@ export default function Dashboard() {
               <HStack justifyContent="space-between" align="flex-start">
                 <VStack align="flex-start">
                   <Stat>
-                    <StatLabel fontSize="xl">Net Worth Goal</StatLabel>
+                    <StatLabel fontSize="xl">Savings Goal</StatLabel>
                     <StatNumber fontSize="2xl">
                       ${userData?.goalInfo.networthGoal.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                     </StatNumber>
@@ -283,7 +283,7 @@ export default function Dashboard() {
                   onClick={() => router.push("onboarding/goal")}
                   size="sm"
                 >
-                  Adjust net worth goal
+                  Adjust savings goal
                 </Button>
               </HStack>
               <Line

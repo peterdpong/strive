@@ -2,6 +2,7 @@ import { Button, ButtonGroup, Container, Heading, Text, Box, Flex, Center } from
 import { useRouter } from "next/router";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { Image } from '@chakra-ui/react'
+import { AspectRatio } from '@chakra-ui/react'
 
 export default function OnboardingIndex() {
   const router = useRouter();
@@ -50,35 +51,53 @@ export default function OnboardingIndex() {
       <Container
         maxW="container.xl"
         rounded={"5px"}
+        bg={"green.50"}
+        my={"25px"}
+        p={"20px"}
+        border={"1px"}
+        h={"375px"}
+        borderColor={"gray.300"}
+        position='relative'
+      >
+        <Flex justifyContent="space-between" position='relative'>
+        {/* <Box boxSize='sm'> */}
+          <Image src='/homepic1.png' alt='Pic 1' boxSize='600px'/>
+        {/* </Box> */}
+          <Heading size='lg'>Visualize your monthly expenses.</Heading>
+        </Flex>
+      </Container>
+
+      <Container
+        maxW="container.xl"
+        rounded={"5px"}
         bg={"gray.100"}
         my={"25px"}
         p={"20px"}
         border={"1px"}
-        h={"775px"}
+        h={"450"}
         borderColor={"gray.300"}
-        centerContent
       >
         <Flex>
         <Box boxSize='sm'>
-          <Image style={{ alignSelf: 'flex-start' }} src='/homepic1.png' alt='Pic 1' />
-          <Heading size='lg' textAlign={"left"}>Visualize your monthly expenses.</Heading>
+          <Image style={{ alignSelf: 'flex-end' }} justifyContent='right' src='/dashboardvisual.png' alt='Pic 1' />
+        </Box>
+        {/* <Heading size='lg'>All your budgeting information and alerts in one location.</Heading> */}
+        </Flex>
+      </Container>
 
-          <Image style={{ alignSelf: 'flex-start' }} src='/dashboardvisual.png' alt='Pic 1' />
-          <Heading size='lg' textAlign={"center"}>All your budgeting information and alerts in one location.</Heading>
-
-          <Center>
-          <Button
+      <Box
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+      >
+        <Button
           mt={"15px"}
           colorScheme={"green"}
           onClick={() => router.push("onboarding/finances")}
-          >
+        >
           Get Started
-          </Button>
-          </Center>
-
-        </Box>
-        </Flex>
-      </Container>
+        </Button>
+      </Box>
     </ProtectedRoute>
   );
 }
