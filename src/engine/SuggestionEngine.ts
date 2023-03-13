@@ -17,9 +17,6 @@ enum CategoryPercentages {
   SAVINGS = 7.5,
 }
 
-
-
-
 // const categorySpend: [TransactionCategories, number][] = [
 //   [TransactionCategories.GROCERIES, 0],
 //   [TransactionCategories.ENTERTAINMENT, 0],
@@ -62,8 +59,8 @@ export class SuggestionEngine {
     if (userData == null) {
       return undefined;
     }
-    
-    const categorySpend: {[categoryKey: string]: number} = {
+
+    const categorySpend: { [categoryKey: string]: number } = {
       [TransactionCategories.GROCERIES]: 0,
       [TransactionCategories.ENTERTAINMENT]: 0,
       [TransactionCategories.UTILITIES]: 0,
@@ -76,9 +73,9 @@ export class SuggestionEngine {
       [TransactionCategories.EDUCATION]: 0,
       [TransactionCategories.INTEREST]: 0,
       [TransactionCategories.SAVINGS]: 0,
-    }
-    
-    const suggestion: {[categoryKey: string]: number} = {
+    };
+
+    const suggestion: { [categoryKey: string]: number } = {
       [TransactionCategories.GROCERIES]: 0,
       [TransactionCategories.ENTERTAINMENT]: 0,
       [TransactionCategories.UTILITIES]: 0,
@@ -91,21 +88,19 @@ export class SuggestionEngine {
       [TransactionCategories.EDUCATION]: 0,
       [TransactionCategories.INTEREST]: 0,
       [TransactionCategories.SAVINGS]: 0,
-    }
+    };
 
     const availableFunds = userData.budgetInfo.monthlyVariableBudgetUnallocated; // total funds available for allocation
     const now: Date = new Date();
     const lastMonthDate =
-      (now.getUTCMonth() - 1).toString() +
-      "-" +
-      now.getUTCFullYear().toString();
-    let index: number;
-    if(userData.monthTransactionsMap[lastMonthDate] === undefined) {
+      now.getUTCMonth().toString() + "-" + now.getUTCFullYear().toString();
+    console.log(lastMonthDate);
+    if (userData.monthTransactionsMap[lastMonthDate] === undefined) {
       console.log("No transactions in previous month");
       return undefined;
     }
 
-    console.log(userData.monthTransactionsMap[lastMonthDate])
+    console.log(userData.monthTransactionsMap[lastMonthDate]);
 
     // loop through every transaction ever made by this user
     userData.monthTransactionsMap[lastMonthDate].forEach((transaction) => {
@@ -127,7 +122,7 @@ export class SuggestionEngine {
       }
     });
 
-    console.log(categorySpend)
+    console.log(categorySpend);
 
     for (const transactionCategory in CategoryPercentages) {
       // index = categorySpend.findIndex(
@@ -146,33 +141,42 @@ export class SuggestionEngine {
       }
     }
 
-    console.log(suggestion)
+    console.log(suggestion);
 
     const suggestionArray: Suggestion[] = [];
     for (const suggestions in suggestion) {
-      var temp_type = "Category Suggestions";
-      var temp_title = suggestions; //should be "Groceries, Entertainment, ..."
+      const temp_type = "Category Suggestions";
+      const temp_title = suggestions; //should be "Groceries, Entertainment, ..."
+      let temp_badge = "";
+      let temp_description = "";
       if (suggestion[suggestions] > 0) {
-        var temp_badge = "Increased Spending";
-      }
-      else {
-        var temp_badge = "Good Job!"; //not really sure what to put here
+        temp_badge = "Increased Spending";
+      } else {
+        temp_badge = "Good Job!"; //not really sure what to put here
       }
       if (suggestion[suggestions] === 0) {
-        var temp_description = "Maintain this spending!";
+        temp_description = "Maintain this spending!";
+      } else {
+        temp_description =
+          "Spend " +
+          suggestion[suggestions] +
+          "less each month in this category.";
       }
-      else {
-        var temp_description = "Spend " + suggestion[suggestions] + "less each month in this category.";
-      }
-      let temp_suggestion!: Suggestion;
-      temp_suggestion.suggestionType = temp_type;
-      temp_suggestion.suggestionTitle = temp_title;
-      temp_suggestion.suggestionBadge = temp_badge;
-      temp_suggestion.suggestionDescription = temp_description;
+      const temp_suggestion: Suggestion = {
+        suggestionBadge: temp_badge,
+        suggestionTitle: temp_title,
+        suggestionType: temp_type,
+        suggestionDescription: temp_description,
+      };
       suggestionArray.push(temp_suggestion);
     }
     //
-    updateSuggestion(userData.uid, "Category_Suggestion", suggestionArray, userData.suggestions)
+    updateSuggestion(
+      userData.uid,
+      "Category_Suggestion",
+      suggestionArray,
+      userData.suggestions
+    );
   }
 
   // static generateDemographicSuggestions(userData: UserModel | null) {
