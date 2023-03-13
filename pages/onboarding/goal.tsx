@@ -181,8 +181,8 @@ export default function SuggestionsPage() {
                   <PopoverBody>
                     <Box>
                       <Text>
-                        Here, you set your target financial goal (for example, a
-                        particular net worth, downpayment for a house or amount
+                        Here, you set your savings goal (for example, a
+                        target net worth, downpayment for a house or amount
                         of money to purchase a new car) and the number of years
                         you would like to achieve your goal in.
                       </Text>
@@ -376,7 +376,7 @@ export default function SuggestionsPage() {
               borderColor={"gray.300"}
             >
               <Heading mb={"8px"} fontSize={"xl"}>
-                Overview of Selected Goal
+                Overview of Savings Goal
               </Heading>
               {graphData !== undefined && graphData !== null ? (
                 <Line options={goalGraphOptions} data={graphData} />

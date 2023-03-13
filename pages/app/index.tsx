@@ -69,7 +69,7 @@ const dataLine = {
   datasets: [
     {
       fill: true,
-      label: "Net Worth",
+      label: "Savings Goal",
       data: [1, 2, 4, 16, 32, 64, 128],
       borderColor: "rgb(30, 159, 92)",
       backgroundColor: (context: ScriptableContext<"line">) => {

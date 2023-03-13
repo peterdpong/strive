@@ -243,7 +243,7 @@ const MonthTransaction = ({
                 {editing && (
                   <Button
                     size="xs"
-                    colorScheme="linkedin"
+                    colorScheme="green"
                     onClick={(e) =>
                       deleteTransactionHandler(e, monthSection, transaction)
                     }
@@ -308,7 +308,7 @@ const MonthlyTransactions = ({
             colorScheme="gray"
             onClick={() => setEditingTransactions(!editingTransactions)}
           >
-            {editingTransactions ? "Done Editing" : "Edit"}
+            {editingTransactions ? "Done editing" : "Edit"}
           </Button>
           <Button
             size="sm"

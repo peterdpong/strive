@@ -57,9 +57,8 @@ export default function OnboardingIndex() {
         border={"1px"}
         h={"375px"}
         borderColor={"gray.300"}
-        position='relative'
       >
-        <Flex justifyContent="space-between" position='relative'>
+        <Flex justifyContent="space-between">
         {/* <Box boxSize='sm'> */}
           <Image src='/homepic1.png' alt='Pic 1' boxSize='600px'/>
         {/* </Box> */}
@@ -77,11 +76,12 @@ export default function OnboardingIndex() {
         h={"450"}
         borderColor={"gray.300"}
       >
-        <Flex>
-        <Box boxSize='sm'>
-          <Image style={{ alignSelf: 'flex-end' }} justifyContent='right' src='/dashboardvisual.png' alt='Pic 1' />
-        </Box>
-        {/* <Heading size='lg'>All your budgeting information and alerts in one location.</Heading> */}
+        <Flex justifyContent="space-between">
+        {/* <Box boxSize='sm'> */}
+          <Heading size='lg'>All your budgeting information and alerts in one location.</Heading>
+          <Image src='/dashboardvisual.png' boxSize = '600px' alt='Pic 1' />
+        {/* </Box> */}
+        <Image src='/dashboardvisual.png' boxSize = '600px' alt='Pic 1' />        
         </Flex>
       </Container>
 

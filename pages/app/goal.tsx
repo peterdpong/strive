@@ -42,7 +42,7 @@ export default function GoalPage() {
   }
 
   // graph for net worth goal
-  let graphData = buildGoalGraphData({
+  const graphData = buildGoalGraphData({
     title: "Net Worth Goal",
     userData: userData,
     monthlySavings: userData?.goalInfo.monthlyAmount,
@@ -51,14 +51,14 @@ export default function GoalPage() {
 
   if (graphData) {
     // find the starting value for current net worth
-    let currNetWorth = calculateNetWorth(userData);
+    const currNetWorth = calculateNetWorth(userData);
     console.log(userData.monthTransactionsMap);
 
     // find the month at the start of the goal graph
     let startMonth = "100-100000";
     Object.keys(userData.monthTransactionsMap).forEach((month) => {
-      let month1 = startMonth.split("-");
-      let month2 = month.split("-");
+      const month1 = startMonth.split("-");
+      const month2 = month.split("-");
       if (
         parseInt(month2[1]) < parseInt(month1[1]) &&
         parseInt(month2[0]) < parseInt(month1[0])
@@ -70,13 +70,13 @@ export default function GoalPage() {
     // construct the array of how net worth changes month-to-month
     // only accounts for unallocated income + transactions
     // no investments are factored into this calculation yet
-    let netWorthOverTime = [];
+    const netWorthOverTime = [];
     let currMonth = startMonth;
     let currSpending = currNetWorth;
     for (let i = 0; i < graphData.datasets[0].data.length; i++) {
       // if graph month is in the future, stop recording net worth
-      let monthParts = currMonth.split("-").map((part) => parseInt(part));
-      var date = new Date(); // current date
+      const monthParts = currMonth.split("-").map((part) => parseInt(part));
+      const date = new Date(); // current date
       if (
         monthParts[0] === date.getMonth() + 1 &&
         monthParts[1] === date.getFullYear()
