@@ -217,7 +217,7 @@ export default function SuggestionsPage() {
             my={"10px"}
           >
             <Heading size="md" my="10px">
-              Goal Suggestions
+              Goal and Savings
             </Heading>
             <Accordion allowMultiple>
               <AccordionItem>
