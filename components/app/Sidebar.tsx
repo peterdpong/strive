@@ -38,7 +38,7 @@ const LinkItems: Array<LinkItemProps> = [
   { name: "Suggestions", icon: MdOutlineFlashOn, href: "/app/suggestions" },
   { name: "Budget", icon: MdPieChart, href: "/app/budget" },
   { name: "Accounts", icon: MdCreditCard, href: "/app/accounts" },
-  { name: "Onboarding", icon: MdBuild, href: "/onboarding"}
+  { name: "Onboarding", icon: MdBuild, href: "/onboarding" },
 ];
 
 const BottomItems: Array<LinkItemProps> = [
@@ -93,9 +93,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       <Flex flexDir={"column"} height={"100%"}>
         <Flex h="20" alignItems="center" mx="4" justifyContent="space-between">
           <Text fontSize="xl" fontWeight="bold">
-            <Link href='/onboarding'>
-              Strive
-            </Link>
+            Strive
           </Text>
           <CloseButton
             display={{ base: "flex", md: "none" }}

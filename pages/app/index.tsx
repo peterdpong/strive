@@ -11,14 +11,11 @@ import {
   Heading,
   HStack,
   Stat,
-  StatHelpText,
   StatLabel,
   StatNumber,
-  Text,
   VStack,
   Flex,
 } from "@chakra-ui/react";
-import { CheckIcon } from "@chakra-ui/icons";
 
 import {
   Chart as ChartJS,
@@ -158,7 +155,9 @@ export default function Dashboard() {
                       {userData
                         ? `$${BudgetEngineUtils.calculateNetWorth(
                             userData.financialInfo.accounts
-                          ).toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`
+                          )
+                            .toFixed(2)
+                            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`
                         : "Error"}
                     </StatNumber>
                   </Stat>
@@ -170,7 +169,9 @@ export default function Dashboard() {
                       {userData
                         ? `$${BudgetEngineUtils.calculateCurrentMonthSavings(
                             userData
-                          ).toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`
+                          )
+                            .toFixed(2)
+                            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`
                         : "Error"}
                     </StatNumber>
                   </Stat>
@@ -182,7 +183,10 @@ export default function Dashboard() {
                   <Stat>
                     <StatLabel fontSize="xl">Savings Goal</StatLabel>
                     <StatNumber fontSize="2xl">
-                      ${userData?.goalInfo.networthGoal.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                      $
+                      {userData?.goalInfo.networthGoal
+                        .toFixed(2)
+                        .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                     </StatNumber>
                   </Stat>
                 </VStack>
@@ -190,7 +194,10 @@ export default function Dashboard() {
                   <Stat>
                     <StatLabel fontSize="xl">Target Monthly Savings</StatLabel>
                     <StatNumber fontSize="2xl">
-                      ${userData?.goalInfo.monthlyAmount.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                      $
+                      {userData?.goalInfo.monthlyAmount
+                        .toFixed(2)
+                        .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                     </StatNumber>
                   </Stat>
                 </VStack>

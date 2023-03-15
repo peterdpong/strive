@@ -8,6 +8,7 @@ import {
   Box,
   Heading,
   HStack,
+  SimpleGrid,
   VStack,
 } from "@chakra-ui/react";
 
@@ -19,7 +20,6 @@ export default function SuggestionsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  console.log(userData);
   return (
     <ProtectedRoute>
       <Sidebar>
@@ -32,96 +32,188 @@ export default function SuggestionsPage() {
             </VStack>
           </HStack>
         </Box>
-        <Box rounded={"5px"}>
-          {userData &&
-            Object.entries(userData.suggestions).map((object, index) => {
-              return (
-                <div key={index}>
-                  <Heading>{object[0]}</Heading>
-                  <Accordion allowMultiple>
-                    {object[1].map((suggestion, index) => {
-                      return (
-                        <AccordionItem key={index}>
-                          <h2>
-                            <AccordionButton>
-                              <Box flex="1" textAlign="left">
-                                {suggestion.suggestionTitle}
-                              </Box>
-                              <Badge colorScheme="green">
-                                {suggestion.suggestionBadge}
-                              </Badge>
-                              <AccordionIcon />
-                            </AccordionButton>
-                          </h2>
-                          <AccordionPanel pb={4}>
-                            {suggestion.suggestionDescription}
-                          </AccordionPanel>
-                        </AccordionItem>
-                      );
-                    })}
-                  </Accordion>
-                </div>
-              );
-            })}
-        </Box>
 
-        {/* Mock Suggestion Data */}
-        {/* <Box rounded={"5px"} my={"10px"}>
-          <Accordion allowMultiple>
-            <AccordionItem>
-              <h2>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    Unused TFSA Room
-                  </Box>
-                  <Badge colorScheme="green">Savings opportunity</Badge>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem>
-              <h2>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    Unused TFSA Room
-                  </Box>
-                  <Badge colorScheme="green">Savings opportunity</Badge>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </AccordionPanel>
-            </AccordionItem>
+        <SimpleGrid columns={2} spacing={4}>
+          <Box
+            bg={"gray.100"}
+            rounded={"5px"}
+            p={"20px"}
+            width={"100%"}
+            border={"1px"}
+            borderColor={"gray.300"}
+            my={"10px"}
+          >
+            <Heading size="md" my="10px">
+              Spending and Budget Suggestions
+            </Heading>
+            <Accordion allowMultiple>
+              {userData &&
+                userData.suggestions["SpendingAndBudget"] &&
+                userData.suggestions["SpendingAndBudget"].map(
+                  (suggestion, index) => {
+                    return (
+                      <AccordionItem key={index}>
+                        <AccordionButton>
+                          <Box flex="1" textAlign="left">
+                            <Heading size={"sm"}>
+                              {suggestion.suggestionTitle}
+                            </Heading>
+                          </Box>
+                          <Badge
+                            colorScheme={
+                              suggestion.isPositive ? "green" : "red"
+                            }
+                          >
+                            {suggestion.suggestionBadge}
+                          </Badge>
+                          <AccordionIcon />
+                        </AccordionButton>
 
-            <AccordionItem>
-              <h2>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    Spending on entertainment 15% greater than last month
-                  </Box>
-                  <Badge colorScheme="red">Increased spending</Badge>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion>
-        </Box> */}
+                        <AccordionPanel pb={4}>
+                          {suggestion.suggestionDescription}
+                        </AccordionPanel>
+                      </AccordionItem>
+                    );
+                  }
+                )}
+            </Accordion>
+          </Box>
+
+          <Box
+            bg={"gray.100"}
+            rounded={"5px"}
+            p={"20px"}
+            width={"100%"}
+            border={"1px"}
+            borderColor={"gray.300"}
+            my={"10px"}
+          >
+            <Heading size="md" my="10px">
+              Money Allocation
+            </Heading>
+            <Accordion allowMultiple>
+              {userData &&
+                userData.suggestions["MoneyAllocation"] &&
+                userData.suggestions["MoneyAllocation"].map(
+                  (suggestion, index) => {
+                    return (
+                      <AccordionItem key={index}>
+                        <AccordionButton>
+                          <Box flex="1" textAlign="left">
+                            <Heading size={"sm"}>
+                              {suggestion.suggestionTitle}
+                            </Heading>
+                          </Box>
+                          <Badge
+                            colorScheme={
+                              suggestion.isPositive ? "green" : "red"
+                            }
+                          >
+                            {suggestion.suggestionBadge}
+                          </Badge>
+                          <AccordionIcon />
+                        </AccordionButton>
+
+                        <AccordionPanel pb={4}>
+                          {suggestion.suggestionDescription}
+                        </AccordionPanel>
+                      </AccordionItem>
+                    );
+                  }
+                )}
+            </Accordion>
+          </Box>
+
+          <Box
+            bg={"gray.100"}
+            rounded={"5px"}
+            p={"20px"}
+            width={"100%"}
+            border={"1px"}
+            borderColor={"gray.300"}
+            my={"10px"}
+          >
+            <Heading size="md" my="10px">
+              Goal and Savings
+            </Heading>
+            <Accordion allowMultiple>
+              {userData &&
+                userData.suggestions["GoalAndSavings"] &&
+                userData.suggestions["GoalAndSavings"].map(
+                  (suggestion, index) => {
+                    return (
+                      <AccordionItem key={index}>
+                        <AccordionButton>
+                          <Box flex="1" textAlign="left">
+                            <Heading size={"sm"}>
+                              {suggestion.suggestionTitle}
+                            </Heading>
+                          </Box>
+                          <Badge
+                            colorScheme={
+                              suggestion.isPositive ? "green" : "red"
+                            }
+                          >
+                            {suggestion.suggestionBadge}
+                          </Badge>
+                          <AccordionIcon />
+                        </AccordionButton>
+
+                        <AccordionPanel pb={4}>
+                          {suggestion.suggestionDescription}
+                        </AccordionPanel>
+                      </AccordionItem>
+                    );
+                  }
+                )}
+            </Accordion>
+          </Box>
+
+          <Box
+            bg={"gray.100"}
+            rounded={"5px"}
+            p={"20px"}
+            width={"100%"}
+            border={"1px"}
+            borderColor={"gray.300"}
+            my={"10px"}
+          >
+            <Heading size="md" my="10px">
+              Financial Health
+            </Heading>
+            <Accordion allowMultiple>
+              {userData &&
+                userData.suggestions["FinancialHealth"] &&
+                userData.suggestions["GoalAndSavings"].map(
+                  (suggestion, index) => {
+                    return (
+                      <AccordionItem key={index}>
+                        <AccordionButton>
+                          <Box flex="1" textAlign="left">
+                            <Heading size={"sm"}>
+                              {suggestion.suggestionTitle}
+                            </Heading>
+                          </Box>
+                          <Badge
+                            colorScheme={
+                              suggestion.isPositive ? "green" : "red"
+                            }
+                          >
+                            {suggestion.suggestionBadge}
+                          </Badge>
+                          <AccordionIcon />
+                        </AccordionButton>
+
+                        <AccordionPanel pb={4}>
+                          {suggestion.suggestionDescription}
+                        </AccordionPanel>
+                      </AccordionItem>
+                    );
+                  }
+                )}
+            </Accordion>
+          </Box>
+        </SimpleGrid>
       </Sidebar>
     </ProtectedRoute>
   );
