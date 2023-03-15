@@ -130,19 +130,25 @@ export default function BudgetPage() {
                   </StatLabel>
                   <StatNumber fontSize="3xl">
                     $
-                    {(userData?.financialInfo.annualIncome*userData?.financialInfo.payfreq)
-                      .toFixed(2)
-                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                    {userData &&
+                      (
+                        userData.financialInfo.annualIncome *
+                        userData.financialInfo.payfreq
+                      )
+                        .toFixed(2)
+                        .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                   </StatNumber>
-                  <StatLabel fontSize="xl">
-                    Expenses
-                  </StatLabel>
+                  <StatLabel fontSize="xl">Expenses</StatLabel>
                   <StatNumber fontSize="3xl">
                     $
-                    {((userData?.financialInfo.annualIncome*userData?.financialInfo.payfreq)
-                    -userData?.budgetInfo.monthlyVariableBudgetUnallocated)
-                      .toFixed(2)
-                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                    {userData &&
+                      (
+                        userData.financialInfo.annualIncome *
+                          userData.financialInfo.payfreq -
+                        userData.budgetInfo.monthlyVariableBudgetUnallocated
+                      )
+                        .toFixed(2)
+                        .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                   </StatNumber>
                   <StatLabel fontSize="xl">
                     Monthly Income after Expenses
