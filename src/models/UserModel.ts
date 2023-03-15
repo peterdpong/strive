@@ -29,6 +29,7 @@ export type Suggestion = {
   suggestionTitle: string;
   suggestionBadge: string;
   suggestionDescription: string;
+  isPositive: boolean;
 };
 
 export type OnboardingStatus = {

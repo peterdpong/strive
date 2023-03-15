@@ -1,56 +1,21 @@
-import { UserModel } from "../models/UserModel";
+import { Suggestion, UserModel } from "../models/UserModel";
 import { TransactionCategories } from "../models/BudgetModel";
+import { updateSuggestion } from "../firebase/UserActions";
+import { enumKeys } from "../utils";
 
-enum CategoryPercentages {
-  GROCERIES = 10,
-  ENTERTAINMENT = 5,
-  UTILITIES = 4,
-  MOBILEPLAN = 1,
-  RENT = 35,
-  TRANSPORTATION = 15,
-  DININGOUT = 5,
-  CLOTHING = 5,
-  TRAVEL = 5,
-  EDUCATION = 7.5,
-  INTEREST = 5,
-  SAVINGS = 7.5,
-}
-
-const categorySpend: [TransactionCategories, number][] = [
-  [TransactionCategories.GROCERIES, 0],
-  [TransactionCategories.ENTERTAINMENT, 0],
-  [TransactionCategories.UTILITIES, 0],
-  [TransactionCategories.MOBILEPLAN, 0],
-  [TransactionCategories.RENT, 0],
-  [TransactionCategories.TRANSPORTATION, 0],
-  [TransactionCategories.DININGOUT, 0],
-  [TransactionCategories.CLOTHING, 0],
-  [TransactionCategories.TRAVEL, 0],
-  [TransactionCategories.EDUCATION, 0],
-  [TransactionCategories.INTEREST, 0],
-  [TransactionCategories.SAVINGS, 0],
-];
-
-const suggestion: [TransactionCategories, number][] = [
-  [TransactionCategories.GROCERIES, 0],
-  [TransactionCategories.ENTERTAINMENT, 0],
-  [TransactionCategories.UTILITIES, 0],
-  [TransactionCategories.MOBILEPLAN, 0],
-  [TransactionCategories.RENT, 0],
-  [TransactionCategories.TRANSPORTATION, 0],
-  [TransactionCategories.DININGOUT, 0],
-  [TransactionCategories.CLOTHING, 0],
-  [TransactionCategories.TRAVEL, 0],
-  [TransactionCategories.EDUCATION, 0],
-  [TransactionCategories.INTEREST, 0],
-  [TransactionCategories.SAVINGS, 0],
-];
-
-type Suggestion = {
-  suggestionType: string;
-  suggestionTitle: string;
-  suggestionBadge: string;
-  suggestionDescription: string;
+const CategoryPercentages: { [categoryKey: string]: number } = {
+  [TransactionCategories.GROCERIES]: 10,
+  [TransactionCategories.ENTERTAINMENT]: 5,
+  [TransactionCategories.UTILITIES]: 4,
+  [TransactionCategories.MOBILEPLAN]: 1,
+  [TransactionCategories.RENT]: 35,
+  [TransactionCategories.TRANSPORTATION]: 15,
+  [TransactionCategories.DININGOUT]: 5,
+  [TransactionCategories.CLOTHING]: 5,
+  [TransactionCategories.TRAVEL]: 5,
+  [TransactionCategories.EDUCATION]: 7.5,
+  [TransactionCategories.INTEREST]: 5,
+  [TransactionCategories.SAVINGS]: 7.5,
 };
 
 export class SuggestionEngine {
@@ -59,94 +24,87 @@ export class SuggestionEngine {
       return undefined;
     }
 
+    const categorySpend: { [categoryKey: string]: number } = {
+      [TransactionCategories.GROCERIES]: 0,
+      [TransactionCategories.ENTERTAINMENT]: 0,
+      [TransactionCategories.UTILITIES]: 0,
+      [TransactionCategories.MOBILEPLAN]: 0,
+      [TransactionCategories.RENT]: 0,
+      [TransactionCategories.TRANSPORTATION]: 0,
+      [TransactionCategories.DININGOUT]: 0,
+      [TransactionCategories.CLOTHING]: 0,
+      [TransactionCategories.TRAVEL]: 0,
+      [TransactionCategories.EDUCATION]: 0,
+      [TransactionCategories.INTEREST]: 0,
+      [TransactionCategories.SAVINGS]: 0,
+    };
     const availableFunds = userData.budgetInfo.monthlyVariableBudgetUnallocated; // total funds available for allocation
-    const categories: { value: number; key: TransactionCategories }[] = [];
     const now: Date = new Date();
     const lastMonthDate =
-      (now.getUTCMonth() - 1).toString() +
-      "-" +
-      now.getUTCFullYear().toString();
-    let index: number;
+      now.getUTCMonth().toString() + "-" + now.getUTCFullYear().toString();
+    if (userData.monthTransactionsMap[lastMonthDate] === undefined) {
+      return;
+    }
+
     // loop through every transaction ever made by this user
-    userData.financialInfo.monthlyTransactions.forEach((transaction) => {
+    userData.monthTransactionsMap[lastMonthDate].forEach((transaction) => {
       // for each transaction made in the last month
-      if (transaction.date === lastMonthDate) {
-        // loop through each transaction category until it matches the category of the transaction made
-        for (const transactionCategory in TransactionCategories) {
-          if (transaction.category === transactionCategory) {
-            // add the value of the transaction to the array of transactions in categorySpend to keep track of total spend in each category by month
-            index = categorySpend.findIndex(
-              ([category]) => category === transactionCategory
-            );
-            if (index != -1) {
-              categorySpend[index][1] += transaction.amount;
-            }
-          }
-        }
+      if (transaction.category in CategoryPercentages) {
+        categorySpend[transaction.category] += transaction.amount;
       }
     });
 
-    for (const transactionCategory in CategoryPercentages) {
-      index = categorySpend.findIndex(
-        ([category]) => category === transactionCategory
-      );
+    const suggestionArray: Suggestion[] = [];
+    const suggestionType = "SpendingAndBudget";
+    const suggestionBadge = "Category Spending";
+    for (const category of enumKeys(TransactionCategories)) {
+      // Calculate the percentage of income spend on specific category and compare to recommended standard
       const totalCategorySpendPercentage: number =
-        (categorySpend[index][1] / availableFunds) * 100;
-      const targetPercent: number = CategoryPercentages[
-        transactionCategory
-      ] as unknown as number; // to suppress error as it doesn't know that this is a number
+        (categorySpend[TransactionCategories[category]] / availableFunds) * 100;
+      const targetPercent: number =
+        CategoryPercentages[TransactionCategories[category]];
+
       if (totalCategorySpendPercentage > targetPercent) {
-        //create a suggestion
+        //Their percentage spend is greater than target recommended, create a suggestion
         const reduceAmount =
           (totalCategorySpendPercentage - targetPercent) * availableFunds;
-        suggestion[index][1] += reduceAmount;
+
+        const newSuggestion: Suggestion = {
+          suggestionType: suggestionType,
+          isPositive: false,
+          suggestionBadge: suggestionBadge,
+          suggestionTitle: `Your spending in ${
+            TransactionCategories[category]
+          } last month was ${Math.trunc(
+            totalCategorySpendPercentage
+          )}% of your monthly income, higher than the recommended percentage.`,
+          suggestionDescription: `Based on budgetting guidelines set by The Credit Counselling Society, you should aim to spend ${targetPercent}% of your income on ${
+            TransactionCategories[category]
+          }. Analyzing your last month spending on ${
+            TransactionCategories[category]
+          }, we found you spent ${Math.trunc(
+            totalCategorySpendPercentage
+          )}% of your monthly income on ${
+            TransactionCategories[category]
+          } which is ${Math.trunc(
+            totalCategorySpendPercentage - targetPercent
+          )}%. It is recommened for you to reduce you spending in this category by $${reduceAmount}!`,
+        };
+        suggestionArray.push(newSuggestion);
       }
     }
 
-    const suggestionArray: Suggestion[] = [];
-    for (const suggestions in suggestion) {
-      var temp_type = "Category Suggestions";
-      var temp_title = suggestions[0]; //should be "Groceries, Entertainment, ..."
-      if (suggestions[1] as unknown as number > 0) {
-        var temp_badge = "Increased Spending";
-      }
-      else {
-        var temp_badge = "Good Job!"; //not really sure what to put here
-      }
-      if (suggestions[1] as unknown as number === 0) {
-        var temp_description = "Maintain this spending!";
-      }
-      else {
-        var temp_description = "Spend " + suggestions[1] + "less each month in this category.";
-      }
-      let temp_suggestion!: Suggestion;
-      temp_suggestion.suggestionType = temp_type;
-      temp_suggestion.suggestionTitle = temp_title;
-      temp_suggestion.suggestionBadge = temp_badge;
-      temp_suggestion.suggestionDescription = temp_description;
-      suggestionArray.push(temp_suggestion);
-    }
-    //
-    SuggestionEngine.addToSuggestions(suggestionArray);
+    // nts: future reference once we add source -> https://www.mymoneycoach.ca/budgeting/budgeting-guidelines
+
+    updateSuggestion(
+      userData.uid,
+      suggestionType,
+      suggestionArray,
+      userData.suggestions
+    );
   }
 
-  static generateDemographicSuggestions(userData: UserModel | null) {
-    //do something
-  }
-
-  static addToSuggestions = (suggestion: Suggestion[]) => {
-    // add this suggestion to the UserModel
-  };
-
-  // for reference
-  // suggestions: {
-  //   [suggestionType: string]: Suggestion[];
-  // };
-
-  // export type Suggestion = {
-  //   suggestionType: string;
-  //   suggestionTitle: string;
-  //   suggestionBadge: string;
-  //   suggestionDescription: string;
-  // };
+  // static generateDemographicSuggestions(userData: UserModel | null) {
+  //   //do something
+  // }
 }

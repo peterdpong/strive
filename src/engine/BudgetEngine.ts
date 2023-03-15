@@ -96,12 +96,12 @@ export class BudgetEngine {
 
     //total other assets
     const otherAssetsTotal =
-      +houseTotal +
-      +vehicleTotal +
-      +collectiblesTotal +
-      +artTotal +
-      +valuablesTotal +
-      +othersTotal;
+      houseTotal +
+      vehicleTotal +
+      collectiblesTotal +
+      artTotal +
+      valuablesTotal +
+      othersTotal;
 
     //return ("artTotal: ") + artTotal;
     //return ("this is other assets: ") + otherAssetsTotal;
@@ -168,7 +168,7 @@ export class BudgetEngine {
 
     //present net worth future valued
     let currNetWorthFV = 0;
-    currNetWorthFV = currNetWorth*(1+0.05/12)**(12*goalTimeline); //5% RoR assumption
+    currNetWorthFV = currNetWorth * (1 + 0.05 / 12) ** (12 * goalTimeline); //5% RoR assumption
 
     //console.log("this is FV currNW: " + currNetWorthFV);
     //console.log("goalTimeline" + goalTimeline);
@@ -187,7 +187,8 @@ export class BudgetEngine {
 
     let monthlyIncome = 0;
     //monthlyIncome = userData.financialInfo.annualIncome / 12;
-    monthlyIncome = userData.financialInfo.annualIncome * userData.financialInfo.payfreq;
+    monthlyIncome =
+      userData.financialInfo.annualIncome * userData.financialInfo.payfreq;
 
     //return ("this is monthly income: ") + monthlyIncome;
 
@@ -217,8 +218,7 @@ export class BudgetEngine {
     //return ("this is loan repayment: ") + loanRepayment;
 
     let totalOutflows = 0;
-    totalOutflows =
-      +categoryAllocations + +creditCardRepayment + +loanRepayment;
+    totalOutflows = +categoryAllocations + +creditCardRepayment + loanRepayment;
 
     //return ("this is total outflows: ") + totalOutflows;
 
