@@ -26,6 +26,7 @@ export default function BudgetPage() {
               </Heading>
             </VStack>
             <Select
+              placeholder={getMonthFromString(monthAndYear)}
               onChange={(event) => {
                 if (event.target.value !== monthAndYear) {
                   router.push(`/app/budget/${event.target.value}`);
@@ -34,11 +35,13 @@ export default function BudgetPage() {
             >
               {userData &&
                 Object.keys(userData.monthTransactionsMap).map((key) => {
-                  return (
-                    <option key={key} value={key}>
-                      {getMonthFromString(key)}
-                    </option>
-                  );
+                  if (key !== monthAndYear) {
+                    return (
+                      <option key={key} value={key}>
+                        {getMonthFromString(key)}
+                      </option>
+                    );
+                  }
                 })}
             </Select>
           </HStack>

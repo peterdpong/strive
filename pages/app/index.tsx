@@ -39,6 +39,11 @@ import { useAuth } from "../../src/auth/auth";
 import { getCurrentDate } from "../../src/DateTimeUtils";
 import { buildBudgetCategoryBarGraphData } from "../../src/visualization/BudgetVisualizationsHelpers";
 import { BudgetEngineUtils } from "../../src/engine/BudgetEngineUtils";
+import {
+  buildGoalGraphData,
+  getGoalProgressGraphData,
+  goalGraphOptions,
+} from "../../src/visualization/GoalVisualizations";
 
 const horizontalOptions = {
   indexAxis: "y" as const,
@@ -61,25 +66,6 @@ const horizontalOptions = {
   },
 };
 
-const dataLine = {
-  labels: ["January", "February", "March", "April", "May", "June", "July"],
-  datasets: [
-    {
-      fill: true,
-      label: "Savings Goal",
-      data: [1, 2, 4, 16, 32, 64, 128],
-      borderColor: "rgb(30, 159, 92)",
-      backgroundColor: (context: ScriptableContext<"line">) => {
-        const ctx = context.chart.ctx;
-        const gradient = ctx.createLinearGradient(0, 0, 0, 500);
-        gradient.addColorStop(0, "rgba(45,216,129,1)");
-        gradient.addColorStop(1, "rgba(45,216,129,0)");
-        return gradient;
-      },
-    },
-  ],
-};
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -98,6 +84,32 @@ export default function Dashboard() {
   const userData = useRequiredAuth();
   const dateParts = getCurrentDate().split("-");
   const monthAndYear = parseInt(dateParts[1]) + "-" + dateParts[0];
+
+  // graph for net worth goal
+  const graphData = buildGoalGraphData({
+    title: "Net Worth Goal",
+    userData: userData,
+    monthlySavings: userData?.goalInfo.monthlyAmount,
+    goalTimeline: userData?.goalInfo.timelineGoal,
+  });
+
+  if (graphData && userData) {
+    const netWorthOverTime = getGoalProgressGraphData(userData, graphData);
+    // add current tracked net worth to the graph
+    graphData?.datasets.unshift({
+      fill: true,
+      label: "Current Net Worth",
+      data: netWorthOverTime,
+      borderColor: "rgb(60, 20, 240)",
+      backgroundColor: (context: ScriptableContext<"line">) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+        gradient.addColorStop(0, "rgba(140, 80, 240, 1)");
+        gradient.addColorStop(1, "rgba(140, 80, 240, 0)");
+        return gradient;
+      },
+    });
+  }
 
   return (
     <ProtectedRoute>
@@ -284,7 +296,7 @@ export default function Dashboard() {
               borderColor={"gray.300"}
             >
               <HStack justifyContent="space-between" mb={"10px"}>
-                <Heading size={"md"}>Net Worth</Heading>
+                <Heading size={"md"}>Goal Progress</Heading>
                 <Button
                   colorScheme={"green"}
                   onClick={() => router.push("onboarding/goal")}
@@ -293,21 +305,9 @@ export default function Dashboard() {
                   Adjust savings goal
                 </Button>
               </HStack>
-              <Line
-                options={{
-                  responsive: true,
-                  plugins: {
-                    legend: {
-                      position: "top" as const,
-                    },
-                    title: {
-                      display: true,
-                      text: "Path to Goal",
-                    },
-                  },
-                }}
-                data={dataLine}
-              />
+              {graphData !== undefined && graphData !== null ? (
+                <Line options={goalGraphOptions} data={graphData} />
+              ) : null}
             </Box>
             <Box
               bg={"gray.100"}
@@ -318,7 +318,7 @@ export default function Dashboard() {
               borderColor={"gray.300"}
             >
               <HStack my={2} justifyContent="space-between">
-                <Heading size={"md"}>Your budget categories</Heading>
+                <Heading size={"md"}>Current Month Category Spending</Heading>
                 <Button
                   onClick={() => router.push("/app/budget")}
                   size="sm"

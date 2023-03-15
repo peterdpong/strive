@@ -79,15 +79,11 @@ export const calculateNetWorth = (userData: UserModel | null) => {
 
   //total other assets
   const otherAssetsTotal =
-    +houseTotal +
-    +vehicleTotal +
-    +collectiblesTotal +
-    +artTotal +
-    +valuablesTotal;
+    houseTotal + vehicleTotal + collectiblesTotal + artTotal + valuablesTotal;
 
   //summation
   let totalAssets = 0;
-  totalAssets = +bankAcctTotal + +fixedInvTotal + +otherAssetsTotal;
+  totalAssets = bankAcctTotal + fixedInvTotal + otherAssetsTotal;
 
   //total liabilities
 
@@ -108,7 +104,7 @@ export const calculateNetWorth = (userData: UserModel | null) => {
   //summation
 
   let totalLiabilities = 0;
-  totalLiabilities = +creditCardTotal + +loansTotal;
+  totalLiabilities = creditCardTotal + loansTotal;
 
   //present net worth
 
@@ -171,30 +167,7 @@ export const buildGoalGraphData = (userInfo: {
       {
         fill: true,
         label: userInfo.title,
-        //data needs to be dynamic - port in a list of any size
         data: NetWorthData,
-        // options: {
-        //   scales: {
-        //     x: {
-        //       title: {
-        //         display: true,
-        //         text: "Timeline Period (Months)",
-        //         font: {
-        //           size: 25,
-        //         },
-        //       },
-        //     },
-        //     y: {
-        //       title: {
-        //         display: true,
-        //         text: "Net Worth ($)",
-        //         font: {
-        //           size: 25,
-        //         },
-        //       },
-        //     },
-        //   },
-        // },
         borderColor: "rgb(30, 159, 92)",
         backgroundColor: (context: ScriptableContext<"line">) => {
           const ctx = context.chart.ctx;
@@ -206,4 +179,79 @@ export const buildGoalGraphData = (userInfo: {
       },
     ],
   };
+};
+
+export const getGoalProgressGraphData = (
+  userData: UserModel,
+  graphData: {
+    labels: number[];
+    datasets: {
+      fill: boolean;
+      label: string;
+      data: number[];
+      borderColor: string;
+      backgroundColor: (context: ScriptableContext<"line">) => CanvasGradient;
+    }[];
+  }
+) => {
+  // find the starting value for current net worth
+  const currNetWorth = calculateNetWorth(userData);
+  console.log(userData.monthTransactionsMap);
+
+  // find the month at the start of the goal graph
+  let startMonth = "100-100000";
+  Object.keys(userData.monthTransactionsMap).forEach((month) => {
+    const month1 = startMonth.split("-");
+    const month2 = month.split("-");
+    if (
+      parseInt(month2[1]) < parseInt(month1[1]) &&
+      parseInt(month2[0]) < parseInt(month1[0])
+    ) {
+      startMonth = month;
+    }
+  });
+
+  // construct the array of how net worth changes month-to-month
+  // only accounts for unallocated income + transactions
+  // no investments are factored into this calculation yet
+  const netWorthOverTime = [];
+  let currMonth = startMonth;
+  let currSpending = currNetWorth;
+  for (let i = 0; i < graphData.datasets[0].data.length; i++) {
+    // if graph month is in the future, stop recording net worth
+    const monthParts = currMonth.split("-").map((part) => parseInt(part));
+    const date = new Date(); // current date
+    if (
+      monthParts[0] === date.getMonth() + 1 &&
+      monthParts[1] === date.getFullYear()
+    ) {
+      break;
+    }
+
+    // add monthly income
+    currSpending += userData.budgetInfo.monthlyVariableBudgetUnallocated;
+
+    // add net transactions from the month
+    if (currMonth in userData.monthTransactionsMap) {
+      currSpending += userData.monthTransactionsMap[currMonth].reduce(
+        (netSpending, newTransaction) => {
+          return (netSpending += newTransaction.amount);
+        },
+        0
+      );
+    }
+
+    netWorthOverTime.push(currSpending);
+
+    // increase currMonth
+    if (monthParts[0] === 12) {
+      monthParts[0] = 1;
+      monthParts[1] += 1;
+    } else {
+      monthParts[0] += 1;
+    }
+    currMonth = monthParts.join("-");
+  }
+
+  return netWorthOverTime;
 };

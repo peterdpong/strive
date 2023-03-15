@@ -48,6 +48,8 @@ export const buildBudgetCategoryBarGraphData = (userData: UserModel) => {
   // Note we do negative of amount since transactions of spending will be entered as a negative value
   const transactionData = new Array(labels.length).fill(0);
   for (const transaction of userCurrentMonthTransactions) {
+    if (transaction.amount > 0) continue;
+
     const categoryIndex = labels.indexOf(
       transaction.category.toLocaleUpperCase()
     );
@@ -64,7 +66,9 @@ export const buildBudgetCategoryBarGraphData = (userData: UserModel) => {
       {
         labels: "",
         data: transactionData,
-        backgroundColor: new Array(transactionData.length).fill("#e3250b"),
+        backgroundColor: new Array(transactionData.length).fill(
+          "rgba(224,43,20, 0.75)"
+        ),
         borderWidth: 1,
       },
       {

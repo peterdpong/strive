@@ -1,8 +1,15 @@
-import { Button, ButtonGroup, Container, Heading, Text, Box, Flex, Center } from "@chakra-ui/react";
+import {
+  Button,
+  ButtonGroup,
+  Container,
+  Heading,
+  Text,
+  Box,
+  VStack,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
-import { Image } from '@chakra-ui/react'
-import { AspectRatio } from '@chakra-ui/react'
+import { Image } from "@chakra-ui/react";
 
 export default function OnboardingIndex() {
   const router = useRouter();
@@ -23,47 +30,29 @@ export default function OnboardingIndex() {
         <Text fontSize={"md"}>
           The budgeting tool that helps you to reach your financial goals.
         </Text>
-        <ButtonGroup variant = 'outline' spacing = '6'>
-        <Button
-          mt={"15px"}
-          colorScheme={"green"}
-          onClick={() => router.push("onboarding/finances")}
-        >
-          Get Started
-        </Button>
-        <Button
-          mt={"15px"}
-          colorScheme={"green"}
-          onClick={() => router.push("onboarding/about")}
-        >
-          About
-        </Button>
-        <Button
-          mt={"15px"}
-          colorScheme={"green"}
-          onClick={() => router.push("onboarding/instructions")}
-        >
-          Instructions
-        </Button>
+        <ButtonGroup variant="outline" spacing="6">
+          <Button
+            mt={"15px"}
+            colorScheme={"green"}
+            onClick={() => router.push("onboarding/finances")}
+          >
+            Get Started
+          </Button>
+          <Button
+            mt={"15px"}
+            colorScheme={"green"}
+            onClick={() => router.push("onboarding/about")}
+          >
+            About
+          </Button>
+          <Button
+            mt={"15px"}
+            colorScheme={"green"}
+            onClick={() => router.push("onboarding/instructions")}
+          >
+            Instructions
+          </Button>
         </ButtonGroup>
-      </Container>
-
-      <Container
-        maxW="container.xl"
-        rounded={"5px"}
-        bg={"green.50"}
-        my={"25px"}
-        p={"20px"}
-        border={"1px"}
-        h={"375px"}
-        borderColor={"gray.300"}
-      >
-        <Flex justifyContent="space-between">
-        {/* <Box boxSize='sm'> */}
-          <Image src='/homepic1.png' alt='Pic 1' boxSize='600px'/>
-        {/* </Box> */}
-          <Heading size='lg'>Visualize your monthly expenses.</Heading>
-        </Flex>
       </Container>
 
       <Container
@@ -73,25 +62,35 @@ export default function OnboardingIndex() {
         my={"25px"}
         p={"20px"}
         border={"1px"}
-        h={"450"}
         borderColor={"gray.300"}
       >
-        <Flex justifyContent="space-between">
-        {/* <Box boxSize='sm'> */}
-          <Heading size='lg'>All your budgeting information and alerts in one location.</Heading>
-          <Image src='/dashboardvisual.png' boxSize = '600px' alt='Pic 1' />
-        {/* </Box> */}
-        <Image src='/dashboardvisual.png' boxSize = '600px' alt='Pic 1' />        
-        </Flex>
+        <VStack>
+          {/* <Box boxSize='sm'> */}
+          <Heading size="lg">
+            All your budgeting information and alerts in one location.
+          </Heading>
+          <Image src="/dashboardvisual.png" alt="Pic 1" />
+        </VStack>
       </Container>
 
-      <Box
-        display='flex'
-        alignItems='center'
-        justifyContent='center'
+      <Container
+        maxW="container.xl"
+        rounded={"5px"}
+        bg={"green.50"}
+        my={"25px"}
+        p={"20px"}
+        border={"1px"}
+        borderColor={"gray.300"}
       >
+        <VStack>
+          <Heading size="lg">Visualize your monthly expenses.</Heading>
+          <Image src="/homepic1.png" alt="Pic 1" />
+        </VStack>
+      </Container>
+
+      <Box display="flex" alignItems="center" justifyContent="center">
         <Button
-          mt={"15px"}
+          my={"15px"}
           colorScheme={"green"}
           onClick={() => router.push("onboarding/finances")}
         >
