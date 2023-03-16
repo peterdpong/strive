@@ -181,6 +181,8 @@ export const buildGoalGraphData = (userInfo: {
   };
 };
 
+// note(do not use): some weird sync errors when trying to pass in the graph data where
+// the graph data is not correctly loaded thus graphData.datasets[0].data.length is 0
 export const getGoalProgressGraphData = (
   userData: UserModel,
   graphData: {
@@ -196,7 +198,6 @@ export const getGoalProgressGraphData = (
 ) => {
   // find the starting value for current net worth
   const currNetWorth = calculateNetWorth(userData);
-  console.log(userData.monthTransactionsMap);
 
   // find the month at the start of the goal graph
   let startMonth = "100-100000";

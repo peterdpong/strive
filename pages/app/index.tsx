@@ -41,7 +41,7 @@ import { buildBudgetCategoryBarGraphData } from "../../src/visualization/BudgetV
 import { BudgetEngineUtils } from "../../src/engine/BudgetEngineUtils";
 import {
   buildGoalGraphData,
-  getGoalProgressGraphData,
+  calculateNetWorth,
   goalGraphOptions,
 } from "../../src/visualization/GoalVisualizations";
 
@@ -94,7 +94,64 @@ export default function Dashboard() {
   });
 
   if (graphData && userData) {
-    const netWorthOverTime = getGoalProgressGraphData(userData, graphData);
+    // find the starting value for current net worth
+    const currNetWorth = calculateNetWorth(userData);
+
+    // find the month at the start of the goal graph
+    let startMonth = "100-100000";
+    Object.keys(userData.monthTransactionsMap).forEach((month) => {
+      const month1 = startMonth.split("-");
+      const month2 = month.split("-");
+      if (
+        parseInt(month2[1]) < parseInt(month1[1]) &&
+        parseInt(month2[0]) < parseInt(month1[0])
+      ) {
+        startMonth = month;
+      }
+    });
+
+    // construct the array of how net worth changes month-to-month
+    // only accounts for unallocated income + transactions
+    // no investments are factored into this calculation yet
+    const netWorthOverTime = [];
+    let currMonth = startMonth;
+    let currSpending = currNetWorth;
+    for (let i = 0; i < graphData.datasets[0].data.length; i++) {
+      // if graph month is in the future, stop recording net worth
+      const monthParts = currMonth.split("-").map((part) => parseInt(part));
+      const date = new Date(); // current date
+      if (
+        monthParts[0] === date.getMonth() + 1 &&
+        monthParts[1] === date.getFullYear()
+      ) {
+        break;
+      }
+
+      // add monthly income
+      currSpending += userData.budgetInfo.monthlyVariableBudgetUnallocated;
+
+      // add net transactions from the month
+      if (currMonth in userData.monthTransactionsMap) {
+        currSpending += userData.monthTransactionsMap[currMonth].reduce(
+          (netSpending, newTransaction) => {
+            return (netSpending += newTransaction.amount);
+          },
+          0
+        );
+      }
+
+      netWorthOverTime.push(currSpending);
+
+      // increase currMonth
+      if (monthParts[0] === 12) {
+        monthParts[0] = 1;
+        monthParts[1] += 1;
+      } else {
+        monthParts[0] += 1;
+      }
+      currMonth = monthParts.join("-");
+    }
+
     // add current tracked net worth to the graph
     graphData?.datasets.unshift({
       fill: true,
