@@ -15,10 +15,13 @@ import {
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import Sidebar from "../../components/app/Sidebar";
 import { useAuth } from "../../src/auth/auth";
+import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
 
 export default function SuggestionsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
+
+  SuggestionEngine.generateFinancialHealthSuggestions(userData);
 
   return (
     <ProtectedRoute>
@@ -59,11 +62,7 @@ export default function SuggestionsPage() {
                               {suggestion.suggestionTitle}
                             </Heading>
                           </Box>
-                          <Badge
-                            colorScheme={
-                              suggestion.isPositive ? "green" : "red"
-                            }
-                          >
+                          <Badge colorScheme={suggestion.badgeColor}>
                             {suggestion.suggestionBadge}
                           </Badge>
                           <AccordionIcon />
@@ -104,11 +103,7 @@ export default function SuggestionsPage() {
                               {suggestion.suggestionTitle}
                             </Heading>
                           </Box>
-                          <Badge
-                            colorScheme={
-                              suggestion.isPositive ? "green" : "red"
-                            }
-                          >
+                          <Badge colorScheme={suggestion.badgeColor}>
                             {suggestion.suggestionBadge}
                           </Badge>
                           <AccordionIcon />
@@ -149,11 +144,7 @@ export default function SuggestionsPage() {
                               {suggestion.suggestionTitle}
                             </Heading>
                           </Box>
-                          <Badge
-                            colorScheme={
-                              suggestion.isPositive ? "green" : "red"
-                            }
-                          >
+                          <Badge colorScheme={suggestion.badgeColor}>
                             {suggestion.suggestionBadge}
                           </Badge>
                           <AccordionIcon />
@@ -184,7 +175,7 @@ export default function SuggestionsPage() {
             <Accordion allowMultiple>
               {userData &&
                 userData.suggestions["FinancialHealth"] &&
-                userData.suggestions["GoalAndSavings"].map(
+                userData.suggestions["FinancialHealth"].map(
                   (suggestion, index) => {
                     return (
                       <AccordionItem key={index}>
@@ -194,11 +185,7 @@ export default function SuggestionsPage() {
                               {suggestion.suggestionTitle}
                             </Heading>
                           </Box>
-                          <Badge
-                            colorScheme={
-                              suggestion.isPositive ? "green" : "red"
-                            }
-                          >
+                          <Badge colorScheme={suggestion.badgeColor}>
                             {suggestion.suggestionBadge}
                           </Badge>
                           <AccordionIcon />

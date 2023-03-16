@@ -29,7 +29,7 @@ export type Suggestion = {
   suggestionTitle: string;
   suggestionBadge: string;
   suggestionDescription: string;
-  isPositive: boolean;
+  badgeColor: string;
 };
 
 export type OnboardingStatus = {

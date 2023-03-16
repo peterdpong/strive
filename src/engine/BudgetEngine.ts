@@ -218,7 +218,7 @@ export class BudgetEngine {
     //return ("this is loan repayment: ") + loanRepayment;
 
     let totalOutflows = 0;
-    totalOutflows = +categoryAllocations + +creditCardRepayment + loanRepayment;
+    totalOutflows = categoryAllocations + creditCardRepayment + loanRepayment;
 
     //return ("this is total outflows: ") + totalOutflows;
 
@@ -284,10 +284,6 @@ export class BudgetEngine {
     }
   }
 
-  static generateBudgetDemographicSuggestions() {
-    return;
-  }
-
   static generateBudgetSelfComparisons() {
     return;
   }
@@ -295,22 +291,4 @@ export class BudgetEngine {
   static generateTimeAlert() {
     return;
   }
-
-  static generateFinancialHealthSuggestions() {
-    return;
-  }
 }
-
-/*
-export default function netWorthDifferential() {
-  const { useRequiredAuth } = useAuth();
-  const userData = useRequiredAuth();
-
-return (
-
-    //present net worth
-    //userData.
-
-);
-}
-*/
