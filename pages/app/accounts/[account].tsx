@@ -169,7 +169,6 @@ export default function AccountPage() {
           width={"100%"}
           border={"1px"}
           borderColor={"gray.300"}
-          mx={"15px"}
           my={"2rem"}
         >
           <HStack justifyContent="space-between">

@@ -44,6 +44,7 @@ import {
   calculateNetWorth,
   goalGraphOptions,
 } from "../../src/visualization/GoalVisualizations";
+import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
 
 const horizontalOptions = {
   indexAxis: "y" as const,
@@ -291,46 +292,38 @@ export default function Dashboard() {
             >
               <HStack justifyContent="space-between" mb={"10px"}>
                 <Heading size={"md"}>Suggestions and Alerts</Heading>
-                <Button colorScheme={"green"} size="sm">
+                <Button
+                  colorScheme={"green"}
+                  size="sm"
+                  onClick={() => router.push("/app/suggestions")}
+                >
                   View all
                 </Button>
               </HStack>
               <Accordion allowMultiple>
-                <AccordionItem>
-                  <h2>
-                    <AccordionButton>
-                      <Box flex="1" textAlign="left">
-                        Unused TFSA Room
-                      </Box>
-                      <Badge colorScheme="green">Savings opportunity</Badge>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel pb={4}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  </AccordionPanel>
-                </AccordionItem>
+                {SuggestionEngine.getTopTwoSuggestions(userData)?.map(
+                  (suggestion, index) => {
+                    return (
+                      <AccordionItem key={index}>
+                        <AccordionButton>
+                          <Box flex="1" textAlign="left">
+                            <Heading size={"sm"}>
+                              {suggestion.suggestionTitle}
+                            </Heading>
+                          </Box>
+                          <Badge colorScheme={suggestion.badgeColor}>
+                            {suggestion.suggestionBadge}
+                          </Badge>
+                          <AccordionIcon />
+                        </AccordionButton>
 
-                <AccordionItem>
-                  <h2>
-                    <AccordionButton>
-                      <Box flex="1" textAlign="left">
-                        Spending on entertainment 15% greater than last month
-                      </Box>
-                      <Badge colorScheme="red">Increased spending</Badge>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel pb={4}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  </AccordionPanel>
-                </AccordionItem>
+                        <AccordionPanel pb={4}>
+                          {suggestion.suggestionDescription}
+                        </AccordionPanel>
+                      </AccordionItem>
+                    );
+                  }
+                )}
               </Accordion>
             </Box>
 
@@ -352,16 +345,7 @@ export default function Dashboard() {
               border={"1px"}
               borderColor={"gray.300"}
             >
-              <HStack justifyContent="space-between" mb={"10px"}>
-                <Heading size={"md"}>Goal Progress</Heading>
-                <Button
-                  colorScheme={"green"}
-                  onClick={() => router.push("onboarding/goal")}
-                  size="sm"
-                >
-                  Adjust savings goal
-                </Button>
-              </HStack>
+              <Heading size={"md"}>Goal Progress</Heading>
               {graphData !== undefined && graphData !== null ? (
                 <Line options={goalGraphOptions} data={graphData} />
               ) : null}
