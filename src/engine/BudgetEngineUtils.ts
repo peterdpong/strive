@@ -60,8 +60,7 @@ export class BudgetEngineUtils {
   }
 
   static calculateCurrentMonthSavings(userData: UserModel) {
-    //let currentSavings = userData.financialInfo.annualIncome / 12;
-    let currentSavings = userData.financialInfo.annualIncome * userData.financialInfo.payfreq;
+    let currentSavings = 0;
 
     const userCurrentMonthTransactions =
       BudgetEngineUtils.getCurrentMonthTransactions(userData);
