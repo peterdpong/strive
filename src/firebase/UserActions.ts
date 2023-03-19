@@ -16,7 +16,12 @@ import {
 } from "../models/AccountModel";
 import { BudgetModel, Transaction } from "../models/BudgetModel";
 import { GoalModel } from "../models/GoalModel";
-import { AccountMap, FinancialInfo, Suggestion, UserModel } from "../models/UserModel";
+import {
+  AccountMap,
+  FinancialInfo,
+  Suggestion,
+  UserModel,
+} from "../models/UserModel";
 import { firestoreDB } from "./firebase";
 
 export const addNewUser = (
@@ -129,7 +134,7 @@ export const updateMonthsMap = (
 
 export const addUserGoal = async (uid: string, goalInfo: GoalModel) => {
   const userDataRef = doc(firestoreDB, "users", uid);
-  setDoc(userDataRef, { goalInfo: goalInfo }, { merge: true });
+  setDoc(userDataRef, { goalInfo: goalInfo }, { merge: false });
 };
 
 export const getUserGoal = (uid: string) => {
@@ -415,6 +420,6 @@ export const updateSuggestion = (
   suggestionMap[suggestionType] = SuggestionArray;
   const userDataRef = doc(firestoreDB, "users", uid);
   updateDoc(userDataRef, {
-    suggestions: suggestionMap
+    suggestions: suggestionMap,
   });
 };

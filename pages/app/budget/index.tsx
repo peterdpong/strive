@@ -31,7 +31,6 @@ import { buildDoughnutGraphData } from "../../../src/visualization/BudgetVisuali
 import { deleteBudgetAllocation } from "../../../src/firebase/UserActions";
 import BudgetAllocationModal from "../../../components/modals/BudgetAllocationModal";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { TransactionCategories } from "../../../src/models/BudgetModel";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
