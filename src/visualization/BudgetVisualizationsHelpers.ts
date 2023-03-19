@@ -7,12 +7,6 @@ export const buildDoughnutGraphData = (budgetInfo: BudgetModel) => {
   const data = [budgetInfo.monthlyVariableBudgetUnallocated];
   const backgroundColor = ["#4BC0C0"];
 
-  // for (const allocationKey of Object.keys(budgetInfo.monthlyAllocations)) {
-  //   labels.push(allocationKey);
-  //   data.push(budgetInfo.monthlyAllocations[allocationKey].allocation);
-  //   backgroundColor.push(budgetInfo.monthlyAllocations[allocationKey].color);
-  // }
-
   for (const allocationKey of Object.keys(budgetInfo.monthlyAllocations)) {
     labels.push(allocationKey);
     data.push(budgetInfo.monthlyAllocations[allocationKey].allocation);
