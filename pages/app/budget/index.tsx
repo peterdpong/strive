@@ -223,7 +223,7 @@ export default function BudgetPage() {
                       <Card bgColor={"white"} key={key} justify="space-between">
                         <CardBody>
                           <Heading color={currentCategory.color} size="sm">
-                            {TransactionCategories[key]}
+                            {key}
                           </Heading>
                           <Stat>
                             <StatLabel>Expense Category</StatLabel>

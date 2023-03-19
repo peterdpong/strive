@@ -1,5 +1,5 @@
 import { BudgetEngineUtils } from "../engine/BudgetEngineUtils";
-import { BudgetModel, TransactionCategories } from "../models/BudgetModel";
+import { BudgetModel } from "../models/BudgetModel";
 import { UserModel } from "../models/UserModel";
 
 export const buildDoughnutGraphData = (budgetInfo: BudgetModel) => {
@@ -14,7 +14,7 @@ export const buildDoughnutGraphData = (budgetInfo: BudgetModel) => {
   // }
 
   for (const allocationKey of Object.keys(budgetInfo.monthlyAllocations)) {
-    labels.push(TransactionCategories[allocationKey]);
+    labels.push(allocationKey);
     data.push(budgetInfo.monthlyAllocations[allocationKey].allocation);
     backgroundColor.push(budgetInfo.monthlyAllocations[allocationKey].color);
   }

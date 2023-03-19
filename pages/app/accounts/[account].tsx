@@ -1,5 +1,4 @@
 import {
-  Container,
   Heading,
   Table,
   TableContainer,
@@ -10,8 +9,6 @@ import {
   Tbody,
   Box,
   HStack,
-  Flex,
-  Button,
   Stat,
   StatLabel,
   StatNumber,
@@ -126,7 +123,7 @@ export default function AccountPage() {
           rounded={"5px"}
           border={"1px"}
           borderColor={"gray.300"}
-          mx={"15px"}
+          mx={"24px"}
           my={"2rem"}
         >
           <HStack justifyContent="space-between">
@@ -141,7 +138,7 @@ export default function AccountPage() {
           rounded={"5px"}
           border={"1px"}
           borderColor={"gray.300"}
-          mx={"15px"}
+          mx={"24px"}
           my={"2rem"}
         >
           {Object.entries(accountDetails).map(([detail, data]) => {

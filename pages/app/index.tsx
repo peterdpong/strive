@@ -177,7 +177,7 @@ export default function Dashboard() {
           rounded={"5px"}
           border={"1px"}
           borderColor={"gray.300"}
-          mx={"15px"}
+          mx={"24px"}
         >
           <HStack justifyContent="space-between">
             <VStack align="flex-start">
