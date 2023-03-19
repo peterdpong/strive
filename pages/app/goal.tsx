@@ -1,4 +1,24 @@
-import { Box, Heading, HStack, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Card,
+  CardBody,
+  Container,
+  Flex,
+  Heading,
+  HStack,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  SimpleGrid,
+  Stack,
+  Stat,
+  StatLabel,
+  StatNumber,
+  VStack,
+} from "@chakra-ui/react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,6 +41,9 @@ import {
   calculateNetWorth,
   goalGraphOptions,
 } from "../../src/visualization/GoalVisualizations";
+import { useState } from "react";
+import { BudgetEngine, GeneratedGoals } from "../../src/engine/BudgetEngine";
+import { addUserGoal } from "../../src/firebase/UserActions";
 
 ChartJS.register(
   ArcElement,
@@ -37,9 +60,34 @@ ChartJS.register(
 export default function GoalPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
-  if (userData === null) {
-    return null;
-  }
+  const [netWorthGoal, setNetWorthGoal] = useState<number>(500000);
+  const [timelineYears, setTimelineYears] = useState<number>(20);
+  const [generatedGoals, setGeneratedGoals] = useState<
+    GeneratedGoals | undefined | null
+  >(undefined);
+  // Hardcoded to 1 which is neutral goal (0 - less aggressive, 2 more aggressive)
+  const [selectedGoalIndex, setSelectedGoalIndex] = useState<number>(1);
+
+  const onGenerateGoals = () => {
+    const generateGoalsResult = BudgetEngine.generateGoals(
+      userData,
+      netWorthGoal,
+      timelineYears
+    );
+    setGeneratedGoals(generateGoalsResult);
+  };
+
+  const onUpdateGoal = () => {
+    if (userData && generatedGoals) {
+      if (selectedGoalIndex === 0) {
+        addUserGoal(userData.uid, generatedGoals.lessAggressiveGoal);
+      } else if (selectedGoalIndex === 1) {
+        addUserGoal(userData.uid, generatedGoals.neutralGoal);
+      } else {
+        addUserGoal(userData.uid, generatedGoals.moreAggressiveGoal);
+      }
+    }
+  };
 
   // graph for net worth goal
   const graphData = buildGoalGraphData({
@@ -49,7 +97,7 @@ export default function GoalPage() {
     goalTimeline: userData?.goalInfo.timelineGoal,
   });
 
-  if (graphData) {
+  if (graphData && userData) {
     // find the starting value for current net worth
     const currNetWorth = calculateNetWorth(userData);
 
@@ -127,11 +175,18 @@ export default function GoalPage() {
   return (
     <ProtectedRoute>
       <Sidebar>
-        <Box bgColor="gray.100" padding="6" borderRadius="25">
+        <Box
+          bgColor="gray.100"
+          padding="6"
+          rounded={"5px"}
+          border={"1px"}
+          borderColor={"gray.300"}
+          mx={"24px"}
+        >
           <HStack justifyContent="space-between">
             <VStack align="flex-start">
               <Heading size="lg" mr="2.5rem">
-                Goal
+                Your goal
               </Heading>
             </VStack>
           </HStack>
@@ -142,13 +197,189 @@ export default function GoalPage() {
           rounded={"5px"}
           border={"1px"}
           borderColor={"gray.300"}
-          mx={"15px"}
+          mx={"24px"}
           my={"2rem"}
         >
-          <Heading size={"md"}>Current Goal</Heading>
+          <Heading size={"md"}>Current goal and progress</Heading>
           {graphData !== undefined && graphData !== null ? (
             <Line options={goalGraphOptions} data={graphData} />
           ) : null}
+        </Box>
+
+        <Box
+          bgColor="gray.100"
+          padding="6"
+          rounded={"5px"}
+          border={"1px"}
+          borderColor={"gray.300"}
+          mx={"24px"}
+          my={"2rem"}
+        >
+          <Heading size={"md"} my={"1rem"}>
+            Generate and explore other goals
+          </Heading>
+          <Flex gap="1rem" mb="1">
+            <Stack flex={1}>
+              <Heading size="md">Savings Goal ($)</Heading>
+              <NumberInput
+                min={0}
+                defaultValue={netWorthGoal}
+                precision={2}
+                onChange={(_asString, asNumber) => {
+                  setNetWorthGoal(asNumber);
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </Stack>
+            <Stack flex={1}>
+              <Heading size="md">Timeline Goal in Years</Heading>
+              <NumberInput
+                min={0}
+                defaultValue={timelineYears}
+                onChange={(_asString, asNumber) => {
+                  setTimelineYears(asNumber);
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </Stack>
+          </Flex>
+          <Button onClick={onGenerateGoals} colorScheme="green">
+            {generatedGoals === undefined
+              ? "Generate Goals"
+              : "Regenerate Goals"}
+          </Button>
+
+          {generatedGoals === undefined || generatedGoals === null ? null : (
+            <Container maxW="container.xl" as="form" p={"0px"}>
+              <Box my={"25px"}>
+                <SimpleGrid columns={3} spacing={3}>
+                  <Card>
+                    <CardBody>
+                      <Heading size="sm"> Conservative Goal </Heading>
+                      <Stat>
+                        <StatLabel>Monthly Savings Required</StatLabel>
+                        <StatNumber>
+                          $
+                          {generatedGoals.lessAggressiveGoal.monthlyAmount.toFixed(
+                            2
+                          )}
+                        </StatNumber>
+                        <StatLabel>
+                          Expected Goal $ Amount in{" "}
+                          {generatedGoals.lessAggressiveGoal.timelineGoal}{" "}
+                          years:
+                        </StatLabel>
+                        <StatNumber fontSize="md">
+                          $
+                          {generatedGoals.lessAggressiveGoal.networthGoal.toFixed(
+                            2
+                          )}
+                        </StatNumber>
+                      </Stat>
+                      <Button
+                        onClick={() => {
+                          setSelectedGoalIndex(0);
+                        }}
+                        isDisabled={selectedGoalIndex === 0 ? true : false}
+                        my={"4px"}
+                        size={"sm"}
+                        colorScheme={"green"}
+                      >
+                        {selectedGoalIndex === 0 ? "Selected" : "Select"}
+                      </Button>
+                    </CardBody>
+                  </Card>
+                  <Card>
+                    <CardBody>
+                      <Box>
+                        <Heading size="sm">Base Goal</Heading>
+                        <Stat>
+                          <StatLabel>Monthly Savings Required</StatLabel>
+                          <StatNumber>
+                            $
+                            {generatedGoals.neutralGoal.monthlyAmount.toFixed(
+                              2
+                            )}
+                          </StatNumber>
+                          <StatLabel>
+                            Expected Goal $ Amount in{" "}
+                            {generatedGoals.neutralGoal.timelineGoal} years:
+                          </StatLabel>
+                          <StatNumber fontSize="md">
+                            $
+                            {generatedGoals.neutralGoal.networthGoal.toFixed(2)}
+                          </StatNumber>
+                        </Stat>
+                        <Button
+                          onClick={() => {
+                            setSelectedGoalIndex(1);
+                          }}
+                          isDisabled={selectedGoalIndex === 1 ? true : false}
+                          my={"4px"}
+                          size={"sm"}
+                          colorScheme={"green"}
+                        >
+                          {selectedGoalIndex === 1 ? "Selected" : "Select"}
+                        </Button>
+                      </Box>
+                    </CardBody>
+                  </Card>
+                  <Card>
+                    <CardBody>
+                      <Box>
+                        <Heading size="sm"> Aggressive Goal </Heading>
+                        <Stat>
+                          <StatLabel>Monthly Savings Required</StatLabel>
+                          <StatNumber>
+                            $
+                            {generatedGoals.moreAggressiveGoal.monthlyAmount.toFixed(
+                              2
+                            )}
+                          </StatNumber>
+                          <StatLabel>
+                            Expected Goal $ Amount in{" "}
+                            {generatedGoals.moreAggressiveGoal.timelineGoal}{" "}
+                            years:
+                          </StatLabel>
+                          <StatNumber fontSize="md">
+                            $
+                            {generatedGoals.moreAggressiveGoal.networthGoal.toFixed(
+                              2
+                            )}
+                          </StatNumber>
+                        </Stat>
+                        <Button
+                          onClick={() => {
+                            setSelectedGoalIndex(2);
+                          }}
+                          isDisabled={selectedGoalIndex === 2 ? true : false}
+                          my={"4px"}
+                          size={"sm"}
+                          colorScheme={"green"}
+                        >
+                          {selectedGoalIndex === 2 ? "Selected" : "Select"}
+                        </Button>
+                      </Box>
+                    </CardBody>
+                  </Card>
+                </SimpleGrid>
+              </Box>
+
+              <Button onClick={onUpdateGoal} colorScheme={"green"}>
+                Update goal
+              </Button>
+            </Container>
+          )}
         </Box>
       </Sidebar>
     </ProtectedRoute>

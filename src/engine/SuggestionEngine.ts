@@ -19,6 +19,43 @@ const CategoryPercentages: { [categoryKey: string]: number } = {
 };
 
 export class SuggestionEngine {
+  // Grab one suggestions from each type
+  static getTopTwoSuggestions(userData: UserModel | null) {
+    if (userData === null) return;
+
+    const suggestionOverview: Suggestion[] = [];
+
+    if (
+      userData.suggestions["SpendingAndBudget"] &&
+      userData.suggestions["SpendingAndBudget"].length > 0
+    ) {
+      suggestionOverview.push(userData.suggestions["SpendingAndBudget"][0]);
+    }
+
+    if (
+      userData.suggestions["MoneyAllocation"] &&
+      userData.suggestions["MoneyAllocation"].length > 0
+    ) {
+      suggestionOverview.push(userData.suggestions["MoneyAllocation"][0]);
+    }
+
+    if (
+      userData.suggestions["GoalAndSavings"] &&
+      userData.suggestions["GoalAndSavings"].length > 0
+    ) {
+      suggestionOverview.push(userData.suggestions["GoalAndSavings"][0]);
+    }
+
+    if (
+      userData.suggestions["FinancialHealth"] &&
+      userData.suggestions["FinancialHealth"].length > 0
+    ) {
+      suggestionOverview.push(userData.suggestions["FinancialHealth"][0]);
+    }
+
+    return suggestionOverview;
+  }
+
   // This function runs all the generation for Spending/Budget Suggestions
   static generateAllSpendingBudgetSuggestions(userData: UserModel | null) {
     if (userData === null) return;
