@@ -19,7 +19,7 @@ const CategoryPercentages: { [categoryKey: string]: number } = {
 };
 
 export class SuggestionEngine {
-  // This function runs all the generation for Spending/Budget Suggestions
+  // ---- Spending/Budget Suggestions  ----
   static generateAllSpendingBudgetSuggestions(userData: UserModel | null) {
     if (userData === null) return;
     const suggestionType = "SpendingAndBudget";
@@ -203,9 +203,26 @@ export class SuggestionEngine {
   //   //do something
   // }
 
-  // static generateMoneyAllocationSuggestions(userData: UserModel | null) {
-  //   return;
-  // }
+  // ---- Money Allocation Suggestions  ----
+
+  static generateMoneyAllocationSuggestions(userData: UserModel | null) {
+    if (userData === null) return;
+    const suggestionType = "SpendingAndBudget";
+    const allMoneyAllocationSuggestions: Suggestion[] = [];
+
+    // Analyze debts vs savings allocation
+
+    // Move sitting money in low interest
+
+    updateSuggestion(
+      userData.uid,
+      suggestionType,
+      allMoneyAllocationSuggestions,
+      userData.suggestions
+    );
+  }
+
+  // ---- Financial Health Suggestions  ----
 
   static generateFinancialHealthSuggestions(userData: UserModel | null) {
     if (userData === null) return;
