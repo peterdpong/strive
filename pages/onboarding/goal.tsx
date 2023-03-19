@@ -26,7 +26,6 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverBody,
-  PopoverFooter,
   PopoverCloseButton,
   Portal,
 } from "@chakra-ui/react";
@@ -181,10 +180,10 @@ export default function SuggestionsPage() {
                   <PopoverBody>
                     <Box>
                       <Text>
-                        Here, you set your savings goal (for example, a
-                        target net worth, downpayment for a house or amount
-                        of money to purchase a new car) and the number of years
-                        you would like to achieve your goal in.
+                        Here, you set your savings goal (for example, a target
+                        net worth, downpayment for a house or amount of money to
+                        purchase a new car) and the number of years you would
+                        like to achieve your goal in.
                       </Text>
 
                       <Text>
@@ -252,9 +251,7 @@ export default function SuggestionsPage() {
         {goals === null ? (
           <Alert status="error">
             <AlertIcon />
-            <AlertTitle>
-              Set savings goal and timeline not feasible
-            </AlertTitle>
+            <AlertTitle>Set savings goal and timeline not feasible</AlertTitle>
             <AlertDescription>
               Goal is not possible given financial information.
             </AlertDescription>

@@ -8,7 +8,7 @@ const CategoryPercentages: { [categoryKey: string]: number } = {
   [TransactionCategories.ENTERTAINMENT]: 5,
   [TransactionCategories.UTILITIES]: 4,
   [TransactionCategories.MOBILEPLAN]: 1,
-  [TransactionCategories.RENT]: 35,
+  [TransactionCategories.HOUSING]: 35,
   [TransactionCategories.TRANSPORTATION]: 15,
   [TransactionCategories.DININGOUT]: 5,
   [TransactionCategories.CLOTHING]: 5,
@@ -19,17 +19,110 @@ const CategoryPercentages: { [categoryKey: string]: number } = {
 };
 
 export class SuggestionEngine {
-  static generateCategorySuggestions(userData: UserModel | null) {
-    if (userData == null) {
-      return undefined;
-    }
+  // This function runs all the generation for Spending/Budget Suggestions
+  static generateAllSpendingBudgetSuggestions(userData: UserModel | null) {
+    if (userData === null) return;
+    const suggestionType = "SpendingAndBudget";
+    let allSpendingBudgetSuggestions: Suggestion[] = [];
+
+    // Category Suggestions
+    const categorySuggestions =
+      SuggestionEngine.generateCategorySuggestions(userData);
+    if (categorySuggestions)
+      allSpendingBudgetSuggestions =
+        allSpendingBudgetSuggestions.concat(categorySuggestions);
+
+    // Allocated Budget Suggestions
+    const selfBudgetSuggestions =
+      SuggestionEngine.generateBudgetSelfComparisons(userData);
+    if (selfBudgetSuggestions)
+      allSpendingBudgetSuggestions = allSpendingBudgetSuggestions.concat(
+        selfBudgetSuggestions
+      );
+
+    console.log(allSpendingBudgetSuggestions);
+    updateSuggestion(
+      userData.uid,
+      suggestionType,
+      allSpendingBudgetSuggestions,
+      userData.suggestions
+    );
+  }
+
+  static generateBudgetSelfComparisons(userData: UserModel) {
+    const suggestionType = "SpendingAndBudget";
+    const suggestionBadge = "Over spent budget";
+    const budgetSelfComparisons: Suggestion[] = [];
 
     const categorySpend: { [categoryKey: string]: number } = {
       [TransactionCategories.GROCERIES]: 0,
       [TransactionCategories.ENTERTAINMENT]: 0,
       [TransactionCategories.UTILITIES]: 0,
       [TransactionCategories.MOBILEPLAN]: 0,
-      [TransactionCategories.RENT]: 0,
+      [TransactionCategories.HOUSING]: 0,
+      [TransactionCategories.TRANSPORTATION]: 0,
+      [TransactionCategories.DININGOUT]: 0,
+      [TransactionCategories.CLOTHING]: 0,
+      [TransactionCategories.TRAVEL]: 0,
+      [TransactionCategories.EDUCATION]: 0,
+      [TransactionCategories.INTEREST]: 0,
+      [TransactionCategories.SAVINGS]: 0,
+    };
+    const lastMonth: Date = new Date();
+    lastMonth.setMonth(lastMonth.getMonth());
+    const lastMonthKey =
+      lastMonth.getUTCMonth().toString() +
+      "-" +
+      lastMonth.getUTCFullYear().toString();
+    if (userData.monthTransactionsMap[lastMonthKey] === undefined) {
+      return;
+    }
+
+    // loop through every transaction ever made by this user
+    userData.monthTransactionsMap[lastMonthKey].forEach((transaction) => {
+      // for each transaction made in the last month - negative we are looking at percentage spend
+      if (transaction.category in CategoryPercentages) {
+        categorySpend[transaction.category] += -transaction.amount;
+      }
+    });
+
+    for (const category of enumKeys(TransactionCategories)) {
+      if (userData.budgetInfo.monthlyAllocations[category]) {
+        if (
+          categorySpend[TransactionCategories[category]] >
+          userData.budgetInfo.monthlyAllocations[category].allocation
+        ) {
+          const newSuggestion: Suggestion = {
+            suggestionType: suggestionType,
+            badgeColor: "red",
+            suggestionBadge: suggestionBadge,
+            suggestionTitle: `Last month you spent more than you allocated budget for ${TransactionCategories[category]}`,
+            suggestionDescription: `Your allocated budget for ${
+              TransactionCategories[category]
+            } for a month was $${
+              userData.budgetInfo.monthlyAllocations[category].allocation
+            }. Last month you spent $${
+              categorySpend[TransactionCategories[category]]
+            } which is over you allocated budget by $${
+              categorySpend[TransactionCategories[category]] -
+              userData.budgetInfo.monthlyAllocations[category].allocation
+            }`,
+          };
+          budgetSelfComparisons.push(newSuggestion);
+        }
+      }
+    }
+
+    return budgetSelfComparisons;
+  }
+
+  static generateCategorySuggestions(userData: UserModel) {
+    const categorySpend: { [categoryKey: string]: number } = {
+      [TransactionCategories.GROCERIES]: 0,
+      [TransactionCategories.ENTERTAINMENT]: 0,
+      [TransactionCategories.UTILITIES]: 0,
+      [TransactionCategories.MOBILEPLAN]: 0,
+      [TransactionCategories.HOUSING]: 0,
       [TransactionCategories.TRANSPORTATION]: 0,
       [TransactionCategories.DININGOUT]: 0,
       [TransactionCategories.CLOTHING]: 0,
@@ -39,15 +132,18 @@ export class SuggestionEngine {
       [TransactionCategories.SAVINGS]: 0,
     };
     const availableFunds = userData.budgetInfo.monthlyVariableBudgetUnallocated; // total funds available for allocation
-    const now: Date = new Date();
-    const lastMonthDate =
-      now.getUTCMonth().toString() + "-" + now.getUTCFullYear().toString();
-    if (userData.monthTransactionsMap[lastMonthDate] === undefined) {
+    const lastMonth: Date = new Date();
+    lastMonth.setMonth(lastMonth.getMonth());
+    const lastMonthKey =
+      lastMonth.getUTCMonth().toString() +
+      "-" +
+      lastMonth.getUTCFullYear().toString();
+    if (userData.monthTransactionsMap[lastMonthKey] === undefined) {
       return;
     }
 
     // loop through every transaction ever made by this user
-    userData.monthTransactionsMap[lastMonthDate].forEach((transaction) => {
+    userData.monthTransactionsMap[lastMonthKey].forEach((transaction) => {
       // for each transaction made in the last month - negative we are looking at percentage spend
       if (transaction.category in CategoryPercentages) {
         categorySpend[transaction.category] += -transaction.amount;
@@ -100,13 +196,7 @@ export class SuggestionEngine {
     }
 
     // nts: future reference once we add source -> https://www.mymoneycoach.ca/budgeting/budgeting-guidelines
-
-    updateSuggestion(
-      userData.uid,
-      suggestionType,
-      suggestionArray,
-      userData.suggestions
-    );
+    return suggestionArray;
   }
 
   // static generateDemographicSuggestions(userData: UserModel | null) {

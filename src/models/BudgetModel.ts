@@ -11,7 +11,7 @@ export enum TransactionCategories {
   ENTERTAINMENT = "Entertainment",
   UTILITIES = "Utilities",
   MOBILEPLAN = "Mobile Plan",
-  RENT = "Rent",
+  HOUSING = "Housing",
   TRANSPORTATION = "Transportation",
   DININGOUT = "Dining Out",
   CLOTHING = "Clothing",
@@ -35,11 +35,6 @@ export const getTransactionCategoriesArray = () => {
 
   return transactionCategories;
 };
-
-export const getTransactionCategoriesSpend = () => {
-  const transactionSpend: { value: number; key: TransactionCategories; }[] = [];
-  return transactionSpend;
-}
 
 export type Transaction = {
   account: string;

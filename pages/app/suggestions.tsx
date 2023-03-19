@@ -22,6 +22,7 @@ export default function SuggestionsPage() {
   const userData = useRequiredAuth();
 
   SuggestionEngine.generateFinancialHealthSuggestions(userData);
+  SuggestionEngine.generateAllSpendingBudgetSuggestions(userData);
 
   return (
     <ProtectedRoute>

@@ -76,7 +76,7 @@ const AddTransactionsForm = ({ data }: { data: UserModel }) => {
         monthAndYear,
         transaction
       );
-      SuggestionEngine.generateCategorySuggestions(data);
+      SuggestionEngine.generateAllSpendingBudgetSuggestions(data);
     }
 
     setDate(getCurrentDate());
@@ -290,7 +290,7 @@ const MonthlyTransactions = ({
         monthAndYear,
         transaction
       );
-      SuggestionEngine.generateCategorySuggestions(userData);
+      SuggestionEngine.generateAllSpendingBudgetSuggestions(userData);
     }
   };
 

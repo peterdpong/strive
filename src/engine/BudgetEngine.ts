@@ -283,12 +283,4 @@ export class BudgetEngine {
       };
     }
   }
-
-  static generateBudgetSelfComparisons() {
-    return;
-  }
-
-  static generateTimeAlert() {
-    return;
-  }
 }
