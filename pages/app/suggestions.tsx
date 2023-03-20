@@ -8,21 +8,26 @@ import {
   Box,
   Heading,
   HStack,
+  ListItem,
   SimpleGrid,
+  UnorderedList,
   VStack,
+  Link,
 } from "@chakra-ui/react";
 
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import Sidebar from "../../components/app/Sidebar";
 import { useAuth } from "../../src/auth/auth";
 import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 export default function SuggestionsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  SuggestionEngine.generateFinancialHealthSuggestions(userData);
-  SuggestionEngine.generateAllSpendingBudgetSuggestions(userData);
+  // SuggestionEngine.generateFinancialHealthSuggestions(userData);
+  // SuggestionEngine.generateAllSpendingBudgetSuggestions(userData);
+  SuggestionEngine.generateMoneyAllocationSuggestions(userData);
 
   return (
     <ProtectedRoute>
@@ -71,6 +76,43 @@ export default function SuggestionsPage() {
 
                         <AccordionPanel pb={4}>
                           {suggestion.suggestionDescription}
+                          {suggestion.suggestionActions && (
+                            <>
+                              <br />
+                              <Heading my={"1rem"} size={"sm"}>
+                                Suggestions
+                              </Heading>
+                              <UnorderedList>
+                                {suggestion.suggestionActions.map(
+                                  (suggestion, index) => (
+                                    <ListItem key={index}>
+                                      {suggestion}
+                                    </ListItem>
+                                  )
+                                )}
+                              </UnorderedList>
+                            </>
+                          )}
+                          {suggestion.source && (
+                            <Box my={"1rem"}>
+                              <Heading size={"sm"}>
+                                Further resources and sources
+                              </Heading>
+                              {suggestion.source.map((source, index) => {
+                                return (
+                                  <Link
+                                    key={index}
+                                    href={source.link}
+                                    isExternal
+                                    color={"blue.300"}
+                                  >
+                                    {source.linkTitle}{" "}
+                                    <ExternalLinkIcon mx="2px" />
+                                  </Link>
+                                );
+                              })}
+                            </Box>
+                          )}
                         </AccordionPanel>
                       </AccordionItem>
                     );
@@ -112,6 +154,43 @@ export default function SuggestionsPage() {
 
                         <AccordionPanel pb={4}>
                           {suggestion.suggestionDescription}
+                          {suggestion.suggestionActions && (
+                            <>
+                              <br />
+                              <Heading my={"1rem"} size={"sm"}>
+                                Suggestions
+                              </Heading>
+                              <UnorderedList>
+                                {suggestion.suggestionActions.map(
+                                  (suggestion, index) => (
+                                    <ListItem key={index}>
+                                      {suggestion}
+                                    </ListItem>
+                                  )
+                                )}
+                              </UnorderedList>
+                            </>
+                          )}
+                          {suggestion.source && (
+                            <Box my={"1rem"}>
+                              <Heading size={"sm"}>
+                                Further resources and sources
+                              </Heading>
+                              {suggestion.source.map((source, index) => {
+                                return (
+                                  <Link
+                                    key={index}
+                                    href={source.link}
+                                    isExternal
+                                    color={"blue.300"}
+                                  >
+                                    {source.linkTitle}{" "}
+                                    <ExternalLinkIcon mx="2px" />
+                                  </Link>
+                                );
+                              })}
+                            </Box>
+                          )}
                         </AccordionPanel>
                       </AccordionItem>
                     );
@@ -153,6 +232,43 @@ export default function SuggestionsPage() {
 
                         <AccordionPanel pb={4}>
                           {suggestion.suggestionDescription}
+                          {suggestion.suggestionActions && (
+                            <>
+                              <br />
+                              <Heading my={"1rem"} size={"sm"}>
+                                Suggestions
+                              </Heading>
+                              <UnorderedList>
+                                {suggestion.suggestionActions.map(
+                                  (suggestion, index) => (
+                                    <ListItem key={index}>
+                                      {suggestion}
+                                    </ListItem>
+                                  )
+                                )}
+                              </UnorderedList>
+                            </>
+                          )}
+                          {suggestion.source && (
+                            <Box my={"1rem"}>
+                              <Heading size={"sm"}>
+                                Further resources and sources
+                              </Heading>
+                              {suggestion.source.map((source, index) => {
+                                return (
+                                  <Link
+                                    key={index}
+                                    href={source.link}
+                                    isExternal
+                                    color={"blue.300"}
+                                  >
+                                    {source.linkTitle}{" "}
+                                    <ExternalLinkIcon mx="2px" />
+                                  </Link>
+                                );
+                              })}
+                            </Box>
+                          )}
                         </AccordionPanel>
                       </AccordionItem>
                     );
@@ -194,6 +310,43 @@ export default function SuggestionsPage() {
 
                         <AccordionPanel pb={4}>
                           {suggestion.suggestionDescription}
+                          {suggestion.suggestionActions && (
+                            <>
+                              <br />
+                              <Heading my={"1rem"} size={"sm"}>
+                                Suggestions
+                              </Heading>
+                              <UnorderedList>
+                                {suggestion.suggestionActions.map(
+                                  (suggestion, index) => (
+                                    <ListItem key={index}>
+                                      {suggestion}
+                                    </ListItem>
+                                  )
+                                )}
+                              </UnorderedList>
+                            </>
+                          )}
+                          {suggestion.source && (
+                            <Box my={"1rem"}>
+                              <Heading size={"sm"}>
+                                Further resources and sources
+                              </Heading>
+                              {suggestion.source.map((source, index) => {
+                                return (
+                                  <Link
+                                    key={index}
+                                    href={source.link}
+                                    isExternal
+                                    color={"blue.300"}
+                                  >
+                                    {source.linkTitle}{" "}
+                                    <ExternalLinkIcon mx="2px" />
+                                  </Link>
+                                );
+                              })}
+                            </Box>
+                          )}
                         </AccordionPanel>
                       </AccordionItem>
                     );

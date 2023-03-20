@@ -2,6 +2,7 @@ import { Suggestion, UserModel } from "../models/UserModel";
 import { TransactionCategories } from "../models/BudgetModel";
 import { updateSuggestion } from "../firebase/UserActions";
 import { enumKeys } from "../utils";
+import { BankInvestmentAccount } from "../models/AccountModel";
 
 const CategoryPercentages: { [categoryKey: string]: number } = {
   [TransactionCategories.GROCERIES]: 10,
@@ -207,12 +208,97 @@ export class SuggestionEngine {
 
   static generateMoneyAllocationSuggestions(userData: UserModel | null) {
     if (userData === null) return;
-    const suggestionType = "SpendingAndBudget";
+    const suggestionType = "MoneyAllocation";
     const allMoneyAllocationSuggestions: Suggestion[] = [];
 
     // Analyze debts vs savings allocation
 
-    // Move sitting money in low interest
+    // Move sitting money in low interest and analyze user's accounts
+    let userHighInterestRateAccount: BankInvestmentAccount | undefined =
+      undefined;
+    const moveMoneyActions: string[] = [
+      "If you do not need the money short-term, consider utilizing fixed guaranteed investments with lock-in terms varying from 6 months to 5 years at a fixed interest rate. Additionally, fixed investments tend to have more favourable interest rates (as your lock-in term increases) varying from 3% - 5%",
+      "For very long savings timelines(10+ years), consider long-term investments into stocks, bonds, and index funds which average 6%-10% yearly returns. However, consider exploring your risk tolerance before you start investing as unlike savings accounts and fixed investments, your balance does not only go up.",
+    ];
+    // Check if user has a high interest savings account -> we consider an account with > 1.5%
+    Object.values(userData.financialInfo.accounts.bankAccounts).forEach(
+      (bankAccount) => {
+        if (bankAccount.interestRate >= 1.5) {
+          if (
+            userHighInterestRateAccount === undefined ||
+            userHighInterestRateAccount.interestRate < bankAccount.interestRate
+          ) {
+            userHighInterestRateAccount = bankAccount;
+          }
+        }
+      }
+    );
+
+    if (userHighInterestRateAccount === undefined) {
+      // User does not have a high-interest account -> suggestion opening one
+      allMoneyAllocationSuggestions.push({
+        suggestionType: suggestionType,
+        suggestionBadge: "Account Suggestion",
+        badgeColor: "blue",
+        suggestionTitle:
+          "You currently have a high interest savings account, considering opening one.",
+        suggestionDescription: `A high interest savings account is one that has an interest rate higher than 1.5%. Consider opening on to hold short-term money while maximizing growth. See below for possible high interest savings accounts available.`,
+        suggestionActions: [
+          "EQ Bank Savings Plus Account - 2.5%",
+          "Saven Financial High Interest Savings Account - 3.75%",
+          "Oaken Financial Savings Account - 3.40%",
+        ],
+        source: [
+          {
+            link: "https://www.ratehub.ca/savings-accounts/accounts/high-interest",
+            linkTitle: "Available High Interest Savings Accounts",
+          },
+        ],
+      });
+      moveMoneyActions.push(
+        "For money needed in the short-term, consider opening a high interest savings account. See the other suggestion for further details!"
+      );
+    } else {
+      moveMoneyActions.push(
+        `For money needed in the short-term, consider moving it to your high-interest account ${
+          (userHighInterestRateAccount as BankInvestmentAccount).name
+        } which has an interest rate of ${
+          (userHighInterestRateAccount as BankInvestmentAccount).interestRate
+        }%`
+      );
+    }
+
+    // In our analysis, we suggest moving money if we find any accounts with the following
+    // Interest Rate <= 1% and an account value greater than their last months average spending
+    Object.values(userData.financialInfo.accounts.bankAccounts).forEach(
+      (bankAccount) => {
+        if (bankAccount.interestRate <= 1 && bankAccount.value >= 1000) {
+          const newSuggestion: Suggestion = {
+            suggestionType: suggestionType,
+            suggestionBadge: "Growth Opportunity",
+            badgeColor: "green",
+            suggestionTitle: `Move some of $${bankAccount.value} in your ${bankAccount.name} to better growth opportunities.`,
+            suggestionDescription: `$${bankAccount.value} in your ${bankAccount.name} is only gaining ${bankAccount.interestRate}% interest per year. There are opportunities to move this money to higher interest rate accounts or investments. See the suggestions below of possible ways to maximize your savings based on your timeline.`,
+            suggestionActions: moveMoneyActions,
+            source: [
+              {
+                link: "https://www.ratehub.ca/gics/best-gic-rates",
+                linkTitle: "Available GICs",
+              },
+              {
+                link: "https://canadiancouchpotato.com/2012/06/25/what-are-normal-stock-market-returns/",
+                linkTitle: "Average Stock Market Returns",
+              },
+              {
+                link: "https://www.vanguard.ca/individual/questionnaire.htm#/",
+                linkTitle: "Risk Tolerance Questionnaire",
+              },
+            ],
+          };
+          allMoneyAllocationSuggestions.push(newSuggestion);
+        }
+      }
+    );
 
     updateSuggestion(
       userData.uid,
