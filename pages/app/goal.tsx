@@ -62,6 +62,7 @@ export default function GoalPage() {
   const userData = useRequiredAuth();
   const [netWorthGoal, setNetWorthGoal] = useState<number>(500000);
   const [timelineYears, setTimelineYears] = useState<number>(20);
+  const [interestRate, setInterestRate] = useState<string>("5");
   const [generatedGoals, setGeneratedGoals] = useState<
     GeneratedGoals | undefined | null
   >(undefined);
@@ -72,9 +73,27 @@ export default function GoalPage() {
     const generateGoalsResult = BudgetEngine.generateGoals(
       userData,
       netWorthGoal,
-      timelineYears
+      timelineYears,
+      parseFloat(interestRate)
     );
     setGeneratedGoals(generateGoalsResult);
+  };
+
+  const getBankRate = async () => {
+    try {
+      const res = await fetch(
+        "https://www.bankofcanada.ca/valet/observations/V39079"
+      );
+      const data = await res.json();
+      setInterestRate(
+        data.observations[data.observations.length - 1]["V39079"].v
+      );
+      console.log(
+        parseFloat(data.observations[data.observations.length - 1]["V39079"].v)
+      );
+    } catch {
+      console.log("Error getting bank rate");
+    }
   };
 
   const onUpdateGoal = () => {
@@ -251,6 +270,25 @@ export default function GoalPage() {
                   <NumberDecrementStepper />
                 </NumberInputStepper>
               </NumberInput>
+            </Stack>
+            <Stack flex={1}>
+              <Heading size="md">Assumed Interest Rate</Heading>
+              <NumberInput
+                min={0}
+                value={interestRate}
+                onChange={(val) => {
+                  setInterestRate(val);
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+              <Button onClick={getBankRate} colorScheme="green">
+                Use Bank of Canada Rate
+              </Button>
             </Stack>
           </Flex>
           <Button onClick={onGenerateGoals} colorScheme="green">
