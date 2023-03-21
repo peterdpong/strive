@@ -212,6 +212,8 @@ export class SuggestionEngine {
     const allMoneyAllocationSuggestions: Suggestion[] = [];
 
     // Analyze debts vs savings allocation
+    // Analyze best debt repayment
+    // Debt projection
 
     // Move sitting money in low interest and analyze user's accounts
     let userHighInterestRateAccount: BankInvestmentAccount | undefined =
