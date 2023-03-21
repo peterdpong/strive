@@ -12,7 +12,8 @@ export class BudgetEngine {
   static generateGoals(
     userData: UserModel | null,
     goalNetWorth: number,
-    goalTimeline: number
+    goalTimeline: number,
+    interestRate: number
   ) {
     if (userData == null) {
       return undefined;
@@ -168,7 +169,8 @@ export class BudgetEngine {
 
     //present net worth future valued
     let currNetWorthFV = 0;
-    currNetWorthFV = currNetWorth * (1 + 0.05 / 12) ** (12 * goalTimeline); //5% RoR assumption
+    currNetWorthFV =
+      currNetWorth * (1 + interestRate / 100 / 12) ** (12 * goalTimeline); //5% RoR assumption
 
     //console.log("this is FV currNW: " + currNetWorthFV);
     //console.log("goalTimeline" + goalTimeline);
@@ -234,8 +236,8 @@ export class BudgetEngine {
     //calcMonthlySavings = netWorthDiff/((1.015/12)**12*goalTimeline-1)/(1.015/12)
     //return goalTimeline;
     calcMonthlySavings =
-      (netWorthDiff * (0.05 / 12)) /
-      ((1 + 0.05 / 12) ** (12 * goalTimeline) - 1);
+      (netWorthDiff * (interestRate / 100 / 12)) /
+      ((1 + interestRate / 100 / 12) ** (12 * goalTimeline) - 1);
 
     //return ("this is calcMonthlySavings: ") + calcMonthlySavings;
 
@@ -247,7 +249,8 @@ export class BudgetEngine {
     futureValLessAggressive =
       calcMonthlySavings *
       0.95 *
-      (((1 + 0.05 / 12) ** (12 * goalTimeline) - 1) / (0.05 / 12));
+      (((1 + interestRate / 100 / 12) ** (12 * goalTimeline) - 1) /
+        (interestRate / 100 / 12));
     lessAggressiveNW = currNetWorthFV + futureValLessAggressive;
 
     //more aggressive
@@ -257,7 +260,8 @@ export class BudgetEngine {
     futureValMoreAggressive =
       calcMonthlySavings *
       1.05 *
-      (((1 + 0.05 / 12) ** (12 * goalTimeline) - 1) / (0.05 / 12));
+      (((1 + interestRate / 100 / 12) ** (12 * goalTimeline) - 1) /
+        (interestRate / 100 / 12));
     moreAggressiveNW = currNetWorthFV + futureValMoreAggressive;
 
     if (calcMonthlySavings > monthlySavingsAvail) {
