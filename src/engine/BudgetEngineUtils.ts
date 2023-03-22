@@ -72,7 +72,7 @@ export class BudgetEngineUtils {
     return currentSavings;
   }
 
-  static loanMinimumPaymentDebtDate(userData: UserModel) {
+  static loanMinimumDateToPayoff(userData: UserModel) {
     const monthToPayOffLoans = Object.values(
       userData.financialInfo.accounts.loans
     ).map((loan) => {
@@ -84,6 +84,40 @@ export class BudgetEngineUtils {
       );
     });
     console.log(monthToPayOffLoans);
+    return;
+  }
+
+  static loanPaymentSchedule(userData: UserModel) {
+    const paymentSchedule = Object.values(
+      userData.financialInfo.accounts.loans
+    ).map((loan) => {
+      const monthlyInterest = loan.interestRate / 100 / 12;
+      const balanceSchedule = [];
+      let currentBalance = loan.remainingAmount;
+
+      while (currentBalance > 0) {
+        const currentMonthInterest = monthlyInterest * currentBalance;
+        const currentMonthPrincipal =
+          loan.minimumPayment - currentMonthInterest;
+        let payment = loan.minimumPayment;
+
+        if (loan.minimumPayment > currentBalance + currentMonthInterest) {
+          payment = currentBalance + currentMonthInterest;
+          currentBalance = 0;
+        } else {
+          currentBalance -= currentMonthPrincipal;
+        }
+        balanceSchedule.push({
+          payment: payment,
+          interest: currentMonthInterest,
+          principal: currentMonthPrincipal,
+          balance: currentBalance,
+        });
+      }
+      return balanceSchedule;
+    });
+
+    console.log(paymentSchedule);
     return;
   }
 

@@ -27,7 +27,8 @@ export default function SuggestionsPage() {
   const userData = useRequiredAuth();
 
   SuggestionEngine.generateMoneyAllocationSuggestions(userData);
-  if (userData) BudgetEngineUtils.loanMinimumPaymentDebtDate(userData);
+  if (userData) BudgetEngineUtils.loanPaymentSchedule(userData);
+  if (userData) BudgetEngineUtils.loanMinimumDateToPayoff(userData);
   return (
     <ProtectedRoute>
       <Sidebar>
