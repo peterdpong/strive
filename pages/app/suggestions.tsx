@@ -25,8 +25,6 @@ export default function SuggestionsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  // SuggestionEngine.generateFinancialHealthSuggestions(userData);
-  // SuggestionEngine.generateAllSpendingBudgetSuggestions(userData);
   SuggestionEngine.generateMoneyAllocationSuggestions(userData);
 
   return (

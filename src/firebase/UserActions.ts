@@ -7,6 +7,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { BudgetEngineUtils } from "../engine/BudgetEngineUtils";
+import { SuggestionEngine } from "../engine/SuggestionEngine";
 import {
   BankInvestmentAccount,
   CreditCardAccount,
@@ -100,6 +101,7 @@ export const getUserData = async (
       if (userDataSnapshot.exists()) {
         userData = userDataSnapshot.data() as UserModel;
         updateMonthsMap(uid, userData.monthTransactionsMap);
+        SuggestionEngine.generateFinancialHealthSuggestions(userData);
       }
     }
   );
