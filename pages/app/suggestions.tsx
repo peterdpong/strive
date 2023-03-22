@@ -15,14 +15,10 @@ import {
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import Sidebar from "../../components/app/Sidebar";
 import { useAuth } from "../../src/auth/auth";
-import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
 
 export default function SuggestionsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
-
-  SuggestionEngine.generateFinancialHealthSuggestions(userData);
-  SuggestionEngine.generateAllSpendingBudgetSuggestions(userData);
 
   return (
     <ProtectedRoute>
