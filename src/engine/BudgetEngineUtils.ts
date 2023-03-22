@@ -71,4 +71,43 @@ export class BudgetEngineUtils {
 
     return currentSavings;
   }
+
+  static loanMinimumPaymentDebtDate(userData: UserModel) {
+    const monthToPayOffLoans = Object.values(
+      userData.financialInfo.accounts.loans
+    ).map((loan) => {
+      const monthlyInterest = loan.interestRate / 100 / 12;
+      return (
+        -Math.log(
+          1 - (monthlyInterest * loan.remainingAmount) / loan.minimumPayment
+        ) / Math.log(1 + monthlyInterest)
+      );
+    });
+    console.log(monthToPayOffLoans);
+    return;
+  }
+
+  // Loan Utils
+  static loanProjectPayoff(
+    userData: UserModel,
+    extraMonthlyPayment: number,
+    isAvalanche: boolean
+  ) {
+    if (isAvalanche) {
+      const loanSortedByInterestRate = Object.values(
+        userData.financialInfo.accounts.loans
+      ).sort(
+        (account1, account2) => account2.interestRate - account1.interestRate
+      );
+    } else {
+      const loanSortedByPrincipal = Object.values(
+        userData.financialInfo.accounts.loans
+      ).sort(
+        (account1, account2) =>
+          account1.remainingAmount - account2.remainingAmount
+      );
+    }
+
+    return;
+  }
 }

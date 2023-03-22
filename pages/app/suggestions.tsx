@@ -20,13 +20,14 @@ import Sidebar from "../../components/app/Sidebar";
 import { useAuth } from "../../src/auth/auth";
 import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { BudgetEngineUtils } from "../../src/engine/BudgetEngineUtils";
 
 export default function SuggestionsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
   SuggestionEngine.generateMoneyAllocationSuggestions(userData);
-
+  if (userData) BudgetEngineUtils.loanMinimumPaymentDebtDate(userData);
   return (
     <ProtectedRoute>
       <Sidebar>
@@ -156,7 +157,9 @@ export default function SuggestionsPage() {
                             <>
                               <br />
                               <Heading my={"1rem"} size={"sm"}>
-                                Suggestions
+                                {suggestion.suggestionBadge === "Debt Repayment"
+                                  ? "Payment Suggestions"
+                                  : "Suggestions"}
                               </Heading>
                               <UnorderedList>
                                 {suggestion.suggestionActions.map(
