@@ -3,6 +3,7 @@ import { TransactionCategories } from "../models/BudgetModel";
 import { updateSuggestion } from "../firebase/UserActions";
 import { enumKeys } from "../utils";
 import { BankInvestmentAccount } from "../models/AccountModel";
+import { BudgetEngineUtils } from "./BudgetEngineUtils";
 
 const CategoryPercentages: { [categoryKey: string]: number } = {
   [TransactionCategories.GROCERIES]: 10,
@@ -394,17 +395,24 @@ export class SuggestionEngine {
         suggestionType: suggestionType,
         suggestionBadge: "Debt Repayment",
         badgeColor: "green",
-        suggestionTitle: `Debt Repayment Plan Suggestion`,
-        suggestionDescription: `Based on your loan accounts, assuming you pay the minimum payments of each debt account you have, you will be debt free in <date>. Two possible payment plans are below, Avalanche (High Interest Debt first) and Snowball (Lowest principal first). Explore other debt repayment scenarios/payment amounts in your accounts page.`,
+        suggestionTitle: `Debt Repayment Plan Suggestions`,
+        suggestionDescription: `Based on your loan accounts, assuming you pay the minimum payments of each debt account you have, you will be debt free in ${BudgetEngineUtils.loanMinimumDateToPayoff(
+          userData
+        ).toLocaleString("en-us", {
+          month: "short",
+          year: "numeric",
+        })}. Two possible payment plans are below, Avalanche (High Interest Debt first) and Snowball (Lowest principal first). Explore other debt repayment scenarios/payment amounts in your accounts page.`,
         suggestionActions: [
           `Avalanche Plan - Pay highest interest rate debt first: Your order of debt to pay off is ${loanSortedByInterestRate
             .map((loan, index) => `${index + 1}) ${loan.name} `)
             .toString()
-            .replace(",", " ")}`,
+            .split(",")
+            .join("")}`,
           `Snowball Plan - Pay lowest principal debt first: Your order of debt to pay off is ${loanSortedByPrincipal
             .map((loan, index) => `${index + 1}) ${loan.name} `)
             .toString()
-            .replace(",", " ")}`,
+            .split(",")
+            .join("")}`,
         ],
       });
     }
