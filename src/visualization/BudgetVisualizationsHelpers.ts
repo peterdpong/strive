@@ -80,3 +80,36 @@ export const buildBudgetCategoryBarGraphData = (userData: UserModel) => {
     ],
   };
 };
+
+export const buildDebtPayoffGraph = (
+  paymentSchedule: {
+    payment: number;
+    interest: number;
+    principal: number;
+    balance: number;
+  }[][],
+  userData: UserModel
+) => {
+  let maxMonths = 0;
+
+  const datasets = Object.values(userData.financialInfo.accounts.loans).map(
+    (account, index) => {
+      if (maxMonths < paymentSchedule[index].length)
+        maxMonths = paymentSchedule[index].length;
+
+      return {
+        fill: true,
+        label: account.name,
+        data: paymentSchedule[index].map((obj) => obj.balance),
+        borderColor: "#" + Math.floor(Math.random() * 16777215).toString(16),
+      };
+    }
+  );
+
+  const xAxisLabels = Array.from(new Array(maxMonths + 1), (x, i) => i + 1);
+
+  return {
+    labels: xAxisLabels,
+    datasets: datasets,
+  };
+};

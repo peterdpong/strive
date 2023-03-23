@@ -228,12 +228,18 @@ export class SuggestionEngine {
           } which is ${Math.trunc(
             totalCategorySpendPercentage - targetPercent
           )}%. It is recommened for you to reduce you spending in this category by $${reduceAmount}!`,
+          source: [
+            {
+              link: "https://www.mymoneycoach.ca/budgeting/budgeting-guidelines",
+              linkTitle: "Budget Guidelines",
+            },
+          ],
         };
         suggestionArray.push(newSuggestion);
       }
     }
 
-    // nts: future reference once we add source -> https://www.mymoneycoach.ca/budgeting/budgeting-guidelines
+    // nts: future reference once we add source ->
     return suggestionArray;
   }
 
@@ -438,6 +444,12 @@ export class SuggestionEngine {
         )} days away from today.`,
         suggestionBadge: `Tax Deadline`,
         badgeColor: "blue",
+        source: [
+          {
+            link: "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/important-dates-individuals.html",
+            linkTitle: "Canada Revenue Agency",
+          },
+        ],
       });
     }
 
@@ -466,6 +478,12 @@ export class SuggestionEngine {
         )} days away from today.`,
         suggestionBadge: `RRSP Deposit Deadline`,
         badgeColor: "blue",
+        source: [
+          {
+            link: "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/rrsps-related-plans/important-dates-rrsp-rrif-rdsp.html",
+            linkTitle: "Canada Revenue Agency",
+          },
+        ],
       });
     }
 
@@ -480,6 +498,12 @@ export class SuggestionEngine {
         )} days away from today.`,
         suggestionBadge: `RRSP Deposit Deadline`,
         badgeColor: "blue",
+        source: [
+          {
+            link: "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/rrsps-related-plans/important-dates-rrsp-rrif-rdsp.html",
+            linkTitle: "Canada Revenue Agency",
+          },
+        ],
       });
     }
 
