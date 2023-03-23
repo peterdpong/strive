@@ -2,6 +2,8 @@ import { Suggestion, UserModel } from "../models/UserModel";
 import { TransactionCategories } from "../models/BudgetModel";
 import { updateSuggestion } from "../firebase/UserActions";
 import { enumKeys } from "../utils";
+import { BankInvestmentAccount } from "../models/AccountModel";
+import { BudgetEngineUtils } from "./BudgetEngineUtils";
 
 const CategoryPercentages: { [categoryKey: string]: number } = {
   [TransactionCategories.GROCERIES]: 10,
@@ -227,12 +229,18 @@ export class SuggestionEngine {
           } which is ${Math.trunc(
             totalCategorySpendPercentage - targetPercent
           )}%. It is recommened for you to reduce you spending in this category by $${reduceAmount}!`,
+          source: [
+            {
+              link: "https://www.mymoneycoach.ca/budgeting/budgeting-guidelines",
+              linkTitle: "Budget Guidelines",
+            },
+          ],
         };
         suggestionArray.push(newSuggestion);
       }
     }
 
-    // nts: future reference once we add source -> https://www.mymoneycoach.ca/budgeting/budgeting-guidelines
+    // nts: future reference once we add source ->
     return suggestionArray;
   }
 
@@ -240,9 +248,184 @@ export class SuggestionEngine {
   //   //do something
   // }
 
-  // static generateMoneyAllocationSuggestions(userData: UserModel | null) {
-  //   return;
-  // }
+  // ---- Money Allocation Suggestions  ----
+
+  static generateMoneyAllocationSuggestions(userData: UserModel | null) {
+    if (userData === null) return;
+    const suggestionType = "MoneyAllocation";
+    const allMoneyAllocationSuggestions: Suggestion[] = [];
+
+    // Debt projection
+
+    // Move sitting money in low interest and analyze user's accounts
+    let userHighInterestRateAccount: BankInvestmentAccount | undefined =
+      undefined;
+    let totalSumOfBankAccounts = 0;
+    const moveMoneyActions: string[] = [
+      "If you do not need the money short-term, consider utilizing fixed guaranteed investments with lock-in terms varying from 6 months to 5 years at a fixed interest rate. Additionally, fixed investments tend to have more favourable interest rates (as your lock-in term increases) varying from 3% - 5%",
+      "For very long savings timelines(10+ years), consider long-term investments into stocks, bonds, and index funds which average 6%-10% yearly returns. However, consider exploring your risk tolerance before you start investing as unlike savings accounts and fixed investments, your balance does not only go up.",
+    ];
+    // Check if user has a high interest savings account -> we consider an account with > 1.5%
+    Object.values(userData.financialInfo.accounts.bankAccounts).forEach(
+      (bankAccount) => {
+        totalSumOfBankAccounts += bankAccount.value;
+        if (bankAccount.interestRate >= 1.5) {
+          if (
+            userHighInterestRateAccount === undefined ||
+            userHighInterestRateAccount.interestRate < bankAccount.interestRate
+          ) {
+            userHighInterestRateAccount = bankAccount;
+          }
+        }
+      }
+    );
+
+    if (userHighInterestRateAccount === undefined) {
+      // User does not have a high-interest account -> suggestion opening one
+      allMoneyAllocationSuggestions.push({
+        suggestionType: suggestionType,
+        suggestionBadge: "Account Suggestion",
+        badgeColor: "blue",
+        suggestionTitle:
+          "You currently have a high interest savings account, considering opening one.",
+        suggestionDescription: `A high interest savings account is one that has an interest rate higher than 1.5%. Consider opening on to hold short-term money while maximizing growth. See below for possible high interest savings accounts available.`,
+        suggestionActions: [
+          "EQ Bank Savings Plus Account - 2.5%",
+          "Saven Financial High Interest Savings Account - 3.75%",
+          "Oaken Financial Savings Account - 3.40%",
+        ],
+        source: [
+          {
+            link: "https://www.ratehub.ca/savings-accounts/accounts/high-interest",
+            linkTitle: "Available High Interest Savings Accounts",
+          },
+        ],
+      });
+      moveMoneyActions.push(
+        "For money needed in the short-term, consider opening a high interest savings account. See the other suggestion for further details!"
+      );
+    } else {
+      moveMoneyActions.push(
+        `For money needed in the short-term, consider moving it to your high-interest account ${
+          (userHighInterestRateAccount as BankInvestmentAccount).name
+        } which has an interest rate of ${
+          (userHighInterestRateAccount as BankInvestmentAccount).interestRate
+        }%`
+      );
+    }
+
+    // In our analysis, we suggest moving money if we find any accounts with the following
+    // Interest Rate <= 1% and an account value greater than their last months average spending
+    Object.values(userData.financialInfo.accounts.bankAccounts).forEach(
+      (bankAccount) => {
+        if (bankAccount.interestRate <= 1 && bankAccount.value >= 1000) {
+          const newSuggestion: Suggestion = {
+            suggestionType: suggestionType,
+            suggestionBadge: "Growth Opportunity",
+            badgeColor: "green",
+            suggestionTitle: `Move some of $${bankAccount.value} in your ${bankAccount.name} to better growth opportunities.`,
+            suggestionDescription: `$${bankAccount.value} in your ${bankAccount.name} is only gaining ${bankAccount.interestRate}% interest per year. There are opportunities to move this money to higher interest rate accounts or investments. See the suggestions below of possible ways to maximize your savings based on your timeline.`,
+            suggestionActions: moveMoneyActions,
+            source: [
+              {
+                link: "https://www.ratehub.ca/gics/best-gic-rates",
+                linkTitle: "Available GICs",
+              },
+              {
+                link: "https://canadiancouchpotato.com/2012/06/25/what-are-normal-stock-market-returns/",
+                linkTitle: "Average Stock Market Returns",
+              },
+              {
+                link: "https://www.vanguard.ca/individual/questionnaire.htm#/",
+                linkTitle: "Risk Tolerance Questionnaire",
+              },
+            ],
+          };
+          allMoneyAllocationSuggestions.push(newSuggestion);
+        }
+      }
+    );
+
+    // Analyze debts vs savings allocation
+    const loanSortedByInterestRate = Object.values(
+      userData.financialInfo.accounts.loans
+    ).sort(
+      (account1, account2) => account2.interestRate - account1.interestRate
+    );
+
+    const loanSortedByPrincipal = Object.values(
+      userData.financialInfo.accounts.loans
+    ).sort(
+      (account1, account2) =>
+        account1.remainingAmount - account2.remainingAmount
+    );
+
+    if (
+      userHighInterestRateAccount !== undefined &&
+      loanSortedByInterestRate.length > 0
+    ) {
+      if (
+        (userHighInterestRateAccount as BankInvestmentAccount).interestRate <=
+          loanSortedByInterestRate[0].interestRate &&
+        totalSumOfBankAccounts * 0.5 >=
+          loanSortedByInterestRate[0].remainingAmount
+      ) {
+        allMoneyAllocationSuggestions.push({
+          suggestionType: suggestionType,
+          suggestionBadge: "Loan Repayment Allocation",
+          badgeColor: "blue",
+          suggestionTitle: `Allocate your savings towards your ${loanSortedByInterestRate[0].name}.`,
+          suggestionDescription: `Your ${
+            loanSortedByInterestRate[0].name
+          } interest rate is at ${
+            loanSortedByInterestRate[0].interestRate
+          }% which is greater than your highest interest rate account at ${
+            (userHighInterestRateAccount as BankInvestmentAccount).interestRate
+          }% thus the interest earned in this savings account is less than the interest generated by the loan.`,
+          suggestionActions: [
+            `Use your available funds of $${totalSumOfBankAccounts} in your accounts to pay off your ${loanSortedByInterestRate[0].name} as it's interest rate is high compared to your saving accounts.`,
+          ],
+        });
+      }
+    }
+
+    // Analyze best debt repayment order if number of loans is greater than 1
+    if (loanSortedByInterestRate.length > 1) {
+      allMoneyAllocationSuggestions.push({
+        suggestionType: suggestionType,
+        suggestionBadge: "Debt Repayment",
+        badgeColor: "green",
+        suggestionTitle: `Debt Repayment Plan Suggestions`,
+        suggestionDescription: `Based on your loan accounts, assuming you pay the minimum payments of each debt account you have, you will be debt free in ${BudgetEngineUtils.loanMinimumDateToPayoff(
+          userData
+        ).toLocaleString("en-us", {
+          month: "short",
+          year: "numeric",
+        })}. Two possible payment plans are below, Avalanche (High Interest Debt first) and Snowball (Lowest principal first). Explore other debt repayment scenarios/payment amounts in your accounts page.`,
+        suggestionActions: [
+          `Avalanche Plan - Pay highest interest rate debt first: Your order of debt to pay off is ${loanSortedByInterestRate
+            .map((loan, index) => `${index + 1}) ${loan.name} `)
+            .toString()
+            .split(",")
+            .join("")}`,
+          `Snowball Plan - Pay lowest principal debt first: Your order of debt to pay off is ${loanSortedByPrincipal
+            .map((loan, index) => `${index + 1}) ${loan.name} `)
+            .toString()
+            .split(",")
+            .join("")}`,
+        ],
+      });
+    }
+
+    updateSuggestion(
+      userData.uid,
+      suggestionType,
+      allMoneyAllocationSuggestions,
+      userData.suggestions
+    );
+  }
+
+  // ---- Financial Health Suggestions  ----
 
   static generateFinancialHealthSuggestions(userData: UserModel | null) {
     if (userData === null) return;
@@ -269,6 +452,12 @@ export class SuggestionEngine {
         )} days away from today.`,
         suggestionBadge: `Tax Deadline`,
         badgeColor: "blue",
+        source: [
+          {
+            link: "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/important-dates-individuals.html",
+            linkTitle: "Canada Revenue Agency",
+          },
+        ],
       });
     }
 
@@ -297,6 +486,12 @@ export class SuggestionEngine {
         )} days away from today.`,
         suggestionBadge: `RRSP Deposit Deadline`,
         badgeColor: "blue",
+        source: [
+          {
+            link: "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/rrsps-related-plans/important-dates-rrsp-rrif-rdsp.html",
+            linkTitle: "Canada Revenue Agency",
+          },
+        ],
       });
     }
 
@@ -311,6 +506,12 @@ export class SuggestionEngine {
         )} days away from today.`,
         suggestionBadge: `RRSP Deposit Deadline`,
         badgeColor: "blue",
+        source: [
+          {
+            link: "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/rrsps-related-plans/important-dates-rrsp-rrif-rdsp.html",
+            linkTitle: "Canada Revenue Agency",
+          },
+        ],
       });
     }
 

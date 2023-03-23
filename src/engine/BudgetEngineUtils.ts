@@ -71,4 +71,90 @@ export class BudgetEngineUtils {
 
     return currentSavings;
   }
+
+  static addMonths(date: Date, months: number) {
+    const d = date.getDate();
+    date.setMonth(date.getMonth() + +months);
+    if (date.getDate() != d) {
+      date.setDate(0);
+    }
+    return date;
+  }
+
+  static loanMinimumDateToPayoff(userData: UserModel) {
+    const monthToPayOffLoans = Object.values(
+      userData.financialInfo.accounts.loans
+    ).map((loan) => {
+      const monthlyInterest = loan.interestRate / 100 / 12;
+      return (
+        -Math.log(
+          1 - (monthlyInterest * loan.remainingAmount) / loan.minimumPayment
+        ) / Math.log(1 + monthlyInterest)
+      );
+    });
+    console.log(monthToPayOffLoans.reduce((a, b) => Math.max(a, b), -Infinity));
+
+    const date = new Date();
+    return BudgetEngineUtils.addMonths(
+      date,
+      monthToPayOffLoans.reduce((a, b) => Math.max(a, b), -Infinity)
+    );
+  }
+
+  static loanPaymentSchedule(userData: UserModel) {
+    const paymentSchedule = Object.values(
+      userData.financialInfo.accounts.loans
+    ).map((loan) => {
+      const monthlyInterest = loan.interestRate / 100 / 12;
+      const balanceSchedule = [];
+      let currentBalance = loan.remainingAmount;
+
+      while (currentBalance > 0) {
+        const currentMonthInterest = monthlyInterest * currentBalance;
+        const currentMonthPrincipal =
+          loan.minimumPayment - currentMonthInterest;
+        let payment = loan.minimumPayment;
+
+        if (loan.minimumPayment > currentBalance + currentMonthInterest) {
+          payment = currentBalance + currentMonthInterest;
+          currentBalance = 0;
+        } else {
+          currentBalance -= currentMonthPrincipal;
+        }
+        balanceSchedule.push({
+          payment: payment,
+          interest: currentMonthInterest,
+          principal: currentMonthPrincipal,
+          balance: currentBalance,
+        });
+      }
+      return balanceSchedule;
+    });
+
+    return paymentSchedule;
+  }
+
+  // Loan Utils - todo
+  // static loanProjectPayoff(
+  //   userData: UserModel,
+  //   extraMonthlyPayment: number,
+  //   isAvalanche: boolean
+  // ) {
+  //   if (isAvalanche) {
+  //     const loanSortedByInterestRate = Object.values(
+  //       userData.financialInfo.accounts.loans
+  //     ).sort(
+  //       (account1, account2) => account2.interestRate - account1.interestRate
+  //     );
+  //   } else {
+  //     const loanSortedByPrincipal = Object.values(
+  //       userData.financialInfo.accounts.loans
+  //     ).sort(
+  //       (account1, account2) =>
+  //         account1.remainingAmount - account2.remainingAmount
+  //     );
+  //   }
+
+  //   return;
+  // }
 }

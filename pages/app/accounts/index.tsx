@@ -4,10 +4,19 @@ import {
   Button,
   Card,
   CardBody,
+  CardHeader,
   Flex,
   Heading,
   HStack,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Radio,
+  RadioGroup,
   SimpleGrid,
+  Stack,
   Stat,
   StatLabel,
   StatNumber,
@@ -26,10 +35,42 @@ import FixedInvestmentsModal from "../../../components/modals/AccountModals/Fixe
 import OtherAssetsModal from "../../../components/modals/AccountModals/OtherAssetsModal";
 import { BudgetEngineUtils } from "../../../src/engine/BudgetEngineUtils";
 import Link from "next/link";
+import { useState } from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  PointElement,
+  LineElement,
+  Filler,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import { buildDebtPayoffGraph } from "../../../src/visualization/BudgetVisualizationsHelpers";
+
+ChartJS.register(
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend
+);
 
 export default function AccountsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
+
+  // const [extraMonthlyPayement, setExtraMonthlyPayement] = useState<string>("5");
+  let paymentSchedule = undefined;
+  if (userData)
+    paymentSchedule = BudgetEngineUtils.loanPaymentSchedule(userData);
 
   const bankInvestmentAccountModalProps = useDisclosure();
   const creditCardModalProps = useDisclosure();
@@ -495,6 +536,100 @@ export default function AccountsPage() {
                 }
               )}
           </SimpleGrid>
+        </Box>
+        <Box
+          bgColor="gray.100"
+          padding="6"
+          rounded={"5px"}
+          border={"1px"}
+          borderColor={"gray.300"}
+          mx={"24px"}
+          my={"2rem"}
+        >
+          <Heading size="md" my="1rem">
+            Debt Repayment Analysis
+          </Heading>
+          <Stack>
+            <Flex px={"2rem"} gap={"4rem"}>
+              {/* <RadioGroup defaultValue="avalanche">
+                <Stack>
+                  <Heading size="sm">Repayment Type</Heading>
+                  <Radio value="avalanche">
+                    Avalanche: High Interest Rate First
+                  </Radio>
+                  <Radio value="snowball">
+                    Snowball: Lowest Principal First
+                  </Radio>
+                </Stack>
+              </RadioGroup> */}
+              {/* <Stack>
+                <Heading size="sm">Monthly Payment towards Debts</Heading>
+                <NumberInput
+                  min={0}
+                  value={extraMonthlyPayement}
+                  onChange={(val) => {
+                    setExtraMonthlyPayement(val);
+                  }}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </Stack> */}
+              <Card bg={"white"} align={"center"}>
+                <CardHeader>
+                  <Heading size="md">Minimum Payment Debt Payoff Date</Heading>
+                </CardHeader>
+                <CardBody>
+                  <Heading size="md">
+                    {userData &&
+                      BudgetEngineUtils.loanMinimumDateToPayoff(
+                        userData
+                      ).toLocaleString("en-us", {
+                        month: "short",
+                        year: "numeric",
+                      })}
+                  </Heading>
+                </CardBody>
+              </Card>
+              {/* <Card bg={"white"} align={"center"}>
+                <CardHeader>
+                  <Heading size="md">Projected Debt Payoff Date</Heading>
+                </CardHeader>
+                <CardBody>
+                  <Heading size="md">July 2023</Heading>
+                </CardBody>
+              </Card> */}
+              <Card bg={"white"} align={"center"}>
+                <CardHeader>
+                  <Heading size="md">Interest Paid</Heading>
+                </CardHeader>
+                <CardBody>
+                  <Heading size="md">
+                    $
+                    {paymentSchedule &&
+                      paymentSchedule
+                        .reduce(
+                          (total, account) =>
+                            total +
+                            account.reduce(
+                              (innerTotal, entry) =>
+                                innerTotal + entry.interest,
+                              0
+                            ),
+                          0
+                        )
+                        .toFixed(2)}
+                  </Heading>
+                </CardBody>
+              </Card>
+            </Flex>
+          </Stack>
+          {userData && paymentSchedule ? (
+            <Line data={buildDebtPayoffGraph(paymentSchedule, userData)} />
+          ) : null}
         </Box>
       </Sidebar>
 
