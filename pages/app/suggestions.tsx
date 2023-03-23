@@ -22,6 +22,7 @@ import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { BudgetEngineUtils } from "../../src/engine/BudgetEngineUtils";
 
+
 export default function SuggestionsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
@@ -29,6 +30,7 @@ export default function SuggestionsPage() {
   SuggestionEngine.generateMoneyAllocationSuggestions(userData);
   if (userData) BudgetEngineUtils.loanPaymentSchedule(userData);
   if (userData) BudgetEngineUtils.loanMinimumDateToPayoff(userData);
+
   return (
     <ProtectedRoute>
       <Sidebar>
