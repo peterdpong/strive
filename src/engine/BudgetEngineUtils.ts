@@ -92,7 +92,6 @@ export class BudgetEngineUtils {
         ) / Math.log(1 + monthlyInterest)
       );
     });
-    console.log(monthToPayOffLoans.reduce((a, b) => Math.max(a, b), -Infinity));
 
     const date = new Date();
     return BudgetEngineUtils.addMonths(

@@ -79,7 +79,6 @@ export class SuggestionEngine {
         selfBudgetSuggestions
       );
 
-    console.log(allSpendingBudgetSuggestions);
     updateSuggestion(
       userData.uid,
       suggestionType,
@@ -240,7 +239,6 @@ export class SuggestionEngine {
       }
     }
 
-    // nts: future reference once we add source ->
     return suggestionArray;
   }
 
@@ -421,6 +419,72 @@ export class SuggestionEngine {
       userData.uid,
       suggestionType,
       allMoneyAllocationSuggestions,
+      userData.suggestions
+    );
+  }
+
+  // ---- Goals and Savings Suggestions  ----
+
+  static generateGoalsAndSavingsSuggestion(userData: UserModel | null) {
+    if (userData === null) return;
+
+    const suggestionType = "GoalAndSavings";
+    const goalsAndSavingsSuggestions: Suggestion[] = [];
+
+    const userCurrentMonthSavings =
+      BudgetEngineUtils.calculateCurrentMonthSavings(userData);
+
+    if (userData.goalInfo.monthlyAmount < userCurrentMonthSavings) {
+      goalsAndSavingsSuggestions.push({
+        suggestionType: suggestionType,
+        suggestionBadge: "Monthy Savings",
+        badgeColor: "green",
+        suggestionTitle: `Good job, your savings for this month is on track for your goal!`,
+        suggestionDescription: `This month you saved $${userCurrentMonthSavings
+          .toFixed(2)
+          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} which is $${(
+          userCurrentMonthSavings - userData.goalInfo.monthlyAmount
+        )
+          .toFixed(2)
+          .replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )} more than you target! This savings makes you ${(
+          ((userCurrentMonthSavings - userData.goalInfo.monthlyAmount) * 100) /
+          userData.goalInfo.monthlyAmount
+        ).toFixed(2)}% ahead in your financial goal at this time. Keep it up!`,
+      });
+    } else {
+      goalsAndSavingsSuggestions.push({
+        suggestionType: suggestionType,
+        suggestionBadge: "Monthy Savings",
+        badgeColor: "red",
+        suggestionTitle: `Oh no, your savings this month is not on track for your goal!`,
+        suggestionDescription: `To reach your goal of $${userData.goalInfo.networthGoal
+          .toFixed(2)
+          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} in ${
+          userData.goalInfo.timelineGoal
+        } years, you need to be saving $${userData.goalInfo.monthlyAmount
+          .toFixed(2)
+          .replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )} per month. Currently this month you are only saving $${userCurrentMonthSavings
+          .toFixed(2)
+          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} which is $${(
+          userData.goalInfo.monthlyAmount - userCurrentMonthSavings
+        )
+          .toFixed(2)
+          .replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )} less than you need.`,
+      });
+    }
+    updateSuggestion(
+      userData.uid,
+      suggestionType,
+      goalsAndSavingsSuggestions,
       userData.suggestions
     );
   }

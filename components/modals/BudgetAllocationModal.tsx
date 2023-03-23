@@ -16,6 +16,7 @@ import {
 import { getTransactionCategoriesArray } from "../../src/models/BudgetModel";
 import { useAuth } from "../../src/auth/auth";
 import { addBudgetCategoryAllocation } from "../../src/firebase/UserActions";
+import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
 
 export default function BudgetAllocationModal(props: {
   isOpen: boolean;
@@ -66,6 +67,7 @@ export default function BudgetAllocationModal(props: {
         color,
         allocation
       );
+      SuggestionEngine.generateAllSpendingBudgetSuggestions(userData);
     }
 
     setCategory(null);

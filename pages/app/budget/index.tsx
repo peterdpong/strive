@@ -31,6 +31,7 @@ import { buildDoughnutGraphData } from "../../../src/visualization/BudgetVisuali
 import { deleteBudgetAllocation } from "../../../src/firebase/UserActions";
 import BudgetAllocationModal from "../../../components/modals/BudgetAllocationModal";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { SuggestionEngine } from "../../../src/engine/SuggestionEngine";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -52,6 +53,7 @@ export default function BudgetPage() {
         userData.budgetInfo.monthlyAllocations,
         key
       );
+      SuggestionEngine.generateAllSpendingBudgetSuggestions(userData);
     }
   };
 

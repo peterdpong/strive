@@ -22,12 +22,12 @@ import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { BudgetEngineUtils } from "../../src/engine/BudgetEngineUtils";
 
-
 export default function SuggestionsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
   SuggestionEngine.generateMoneyAllocationSuggestions(userData);
+  SuggestionEngine.generateGoalsAndSavingsSuggestion(userData);
   if (userData) BudgetEngineUtils.loanPaymentSchedule(userData);
   if (userData) BudgetEngineUtils.loanMinimumDateToPayoff(userData);
 
@@ -57,6 +57,10 @@ export default function SuggestionsPage() {
             <Heading size="md" my="10px">
               Spending and Budget Suggestions
             </Heading>
+            {userData &&
+              userData.suggestions["SpendingAndBudget"].length === 0 && (
+                <Heading size={"md"}>No suggestions for this topic!</Heading>
+              )}
             <Accordion allowMultiple>
               {userData &&
                 userData.suggestions["SpendingAndBudget"] &&
@@ -135,6 +139,10 @@ export default function SuggestionsPage() {
             <Heading size="md" my="10px">
               Money Allocation
             </Heading>
+            {userData &&
+              userData.suggestions["MoneyAllocation"].length === 0 && (
+                <Heading size={"md"}>No suggestions for this topic!</Heading>
+              )}
             <Accordion allowMultiple>
               {userData &&
                 userData.suggestions["MoneyAllocation"] &&
@@ -215,6 +223,9 @@ export default function SuggestionsPage() {
             <Heading size="md" my="10px">
               Goal and Savings
             </Heading>
+            {userData && !userData.suggestions["GoalAndSavings"] && (
+              <Heading size={"md"}>No suggestions for this topic!</Heading>
+            )}
             <Accordion allowMultiple>
               {userData &&
                 userData.suggestions["GoalAndSavings"] &&
@@ -293,6 +304,10 @@ export default function SuggestionsPage() {
             <Heading size="md" my="10px">
               Financial Health
             </Heading>
+            {userData &&
+              userData.suggestions["FinancialHealth"].length === 0 && (
+                <Heading size={"md"}>No suggestions for this topic!</Heading>
+              )}
             <Accordion allowMultiple>
               {userData &&
                 userData.suggestions["FinancialHealth"] &&
