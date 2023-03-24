@@ -86,6 +86,9 @@ export class BudgetEngineUtils {
       userData.financialInfo.accounts.loans
     ).map((loan) => {
       const monthlyInterest = loan.interestRate / 100 / 12;
+      if (monthlyInterest === 0)
+        return loan.remainingAmount / loan.minimumPayment;
+
       return (
         -Math.log(
           1 - (monthlyInterest * loan.remainingAmount) / loan.minimumPayment

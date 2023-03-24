@@ -136,7 +136,7 @@ export const updateMonthsMap = (
 
 export const addUserGoal = async (uid: string, goalInfo: GoalModel) => {
   const userDataRef = doc(firestoreDB, "users", uid);
-  setDoc(userDataRef, { goalInfo: goalInfo }, { merge: false });
+  updateDoc(userDataRef, { goalInfo: goalInfo });
 };
 
 export const getUserGoal = (uid: string) => {

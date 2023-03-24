@@ -138,7 +138,7 @@ export default function AccountsPage() {
           rounded={"5px"}
           border={"1px"}
           borderColor={"gray.300"}
-          mx={"15px"}
+          mx={"24px"}
           my={"2rem"}
         >
           <Heading size="md" mr="2.5rem">
