@@ -21,6 +21,15 @@ const CategoryPercentages: { [categoryKey: string]: number } = {
 };
 
 export class SuggestionEngine {
+  static runAllSuggestions(userData: UserModel | null) {
+    if (userData === null) return;
+
+    SuggestionEngine.generateAllSpendingBudgetSuggestions(userData);
+    SuggestionEngine.generateMoneyAllocationSuggestions(userData);
+    SuggestionEngine.generateFinancialHealthSuggestions(userData);
+    SuggestionEngine.generateGoalsAndSavingsSuggestion(userData);
+  }
+
   // Grab one suggestions from each type
   static getTopTwoSuggestions(userData: UserModel | null) {
     if (userData === null) return;
@@ -169,7 +178,7 @@ export class SuggestionEngine {
       [TransactionCategories.INTEREST]: 0,
       [TransactionCategories.SAVINGS]: 0,
     };
-    const availableFunds = userData.budgetInfo.monthlyVariableBudgetUnallocated; // total funds available for allocation
+    const availableFunds = userData.budgetInfo.monthlyVariableBudget; // total funds available for allocation
     const lastMonth: Date = new Date();
     lastMonth.setMonth(lastMonth.getMonth());
     const lastMonthKey =
@@ -227,7 +236,7 @@ export class SuggestionEngine {
             TransactionCategories[category]
           } which is ${Math.trunc(
             totalCategorySpendPercentage - targetPercent
-          )}%. It is recommened for you to reduce you spending in this category by $${reduceAmount}!`,
+          )}% more than recommended. It is recommened for you to reduce you spending in this category by $${reduceAmount}!`,
           source: [
             {
               link: "https://www.mymoneycoach.ca/budgeting/budgeting-guidelines",

@@ -101,7 +101,7 @@ export const getUserData = async (
       if (userDataSnapshot.exists()) {
         userData = userDataSnapshot.data() as UserModel;
         updateMonthsMap(uid, userData.monthTransactionsMap);
-        SuggestionEngine.generateFinancialHealthSuggestions(userData);
+        SuggestionEngine.runAllSuggestions(userData);
       }
     }
   );

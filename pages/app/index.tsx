@@ -15,6 +15,9 @@ import {
   StatNumber,
   VStack,
   Flex,
+  Link,
+  UnorderedList,
+  ListItem,
 } from "@chakra-ui/react";
 
 import {
@@ -45,6 +48,7 @@ import {
   goalGraphOptions,
 } from "../../src/visualization/GoalVisualizations";
 import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 const horizontalOptions = {
   indexAxis: "y" as const,
@@ -319,6 +323,43 @@ export default function Dashboard() {
 
                         <AccordionPanel pb={4}>
                           {suggestion.suggestionDescription}
+                          {suggestion.suggestionActions && (
+                            <>
+                              <br />
+                              <Heading my={"1rem"} size={"sm"}>
+                                Suggestions
+                              </Heading>
+                              <UnorderedList>
+                                {suggestion.suggestionActions.map(
+                                  (suggestion, index) => (
+                                    <ListItem key={index}>
+                                      {suggestion}
+                                    </ListItem>
+                                  )
+                                )}
+                              </UnorderedList>
+                            </>
+                          )}
+                          {suggestion.source && (
+                            <Box my={"1rem"}>
+                              <Heading size={"sm"}>
+                                Further resources and sources
+                              </Heading>
+                              {suggestion.source.map((source, index) => {
+                                return (
+                                  <Link
+                                    key={index}
+                                    href={source.link}
+                                    isExternal
+                                    color={"blue.300"}
+                                  >
+                                    {source.linkTitle}
+                                    <ExternalLinkIcon mx="2px" />
+                                  </Link>
+                                );
+                              })}
+                            </Box>
+                          )}
                         </AccordionPanel>
                       </AccordionItem>
                     );
