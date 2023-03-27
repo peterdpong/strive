@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import ProtectedRoute from "../../src/auth/ProtectedRoute";
 import { Image } from "@chakra-ui/react";
 
-export default function OnboardingIndex() {
+export default function InstructionsPage() {
   const router = useRouter();
 
   return (
@@ -26,7 +26,7 @@ export default function OnboardingIndex() {
         borderColor={"gray.300"}
         centerContent
       >
-        <Heading textAlign={"left"}>Quick Guide</Heading>
+        <Heading textAlign={"center"}>Quick Guide</Heading>
         <ButtonGroup variant="outline" spacing="6">
           <Button
             mt={"15px"}
@@ -48,7 +48,7 @@ export default function OnboardingIndex() {
       <Container
         maxW="container.xl"
         rounded={"5px"}
-        bg={"gray.100"}
+        bg={"green.50"}
         my={"25px"}
         p={"20px"}
         border={"1px"}
@@ -70,7 +70,7 @@ export default function OnboardingIndex() {
       <Container
         maxW="container.xl"
         rounded={"5px"}
-        bg={"green.50"}
+        bg={"gray.100"}
         my={"25px"}
         p={"20px"}
         border={"1px"}
@@ -98,7 +98,7 @@ export default function OnboardingIndex() {
       <Container
         maxW="container.xl"
         rounded={"5px"}
-        bg={"gray.100"}
+        bg={"green.50"}
         my={"25px"}
         p={"20px"}
         border={"1px"}
@@ -129,7 +129,7 @@ export default function OnboardingIndex() {
       <Container
         maxW="container.xl"
         rounded={"5px"}
-        bg={"green.50"}
+        bg={"gray.100"}
         my={"25px"}
         p={"20px"}
         border={"1px"}
