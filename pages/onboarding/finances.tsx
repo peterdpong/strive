@@ -308,7 +308,15 @@ export default function FinancesPages() {
                               <Heading size="sm"> {currAccount.name} </Heading>
                               <Stat>
                                 <StatLabel>Account Value</StatLabel>
-                                <StatNumber>${currAccount.value}</StatNumber>
+                                <StatNumber>
+                                  $
+                                  {currAccount.value
+                                    .toFixed(2)
+                                    .replace(
+                                      /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                                      ","
+                                    )}
+                                </StatNumber>
                               </Stat>
                               <Stat>
                                 <StatLabel>Account Interest Rate</StatLabel>
@@ -406,7 +414,13 @@ export default function FinancesPages() {
                                 <Stat>
                                   <StatLabel>Starting value</StatLabel>
                                   <StatNumber>
-                                    ${currAccount.startingValue}
+                                    $
+                                    {currAccount.startingValue
+                                      .toFixed(2)
+                                      .replace(
+                                        /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                                        ","
+                                      )}
                                   </StatNumber>
                                 </Stat>
                                 <Stat>
@@ -487,7 +501,15 @@ export default function FinancesPages() {
                               <Heading size="sm"> {currAccount.name} </Heading>
                               <Stat>
                                 <StatLabel>Asset Value</StatLabel>
-                                <StatNumber>${currAccount.value}</StatNumber>
+                                <StatNumber>
+                                  $
+                                  {currAccount.value
+                                    .toFixed(2)
+                                    .replace(
+                                      /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                                      ","
+                                    )}
+                                </StatNumber>
                               </Stat>
                               <Button
                                 onClick={() => {
@@ -559,7 +581,13 @@ export default function FinancesPages() {
                               <Stat>
                                 <StatLabel>Amount Owed</StatLabel>
                                 <StatNumber>
-                                  ${currAccount.amountOwned}
+                                  $
+                                  {currAccount.amountOwned
+                                    .toFixed(2)
+                                    .replace(
+                                      /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                                      ","
+                                    )}
                                 </StatNumber>
                               </Stat>
                               <Stat>
@@ -580,7 +608,13 @@ export default function FinancesPages() {
                               <Stat>
                                 <StatLabel>Next payment amount</StatLabel>
                                 <StatNumber>
-                                  ${currAccount.nextPaymentAmount}
+                                  $
+                                  {currAccount.nextPaymentAmount
+                                    .toFixed(2)
+                                    .replace(
+                                      /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                                      ","
+                                    )}
                                 </StatNumber>
                               </Stat>
                               <Button
@@ -650,7 +684,13 @@ export default function FinancesPages() {
                                 <Stat>
                                   <StatLabel>Account Value</StatLabel>
                                   <StatNumber>
-                                    ${currAccount.remainingAmount}
+                                    $
+                                    {currAccount.remainingAmount
+                                      .toFixed(2)
+                                      .replace(
+                                        /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                                        ","
+                                      )}
                                   </StatNumber>
                                 </Stat>
                                 <Stat>
@@ -671,7 +711,13 @@ export default function FinancesPages() {
                                 <Stat>
                                   <StatLabel>Minimum Payment</StatLabel>
                                   <StatNumber>
-                                    ${currAccount.minimumPayment}
+                                    $
+                                    {currAccount.minimumPayment
+                                      .toFixed(2)
+                                      .replace(
+                                        /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                                        ","
+                                      )}
                                   </StatNumber>
                                 </Stat>
                                 <Button

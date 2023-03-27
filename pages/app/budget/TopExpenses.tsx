@@ -54,7 +54,12 @@ const TopExpenses = ({
           {topFiveExpenses.map((expense, i) => (
             <Tr key={i}>
               <Td>{expense.name}</Td>
-              <Td>${expense.amount}</Td>
+              <Td>
+                $
+                {expense.amount
+                  .toFixed(2)
+                  .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+              </Td>
             </Tr>
           ))}
         </Tbody>

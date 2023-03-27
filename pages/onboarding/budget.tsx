@@ -235,7 +235,13 @@ export default function BudgetPage() {
                             <Stat>
                               <StatLabel>Expense Category</StatLabel>
                               <StatNumber>
-                                ${currentCategory.allocation.toFixed(2)}
+                                $
+                                {currentCategory.allocation
+                                  .toFixed(2)
+                                  .replace(
+                                    /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                                    ","
+                                  )}
                               </StatNumber>
                             </Stat>
                           </CardBody>

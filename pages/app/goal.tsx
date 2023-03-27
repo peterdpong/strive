@@ -308,9 +308,9 @@ export default function GoalPage() {
                         <StatLabel>Monthly Savings Required</StatLabel>
                         <StatNumber>
                           $
-                          {generatedGoals.lessAggressiveGoal.monthlyAmount.toFixed(
-                            2
-                          )}
+                          {generatedGoals.lessAggressiveGoal.monthlyAmount
+                            .toFixed(2)
+                            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                         </StatNumber>
                         <StatLabel>
                           Expected Goal $ Amount in{" "}
@@ -319,9 +319,9 @@ export default function GoalPage() {
                         </StatLabel>
                         <StatNumber fontSize="md">
                           $
-                          {generatedGoals.lessAggressiveGoal.networthGoal.toFixed(
-                            2
-                          )}
+                          {generatedGoals.lessAggressiveGoal.networthGoal
+                            .toFixed(2)
+                            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                         </StatNumber>
                       </Stat>
                       <Button
@@ -345,9 +345,9 @@ export default function GoalPage() {
                           <StatLabel>Monthly Savings Required</StatLabel>
                           <StatNumber>
                             $
-                            {generatedGoals.neutralGoal.monthlyAmount.toFixed(
-                              2
-                            )}
+                            {generatedGoals.neutralGoal.monthlyAmount
+                              .toFixed(2)
+                              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                           </StatNumber>
                           <StatLabel>
                             Expected Goal $ Amount in{" "}
@@ -355,7 +355,9 @@ export default function GoalPage() {
                           </StatLabel>
                           <StatNumber fontSize="md">
                             $
-                            {generatedGoals.neutralGoal.networthGoal.toFixed(2)}
+                            {generatedGoals.neutralGoal.networthGoal
+                              .toFixed(2)
+                              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                           </StatNumber>
                         </Stat>
                         <Button
@@ -380,9 +382,9 @@ export default function GoalPage() {
                           <StatLabel>Monthly Savings Required</StatLabel>
                           <StatNumber>
                             $
-                            {generatedGoals.moreAggressiveGoal.monthlyAmount.toFixed(
-                              2
-                            )}
+                            {generatedGoals.moreAggressiveGoal.monthlyAmount
+                              .toFixed(2)
+                              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                           </StatNumber>
                           <StatLabel>
                             Expected Goal $ Amount in{" "}
@@ -391,9 +393,9 @@ export default function GoalPage() {
                           </StatLabel>
                           <StatNumber fontSize="md">
                             $
-                            {generatedGoals.moreAggressiveGoal.networthGoal.toFixed(
-                              2
-                            )}
+                            {generatedGoals.moreAggressiveGoal.networthGoal
+                              .toFixed(2)
+                              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                           </StatNumber>
                         </Stat>
                         <Button

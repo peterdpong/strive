@@ -240,7 +240,10 @@ const MonthTransaction = ({
                 <Td>{transaction.account}</Td>
                 <Td>{transaction.name}</Td>
                 <Td isNumeric>
-                  {parseFloat(transaction.amount.toString()).toFixed(2)}
+                  $
+                  {parseFloat(transaction.amount.toString())
+                    .toFixed(2)
+                    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                 </Td>
                 {editing && (
                   <Button

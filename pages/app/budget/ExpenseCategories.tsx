@@ -69,9 +69,19 @@ const ExpenseCategories = ({
         {getMonthFromString(monthAndYear)}
       </Heading>
       <Heading size="xl" my="5px">
-        ${-totalSpent.toFixed(2)} spent
+        $
+        {(-totalSpent)
+          .toFixed(2)
+          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
+        spent
       </Heading>
-      <Heading size="md">${remainingBudget.toFixed(2)} remaining</Heading>
+      <Heading size="md">
+        $
+        {remainingBudget
+          .toFixed(2)
+          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
+        remaining
+      </Heading>
       <Box mt="20px">
         <Flex width="100%" mb="8px">
           <HStack spacing="6px">
