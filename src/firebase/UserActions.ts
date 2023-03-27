@@ -70,6 +70,7 @@ export const addNewUser = (
       monthlyVariableBudgetUnallocated: 0,
     },
     goalInfo: {
+      startingNetWorth: 0,
       monthlyAmount: 0,
       networthGoal: 0,
       timelineGoal: 0,
