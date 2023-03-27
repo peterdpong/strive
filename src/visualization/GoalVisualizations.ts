@@ -116,6 +116,7 @@ export const calculateNetWorth = (userData: UserModel | null) => {
 export const buildGoalGraphData = (userInfo: {
   title: string;
   userData: UserModel | null;
+  startingNetWorth: number | undefined;
   monthlySavings: number | undefined;
   goalTimeline: number | undefined;
 }) => {
@@ -123,6 +124,7 @@ export const buildGoalGraphData = (userInfo: {
 
   if (
     userInfo.userData === null ||
+    userInfo.startingNetWorth === undefined ||
     userInfo.monthlySavings === undefined ||
     userInfo.goalTimeline === undefined
   ) {
@@ -139,13 +141,11 @@ export const buildGoalGraphData = (userInfo: {
     (x, i) => i
   );
 
-  const currNetWorth = calculateNetWorth(userInfo.userData);
-
   // Generate goal data array size mapped to timeline goal (months)
 
   //array to store net worth amounts per month
-  const NetWorthData = [currNetWorth];
-  let FVPrevNetWorth = currNetWorth;
+  const NetWorthData = [userInfo.startingNetWorth];
+  let FVPrevNetWorth = userInfo.startingNetWorth;
   for (let i = 0; i < userInfo.goalTimeline * 12; i++) {
     FVPrevNetWorth = FVPrevNetWorth * (1 + 0.05 / 12) + userInfo.monthlySavings;
     //const FVNetWorth = currNetWorth*(1.05/12)**i;
@@ -197,7 +197,8 @@ export const getGoalProgressGraphData = (
   }
 ) => {
   // find the starting value for current net worth
-  const currNetWorth = calculateNetWorth(userData);
+  // const currNetWorth = calculateNetWorth(userData);
+  const currNetWorth = userData.goalInfo.startingNetWorth;
 
   // find the month at the start of the goal graph
   let startMonth = "100-100000";
@@ -230,7 +231,7 @@ export const getGoalProgressGraphData = (
     }
 
     // add monthly income
-    currSpending += userData.budgetInfo.monthlyVariableBudgetUnallocated;
+    //currSpending += userData.budgetInfo.monthlyVariableBudgetUnallocated;
 
     // add net transactions from the month
     if (currMonth in userData.monthTransactionsMap) {

@@ -4,8 +4,8 @@ export enum GoalType {
   RETIREMENT,
 }
 
-// TODO(Peter): Model only for SAVINGS goal
 export type GoalModel = {
+  startingNetWorth: number;
   monthlyAmount: number;
   networthGoal: number;
   timelineGoal: number;

@@ -100,6 +100,7 @@ export default function SuggestionsPage() {
       buildGoalGraphData({
         title: "Net Worth",
         userData: userData,
+        startingNetWorth: generateGoalsResult?.neutralGoal.startingNetWorth,
         monthlySavings: generateGoalsResult?.neutralGoal.monthlyAmount,
         goalTimeline: generateGoalsResult?.neutralGoal.timelineGoal,
       })
@@ -115,6 +116,7 @@ export default function SuggestionsPage() {
         buildGoalGraphData({
           title: "Net Worth",
           userData: userData,
+          startingNetWorth: goals?.neutralGoal.startingNetWorth,
           monthlySavings: goals?.lessAggressiveGoal.monthlyAmount,
           goalTimeline: goals?.lessAggressiveGoal.timelineGoal,
         })
@@ -124,6 +126,7 @@ export default function SuggestionsPage() {
         buildGoalGraphData({
           title: "Net Worth",
           userData: userData,
+          startingNetWorth: goals?.neutralGoal.startingNetWorth,
           monthlySavings: goals?.neutralGoal.monthlyAmount,
           goalTimeline: goals?.neutralGoal.timelineGoal,
         })
@@ -133,6 +136,7 @@ export default function SuggestionsPage() {
         buildGoalGraphData({
           title: "Net Worth",
           userData: userData,
+          startingNetWorth: goals?.neutralGoal.startingNetWorth,
           monthlySavings: goals?.moreAggressiveGoal.monthlyAmount,
           goalTimeline: goals?.moreAggressiveGoal.timelineGoal,
         })

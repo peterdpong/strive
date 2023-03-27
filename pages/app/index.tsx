@@ -94,13 +94,14 @@ export default function Dashboard() {
   const graphData = buildGoalGraphData({
     title: "Net Worth Goal",
     userData: userData,
+    startingNetWorth: userData?.goalInfo.startingNetWorth,
     monthlySavings: userData?.goalInfo.monthlyAmount,
     goalTimeline: userData?.goalInfo.timelineGoal,
   });
 
   if (graphData && userData) {
     // find the starting value for current net worth
-    const currNetWorth = calculateNetWorth(userData);
+    const currNetWorth = userData.goalInfo.startingNetWorth;
 
     // find the month at the start of the goal graph
     let startMonth = "100-100000";
@@ -118,7 +119,7 @@ export default function Dashboard() {
     // construct the array of how net worth changes month-to-month
     // only accounts for unallocated income + transactions
     // no investments are factored into this calculation yet
-    const netWorthOverTime = [];
+    const netWorthOverTime = [currNetWorth];
     let currMonth = startMonth;
     let currSpending = currNetWorth;
     for (let i = 0; i < graphData.datasets[0].data.length; i++) {
@@ -126,14 +127,14 @@ export default function Dashboard() {
       const monthParts = currMonth.split("-").map((part) => parseInt(part));
       const date = new Date(); // current date
       if (
-        monthParts[0] === date.getMonth() + 1 &&
+        monthParts[0] === date.getMonth() + 2 &&
         monthParts[1] === date.getFullYear()
       ) {
         break;
       }
 
       // add monthly income
-      currSpending += userData.budgetInfo.monthlyVariableBudgetUnallocated;
+      // currSpending += userData.budgetInfo.monthlyVariableBudgetUnallocated;
 
       // add net transactions from the month
       if (currMonth in userData.monthTransactionsMap) {

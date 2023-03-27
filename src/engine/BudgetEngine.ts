@@ -270,16 +270,19 @@ export class BudgetEngine {
     } else {
       return {
         lessAggressiveGoal: {
+          startingNetWorth: currNetWorth,
           monthlyAmount: calcMonthlySavings * 0.95,
           networthGoal: lessAggressiveNW,
           timelineGoal: goalTimeline,
         },
         neutralGoal: {
+          startingNetWorth: currNetWorth,
           monthlyAmount: calcMonthlySavings,
           networthGoal: goalNetWorth,
           timelineGoal: goalTimeline,
         },
         moreAggressiveGoal: {
+          startingNetWorth: currNetWorth,
           monthlyAmount: calcMonthlySavings * 1.05,
           networthGoal: moreAggressiveNW,
           timelineGoal: goalTimeline,

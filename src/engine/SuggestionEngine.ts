@@ -4,6 +4,7 @@ import { updateSuggestion } from "../firebase/UserActions";
 import { enumKeys } from "../utils";
 import { BankInvestmentAccount } from "../models/AccountModel";
 import { BudgetEngineUtils } from "./BudgetEngineUtils";
+import { calculateNetWorth } from "../visualization/GoalVisualizations";
 
 const CategoryPercentages: { [categoryKey: string]: number } = {
   [TransactionCategories.GROCERIES]: 10,
@@ -522,6 +523,63 @@ export class SuggestionEngine {
           )} less than you need.`,
       });
     }
+
+    const currNetWorth = calculateNetWorth(userData);
+    const currTargetNetWorth =
+      BudgetEngineUtils.getTargetGoalValueCurrentMonth(userData);
+    if (currNetWorth < currTargetNetWorth) {
+      goalsAndSavingsSuggestions.push({
+        suggestionType: suggestionType,
+        suggestionBadge: "Goal Projection",
+        badgeColor: "red",
+        suggestionTitle: `You are ${(
+          ((currTargetNetWorth - currNetWorth) /
+            ((currTargetNetWorth + currNetWorth) / 2)) *
+          100
+        ).toFixed(2)}% behind your target net worth for this month!`,
+        suggestionDescription: `To reach your goal of $${userData.goalInfo.networthGoal
+          .toFixed(2)
+          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} in ${
+          userData.goalInfo.timelineGoal
+        } years, your current net worth today should be $${currTargetNetWorth
+          .toFixed(2)
+          .replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )}. Currently your net worth today is $${currNetWorth
+          .toFixed(2)
+          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} which is $${(
+          currTargetNetWorth - currNetWorth
+        )
+          .toFixed(2)
+          .replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )} behind. Review your spending or ensure you remain on track for your goal!`,
+      });
+    } else {
+      goalsAndSavingsSuggestions.push({
+        suggestionType: suggestionType,
+        suggestionBadge: "Goal Projection",
+        badgeColor: "green",
+        suggestionTitle: `You are ${(
+          ((currNetWorth - currTargetNetWorth) /
+            ((currTargetNetWorth + currNetWorth) / 2)) *
+          100
+        ).toFixed(2)}% ahead your target net worth for this month!`,
+        suggestionDescription: `Your current net worth is $${currNetWorth
+          .toFixed(2)
+          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} which is $${(
+          currNetWorth - currTargetNetWorth
+        )
+          .toFixed(2)
+          .replace(
+            /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+            ","
+          )} ahead of the target net worth for your goal. Good job!`,
+      });
+    }
+
     updateSuggestion(
       userData.uid,
       suggestionType,

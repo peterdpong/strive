@@ -136,6 +136,44 @@ export class BudgetEngineUtils {
     return paymentSchedule;
   }
 
+  static getTargetGoalValueCurrentMonth = (userData: UserModel) => {
+    let startMonth = "100-100000";
+    Object.keys(userData.monthTransactionsMap).forEach((month) => {
+      const month1 = startMonth.split("-");
+      const month2 = month.split("-");
+      if (
+        parseInt(month2[1]) < parseInt(month1[1]) ||
+        parseInt(month2[0]) < parseInt(month1[0])
+      ) {
+        startMonth = month;
+      }
+    });
+
+    let FVPrevNetWorth = userData.goalInfo.startingNetWorth;
+    let currMonth = startMonth;
+    const date = new Date(); // current date
+    const monthParts = currMonth.split("-").map((part) => parseInt(part));
+    console.log(monthParts);
+    while (
+      monthParts[0] !== date.getMonth() + 2 ||
+      monthParts[1] !== date.getFullYear()
+    ) {
+      FVPrevNetWorth =
+        FVPrevNetWorth * (1 + 0.05 / 12) + userData.goalInfo.monthlyAmount;
+
+      // increase currMonth
+      if (monthParts[0] === 12) {
+        monthParts[0] = 1;
+        monthParts[1] += 1;
+      } else {
+        monthParts[0] += 1;
+      }
+      currMonth = monthParts.join("-");
+    }
+
+    return FVPrevNetWorth;
+  };
+
   // Loan Utils - todo
   // static loanProjectPayoff(
   //   userData: UserModel,
