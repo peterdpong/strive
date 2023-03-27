@@ -50,7 +50,7 @@ export default function OnboardingIndex() {
             colorScheme={"green"}
             onClick={() => router.push("onboarding/instructions")}
           >
-            Instructions
+            Quick Guide
           </Button>
         </ButtonGroup>
       </Container>
