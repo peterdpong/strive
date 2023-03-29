@@ -17,8 +17,11 @@ const CategoryPercentages: { [categoryKey: string]: number } = {
   [TransactionCategories.CLOTHING]: 5,
   [TransactionCategories.TRAVEL]: 5,
   [TransactionCategories.EDUCATION]: 7.5,
-  [TransactionCategories.INTEREST]: 5,
+  [TransactionCategories.LOANREPAYMENT]: 0,
+  [TransactionCategories.INSURANCE]: 0,
+  [TransactionCategories.INTEREST]: 0,
   [TransactionCategories.SAVINGS]: 7.5,
+  [TransactionCategories.OTHEREXP]: 0,
 };
 
 export class SuggestionEngine {
@@ -113,8 +116,11 @@ export class SuggestionEngine {
       [TransactionCategories.CLOTHING]: 0,
       [TransactionCategories.TRAVEL]: 0,
       [TransactionCategories.EDUCATION]: 0,
+      [TransactionCategories.LOANREPAYMENT]: 0,
+      [TransactionCategories.INSURANCE]: 0,
       [TransactionCategories.INTEREST]: 0,
       [TransactionCategories.SAVINGS]: 0,
+      [TransactionCategories.OTHEREXP]: 0,
     };
     const lastMonth: Date = new Date();
     lastMonth.setMonth(lastMonth.getMonth());
@@ -188,8 +194,11 @@ export class SuggestionEngine {
       [TransactionCategories.CLOTHING]: 0,
       [TransactionCategories.TRAVEL]: 0,
       [TransactionCategories.EDUCATION]: 0,
+      [TransactionCategories.LOANREPAYMENT]: 0,
+      [TransactionCategories.INSURANCE]: 0,
       [TransactionCategories.INTEREST]: 0,
       [TransactionCategories.SAVINGS]: 0,
+      [TransactionCategories.OTHEREXP]: 0,
     };
     const availableFunds = userData.budgetInfo.monthlyVariableBudget; // total funds available for allocation
     const lastMonth: Date = new Date();
