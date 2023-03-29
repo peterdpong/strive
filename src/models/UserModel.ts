@@ -50,6 +50,7 @@ export type AccountMap = {
 export type FinancialInfo = {
   annualIncome: number;
   payfreq: number;
+  addtlIncome: number;
   monthlyTransactions: Transaction[];
   accounts: AccountMap;
 };

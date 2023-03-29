@@ -133,7 +133,8 @@ export default function BudgetPage() {
                     {userData &&
                       (
                         userData.financialInfo.annualIncome *
-                        userData.financialInfo.payfreq
+                        userData.financialInfo.payfreq +
+                        userData.financialInfo.addtlIncome
                       )
                         .toFixed(2)
                         .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
@@ -143,8 +144,9 @@ export default function BudgetPage() {
                     $
                     {userData &&
                       (
-                        userData.financialInfo.annualIncome *
-                          userData.financialInfo.payfreq -
+                        (userData.financialInfo.annualIncome *
+                          userData.financialInfo.payfreq +
+                          userData.financialInfo.addtlIncome) -
                         userData.budgetInfo.monthlyVariableBudgetUnallocated
                       )
                         .toFixed(2)

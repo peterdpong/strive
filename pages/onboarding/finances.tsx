@@ -96,13 +96,18 @@ export default function FinancesPages() {
               userData && userData.financialInfo.payfreq
                 ? userData.financialInfo.payfreq.toString()
                 : "0",
+            addtlIncome:
+              userData && userData.financialInfo.addtlIncome
+                ? userData.financialInfo.addtlIncome.toString()
+                : "0",
           }}
           onSubmit={(values, actions) => {
             if (userData) {
               setIncome(
                 userData.uid,
                 parseFloat(values.annualIncome),
-                parseFloat(values.payfreq)
+                parseFloat(values.payfreq),
+                parseFloat(values.addtlIncome)
               );
               actions.resetForm;
               router.push("/onboarding/budget");
@@ -207,6 +212,29 @@ export default function FinancesPages() {
                     step: 1,
                     precision: 2,
                     value: values.payfreq,
+                  }}
+                />
+              </Box>
+
+              <Box
+                bg={"gray.100"}
+                rounded={"5px"}
+                my={"25px"}
+                p={"20px"}
+                border={"1px"}
+                borderColor={"gray.300"}
+              >
+                <Heading mb={"5px"} fontSize={"xl"}>
+                  Additional Income per Month
+                </Heading>
+                <NumberInputControl
+                  name="addtlIncome"
+                  numberInputProps={{
+                    min: 1,
+                    max: 1000000000,
+                    step: 1,
+                    precision: 2,
+                    value: values.addtlIncome,
                   }}
                 />
               </Box>

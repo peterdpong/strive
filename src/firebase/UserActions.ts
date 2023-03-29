@@ -55,6 +55,7 @@ export const addNewUser = (
     financialInfo: {
       annualIncome: 0,
       payfreq: 0,
+      addtlIncome: 0,
       monthlyTransactions: [],
       accounts: {
         bankAccounts: {},
@@ -172,12 +173,14 @@ export const getFinancialInfo = (uid: string | undefined) => {
 export const setIncome = (
   uid: string,
   annualIncome: number,
-  payfreq: number
+  payfreq: number,
+  addtlIncome: number
 ) => {
   const userDataRef = doc(firestoreDB, "users", uid);
   updateDoc(userDataRef, {
     "financialInfo.annualIncome": annualIncome,
     "financialInfo.payfreq": payfreq,
+    "financialInfo.addtlIncome": addtlIncome,
   });
 };
 
@@ -272,7 +275,7 @@ export const deleteAccount = (
 export const updateMonthlyVariableBudget = (userData: UserModel) => {
   //const monthlyVariableBudget = userData.financialInfo.annualIncome / 12;
   const monthlyVariableBudget =
-    userData.financialInfo.annualIncome * userData.financialInfo.payfreq;
+    userData.financialInfo.annualIncome * userData.financialInfo.payfreq + userData.financialInfo.addtlIncome;
 
   const balanceAfterAllocate =
     monthlyVariableBudget -

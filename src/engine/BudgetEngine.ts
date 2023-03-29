@@ -190,7 +190,7 @@ export class BudgetEngine {
     let monthlyIncome = 0;
     //monthlyIncome = userData.financialInfo.annualIncome / 12;
     monthlyIncome =
-      userData.financialInfo.annualIncome * userData.financialInfo.payfreq;
+      userData.financialInfo.annualIncome * userData.financialInfo.payfreq + userData.financialInfo.addtlIncome;
 
     //return ("this is monthly income: ") + monthlyIncome;
 
