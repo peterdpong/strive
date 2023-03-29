@@ -83,10 +83,11 @@ export default function InstructionsPage() {
           <Text>
             Strive reimagines the process of budgeting towards a goal.  Here, you'll enter a financial savings goal,
             whether it be a specific net worth or enough money for a downpayment on the home of your dreams.  You'll also
-            set a time period that you'd like to accomplish your goal by.  We give you the flexibility of either using your
-            own interest rate or the Bank of Canada rate, updated and pulled live.
+            set a time period that you'd like to accomplish your goal by.  Our recommended long-term rate-of-return on investments is 5%,
+            based on a diversified growth portolio, though we give you the flexibility of either using your own rate-of-return 
+            or the Canada Prime rate, updated and pulled live.
           </Text>
-          <Image src="/savingsgoalpic.png" alt="Savings Goal" />
+          <Image src="/chooseyourgoalpicrevised.png" alt="Savings Goal" />
           <Text>
             Next, you'll choose your desired savings path.  Strive gives you three ways to reach your financial savings goal:
             a base option, a conservative one (you can save less but it'll take slightly longer to reach your goal) and an aggressive
@@ -118,11 +119,11 @@ export default function InstructionsPage() {
           <Text>
             'Monthly Transactions' is where you'll input your actual recorded transactions.  $450 on groceries, $25 on Netflix -
             it all goes here.  Using this information, Strives shows your estimated goal progress based on your goal inputs in
-            onboarding versus your actual, dynamic projected goal progress, shown below.  This, coupled with a breakdown of how
+            onboarding (green graph) versus your actual, dynamic projected goal progress (purple graph), as shown below.  This, coupled with a breakdown of how
             you're spending your money monthly via a category spending chart, gives you the knowledge you need to be in the driver's seat
             to make informed decisions and reach your financial goal.
           </Text>
-          <Image src="/goalprogress.png" alt="Savings Goal" />
+          <Image src="/networthgreenpurp.png" alt="Savings Goal" />
           {/* <Image src="/financespic.PNG" alt="Pic 1" /> */}
         </VStack>
       </Container>

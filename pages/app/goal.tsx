@@ -82,14 +82,14 @@ export default function GoalPage() {
   const getBankRate = async () => {
     try {
       const res = await fetch(
-        "https://www.bankofcanada.ca/valet/observations/V39079"
+        "https://www.bankofcanada.ca/valet/observations/V80691311/json?recent=5"
       );
       const data = await res.json();
       setInterestRate(
-        data.observations[data.observations.length - 1]["V39079"].v
+        data.observations[data.observations.length - 1]["V80691311"].v
       );
       console.log(
-        parseFloat(data.observations[data.observations.length - 1]["V39079"].v)
+        parseFloat(data.observations[data.observations.length - 1]["V80691311"].v)
       );
     } catch {
       console.log("Error getting bank rate");
@@ -274,7 +274,7 @@ export default function GoalPage() {
               </NumberInput>
             </Stack>
             <Stack flex={1}>
-              <Heading size="md">Assumed Interest Rate</Heading>
+              <Heading size="md">Average Rate of Return</Heading>
               <NumberInput
                 min={0}
                 value={interestRate}
@@ -289,7 +289,7 @@ export default function GoalPage() {
                 </NumberInputStepper>
               </NumberInput>
               <Button onClick={getBankRate} colorScheme="green">
-                Use Bank of Canada Rate
+                Use Canada Prime Rate
               </Button>
             </Stack>
           </Flex>

@@ -164,14 +164,14 @@ export default function SuggestionsPage() {
   const getBankRate = async () => {
     try {
       const res = await fetch(
-        "https://www.bankofcanada.ca/valet/observations/V39079"
+        "https://www.bankofcanada.ca/valet/observations/V80691311/json?recent=5"
       );
       const data = await res.json();
       setInterestRate(
-        data.observations[data.observations.length - 1]["V39079"].v
+        data.observations[data.observations.length - 1]["V80691311"].v
       );
       console.log(
-        parseFloat(data.observations[data.observations.length - 1]["V39079"].v)
+        parseFloat(data.observations[data.observations.length - 1]["V80691311"].v)
       );
     } catch {
       console.log("Error getting bank rate");
@@ -204,17 +204,18 @@ export default function SuggestionsPage() {
                     <Box>
                       <Text>
                         Here, you set your savings goal (for example, a target
-                        net worth, downpayment for a house or amount of money to
-                        purchase a new car) and the number of years you would
-                        like to achieve your goal in.
+                        net worth or amount of money for a vacation) 
+                        and the number of years you would like to achieve your goal in.
                       </Text>
 
                       <Text>
                         We will display three types of feasible savings options:
                         conservative, base and aggressive. The three options
-                        take into account your inputted information and use an
-                        assumed 5% rate-of-return assumption, which encompasses
-                        a diversified portfolio and current economic conditions.
+                        take into account your inputted information and use a long-term
+                        conservative average 5% rate-of-return on investments figure, which assumes
+                        a diversified growth portfolio (75%/23%/2% split between equities, fixed income and cash).
+                        If you'd like, you can use the Canada Prime Rate or your own preferred rate-of-return
+                        as well.
                       </Text>
                     </Box>
                   </PopoverBody>
@@ -266,7 +267,7 @@ export default function SuggestionsPage() {
               </NumberInput>
             </Stack>
             <Stack flex={1}>
-              <Heading size="md">Assumed Interest Rate</Heading>
+              <Heading size="md">Average Rate of Return</Heading>
               <NumberInput
                 min={0}
                 value={interestRate}
@@ -281,7 +282,7 @@ export default function SuggestionsPage() {
                 </NumberInputStepper>
               </NumberInput>
               <Button onClick={getBankRate} colorScheme="green">
-                Use Bank of Canada Rate
+                Use Canada Prime Rate
               </Button>
             </Stack>
           </Flex>
