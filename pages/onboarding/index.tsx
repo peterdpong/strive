@@ -84,7 +84,7 @@ export default function OnboardingIndex() {
       >
         <VStack>
           <Heading size="lg">Visualize your monthly expenses.</Heading>
-          <Image src="/homepic1.png" alt="Pic 1" />
+          <Image src="/homepagepic2.png" alt="Pic 1" />
         </VStack>
       </Container>
 
