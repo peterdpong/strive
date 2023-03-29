@@ -61,7 +61,7 @@ export default function AboutPage() {
           <Text>
           Strive is your personal finance tool for budgeting. Input your
           finances and target savings goal and receive personalized suggestions on
-          how to best reach your goal. Suggestions are supported by calculations
+          how best to reach your goal. Suggestions are supported by calculations
           and sources where appropriate. Disclaimer: the outputs are suggestions
           and should not be taken as financial advice.
           </Text>

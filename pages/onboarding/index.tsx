@@ -28,7 +28,7 @@ export default function OnboardingIndex() {
       >
         <Heading textAlign={"center"}>Welcome to Strive.</Heading>
         <Text fontSize={"md"}>
-          The budgeting tool that helps you to reach your financial goals.
+          The budgeting tool that helps you reach your financial goals.
         </Text>
         <ButtonGroup variant="outline" spacing="6">
           <Button

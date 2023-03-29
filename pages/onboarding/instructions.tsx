@@ -60,8 +60,9 @@ export default function InstructionsPage() {
           </Heading>
           <Text>
             Strive allows you to create a financial goal and monitor your progress with our projections and visualizations.
-            In order to use Strive, you'll need to click 'Get Started' above and input three things on the proceeding pages: 
-            your financial accounts & loans, your recurring monthly expenses and your savings goal amount & timeline.
+            In order to use Strive, you'll need to click 'Get Started' above and input three items on the proceeding pages: 
+            your financial accounts & loans, your monthly net income along with any recurring monthly expenses 
+            and your savings goal amount & timeline.
           </Text>
           {/* <Image src="/financespic.PNG" alt="Pic 1" /> */}
         </VStack>
