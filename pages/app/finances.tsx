@@ -100,7 +100,7 @@ export default function FinancesPage() {
                 onSubmit={handleSubmit as any}
               >
                 <Heading mb={"5px"} fontSize={"xl"}>
-                  Net Take Home Pay per Payslip
+                  Net Take Home Pay per Payslip ($ CAD)
                 </Heading>
                 <NumberInputControl
                   name="annualIncome"
@@ -126,7 +126,7 @@ export default function FinancesPage() {
                   }}
                 />
                 <Heading mb={"5px"} fontSize={"xl"}>
-                  Additional Income per Month
+                  Additional Income per Month ($ CAD)
                 </Heading>
                 <NumberInputControl
                   name="addtlIncome"

@@ -159,7 +159,7 @@ export default function FinancesPages() {
                 borderColor={"gray.300"}
               >
                 <Heading mb={"5px"} fontSize={"xl"}>
-                  Net Take Home Pay per Payslip
+                  Net Take Home Pay per Payslip ($ CAD)
                 </Heading>
                 <NumberInputControl
                   name="annualIncome"
@@ -226,7 +226,7 @@ export default function FinancesPages() {
                 borderColor={"gray.300"}
               >
                 <Heading mb={"5px"} fontSize={"xl"}>
-                  Additional Income per Month
+                  Additional Income per Month ($ CAD)
                 </Heading>
                 <NumberInputControl
                   name="addtlIncome"

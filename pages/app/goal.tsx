@@ -241,7 +241,7 @@ export default function GoalPage() {
           </Heading>
           <Flex gap="1rem" mb="1">
             <Stack flex={1}>
-              <Heading size="md">Savings Goal ($)</Heading>
+              <Heading size="md">Savings Goal ($ CAD)</Heading>
               <NumberInput
                 min={0}
                 defaultValue={netWorthGoal}
