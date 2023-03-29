@@ -17,9 +17,12 @@ export enum TransactionCategories {
   CLOTHING = "Clothing",
   TRAVEL = "Travel",
   EDUCATION = "Education",
+  LOANREPAYMENT = "Loan Repayment",
+  INSURANCE = "Insurance",
   INTEREST = "Interest",
   SAVINGS = "Savings",
   INCOME = "Income",
+  OTHEREXP = "Other",
 }
 
 export const getTransactionCategoriesArray = () => {
