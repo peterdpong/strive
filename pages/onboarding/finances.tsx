@@ -153,7 +153,7 @@ export default function FinancesPages() {
                 borderColor={"gray.300"}
               >
                 <Heading mb={"5px"} fontSize={"xl"}>
-                  Net Take Home Pay ($)
+                  Net Take Home Pay per Payslip
                 </Heading>
                 <NumberInputControl
                   name="annualIncome"
@@ -197,7 +197,7 @@ export default function FinancesPages() {
                 borderColor={"gray.300"}
               >
                 <Heading mb={"5px"} fontSize={"xl"}>
-                  Pay Frequency
+                  Pay Frequency per Month
                 </Heading>
                 <NumberInputControl
                   name="payfreq"
