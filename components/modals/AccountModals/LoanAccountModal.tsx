@@ -21,12 +21,8 @@ import {
   SubmitButton,
   SelectControl,
 } from "formik-chakra-ui";
-import {
-  NumberInput
-} from "@chakra-ui/react";
 import { addAccount } from "../../../src/firebase/UserActions";
 import { Timestamp } from "firebase/firestore";
-import { useState } from "react";
 
 export default function LoanAccountModal(props: {
   isOpen: boolean;
@@ -35,24 +31,19 @@ export default function LoanAccountModal(props: {
 }) {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
-  const [interestRate, setInterestRate] = useState<number>(0);
 
-const getBankRate = async () => {
-  try {
-    const res = await fetch(
-      "https://www.bankofcanada.ca/valet/observations/V80691311/json?recent=5"
-    );
-    const data = await res.json();
-    setInterestRate(
-      parseFloat(data.observations[data.observations.length - 1]["V80691311"].v)
-    );
-    console.log(
-      parseFloat(data.observations[data.observations.length - 1]["V80691311"].v)
-    );
-  } catch {
-    console.log("Error getting bank rate");
-  }
-};
+  const getBankRate = async () => {
+    try {
+      const res = await fetch(
+        "https://www.bankofcanada.ca/valet/observations/V80691311/json?recent=5"
+      );
+      const data = await res.json();
+
+      return data.observations[data.observations.length - 1]["V80691311"].v;
+    } catch {
+      console.log("Error getting bank rate");
+    }
+  };
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
@@ -94,7 +85,7 @@ const getBankRate = async () => {
               }
             }}
           >
-            {({ handleSubmit, values }) => (
+            {({ handleSubmit, values, setFieldValue }) => (
               <Box
                 as="form"
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -112,7 +103,9 @@ const getBankRate = async () => {
                   <option value={LoanTypes.CAR}>{LoanTypes.CAR}</option>
                   <option value={LoanTypes.STUDENT}>{LoanTypes.STUDENT}</option>
                   <option value={LoanTypes.LOC}>{LoanTypes.LOC}</option>
-                  <option value={LoanTypes.OTHERLOANS}>{LoanTypes.OTHERLOANS}</option>
+                  <option value={LoanTypes.OTHERLOANS}>
+                    {LoanTypes.OTHERLOANS}
+                  </option>
                 </SelectControl>
                 <NumberInputControl
                   name="remainingAmount"
@@ -139,13 +132,16 @@ const getBankRate = async () => {
                     min: 0,
                     step: 1,
                     precision: 2,
-                    value: interestRate,
-                  }}
-                  onChange={(val) => {
-                    setInterestRate(val);
+                    value: values.interestRate,
                   }}
                 />
-                <Button onClick={getBankRate} colorScheme="green">
+                <Button
+                  onClick={async () => {
+                    const bankPrimeRate = await getBankRate();
+                    setFieldValue("interestRate", bankPrimeRate);
+                  }}
+                  colorScheme="green"
+                >
                   Use Canada Prime Rate
                 </Button>
                 <InputControl
