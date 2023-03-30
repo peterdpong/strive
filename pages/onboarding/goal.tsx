@@ -213,9 +213,8 @@ export default function SuggestionsPage() {
                         conservative, base and aggressive. The three options
                         take into account your inputted information and use a long-term
                         conservative average 5% rate-of-return on investments figure, which assumes
-                        a diversified growth portfolio (75%/23%/2% split between equities, fixed income and cash).
-                        If you'd like, you can use the Canada Prime Rate or your own preferred rate-of-return
-                        as well.
+                        a diversified growth portfolio (comprising 75% equities,
+                        23% fixed income and 2% cash).  
                       </Text>
                     </Box>
                   </PopoverBody>
@@ -267,7 +266,7 @@ export default function SuggestionsPage() {
               </NumberInput>
             </Stack>
             <Stack flex={1}>
-              <Heading size="md">Average Rate of Return</Heading>
+              <Heading size="md">Average Rate of Return (%)</Heading>
               <NumberInput
                 min={0}
                 value={interestRate}

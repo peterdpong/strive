@@ -93,7 +93,7 @@ export default function LoanAccountModal(props: {
                 </SelectControl>
                 <NumberInputControl
                   name="remainingAmount"
-                  label="Remaining owned"
+                  label="Remaining owed"
                   numberInputProps={{
                     min: 0,
                     step: 1,
@@ -102,7 +102,7 @@ export default function LoanAccountModal(props: {
                 />
                 <NumberInputControl
                   name="minimumPayment"
-                  label="Minimum monthly payment"
+                  label="Minimum monthly payment (principal + interest)"
                   numberInputProps={{
                     min: 0,
                     step: 1,

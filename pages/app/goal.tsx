@@ -274,7 +274,7 @@ export default function GoalPage() {
               </NumberInput>
             </Stack>
             <Stack flex={1}>
-              <Heading size="md">Average Rate of Return</Heading>
+              <Heading size="md">Average Rate of Return (%)</Heading>
               <NumberInput
                 min={0}
                 value={interestRate}
