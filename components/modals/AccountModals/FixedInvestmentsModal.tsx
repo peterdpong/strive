@@ -10,6 +10,8 @@ import {
   Alert,
   AlertIcon,
   AlertTitle,
+  Button,
+  useToast,
 } from "@chakra-ui/react";
 import { useAuth } from "../../../src/auth/auth";
 import { Formik } from "formik";
@@ -49,26 +51,40 @@ export default function FixedInvestmentsModal(props: {
             }}
             onSubmit={(values, actions) => {
               if (userData) {
-                addAccount(
-                  userData.uid,
-                  userData.financialInfo.accounts,
-                  "FixedInvestment",
-                  {
-                    name: values.name,
-                    startDate: new Timestamp(
-                      Date.parse(values.startDate) / 1000,
-                      0
-                    ),
-                    maturityDate: new Timestamp(
-                      Date.parse(values.maturityDate) / 1000,
-                      0
-                    ),
-                    startingValue: parseFloat(values.startingValue),
-                    interestRate: parseFloat(values.interestRate),
-                  }
-                );
-                actions.resetForm;
-                props.onClose();
+                if (values.maturityDate < values.startDate) {
+                  // throw Toast error
+                  const toast = useToast()
+                  toast({
+                    title: 'Date Error',
+                    description: "Maturity Date must be after Start Date",
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                  })
+                  actions.resetForm;
+                }
+                else {
+                  addAccount(
+                    userData.uid,
+                    userData.financialInfo.accounts,
+                    "FixedInvestment",
+                    {
+                      name: values.name,
+                      startDate: new Timestamp(
+                        Date.parse(values.startDate) / 1000,
+                        0
+                      ),
+                      maturityDate: new Timestamp(
+                        Date.parse(values.maturityDate) / 1000,
+                        0
+                      ),
+                      startingValue: parseFloat(values.startingValue),
+                      interestRate: parseFloat(values.interestRate),
+                    }
+                  );
+                  actions.resetForm;
+                  props.onClose();
+                }
               } else {
                 alert("Error: User not logged in...");
               }
