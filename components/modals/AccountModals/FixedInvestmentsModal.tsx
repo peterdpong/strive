@@ -137,6 +137,15 @@ export default function FixedInvestmentsModal(props: {
                     precision: 2,
                   }}
                 />
+                <NumberInputControl
+                  name="interestRate"
+                  label="Investment Interest Rate (%)"
+                  numberInputProps={{
+                    min: 0,
+                    step: 1,
+                    precision: 2,
+                  }}
+                />
                 <SubmitButton mt={"20px"} colorScheme={"green"}>
                   Add investment account
                 </SubmitButton>
