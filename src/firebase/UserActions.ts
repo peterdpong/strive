@@ -275,7 +275,8 @@ export const deleteAccount = (
 export const updateMonthlyVariableBudget = (userData: UserModel) => {
   //const monthlyVariableBudget = userData.financialInfo.annualIncome / 12;
   const monthlyVariableBudget =
-    userData.financialInfo.annualIncome * userData.financialInfo.payfreq + userData.financialInfo.addtlIncome;
+    userData.financialInfo.annualIncome * userData.financialInfo.payfreq +
+    userData.financialInfo.addtlIncome;
 
   const balanceAfterAllocate =
     monthlyVariableBudget -

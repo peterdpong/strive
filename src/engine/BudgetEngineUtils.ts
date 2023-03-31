@@ -72,6 +72,21 @@ export class BudgetEngineUtils {
     return currentSavings;
   }
 
+  static calculateCurrentMonthExpenses(userData: UserModel) {
+    let allExpenses = 0;
+
+    const userCurrentMonthTransactions =
+      BudgetEngineUtils.getCurrentMonthTransactions(userData);
+
+    for (const transaction of userCurrentMonthTransactions) {
+      if (transaction.amount < 0) {
+        allExpenses += -transaction.amount;
+      }
+    }
+
+    return allExpenses;
+  }
+
   static addMonths(date: Date, months: number) {
     const d = date.getDate();
     date.setMonth(date.getMonth() + +months);
@@ -153,7 +168,7 @@ export class BudgetEngineUtils {
     let currMonth = startMonth;
     const date = new Date(); // current date
     const monthParts = currMonth.split("-").map((part) => parseInt(part));
-    console.log(monthParts);
+
     while (
       monthParts[0] !== date.getMonth() + 2 ||
       monthParts[1] !== date.getFullYear()

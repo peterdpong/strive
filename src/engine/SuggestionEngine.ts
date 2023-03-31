@@ -5,6 +5,12 @@ import { enumKeys } from "../utils";
 import { BankInvestmentAccount } from "../models/AccountModel";
 import { BudgetEngineUtils } from "./BudgetEngineUtils";
 import { calculateNetWorth } from "../visualization/GoalVisualizations";
+import {
+  AverageExpensesByAge,
+  AverageExpensesOnePersonHousehold,
+  AverageIncomeByAge,
+  AverageSavingsByAge,
+} from "./SuggestionData";
 
 const CategoryPercentages: { [categoryKey: string]: number } = {
   [TransactionCategories.GROCERIES]: 10,
@@ -183,6 +189,9 @@ export class SuggestionEngine {
   }
 
   static generateCategorySuggestions(userData: UserModel) {
+    const suggestionArray: Suggestion[] = [];
+    const suggestionType = "SpendingAndBudget";
+    const suggestionBadge = "Category Spending";
     const categorySpend: { [categoryKey: string]: number } = {
       [TransactionCategories.GROCERIES]: 0,
       [TransactionCategories.ENTERTAINMENT]: 0,
@@ -207,78 +216,256 @@ export class SuggestionEngine {
       lastMonth.getUTCMonth().toString() +
       "-" +
       lastMonth.getUTCFullYear().toString();
-    if (userData.monthTransactionsMap[lastMonthKey] === undefined) {
-      return;
+    if (userData.monthTransactionsMap[lastMonthKey] !== undefined) {
+      // loop through every transaction ever made by this user
+      userData.monthTransactionsMap[lastMonthKey].forEach((transaction) => {
+        // for each transaction made in the last month - negative we are looking at percentage spend
+        if (transaction.category in CategoryPercentages) {
+          categorySpend[transaction.category] += -transaction.amount;
+        }
+      });
+
+      for (const category of enumKeys(TransactionCategories)) {
+        if (categorySpend[TransactionCategories[category]] < 0) {
+          // Skip category if negative as it implies no spending rather money gained
+          continue;
+        }
+
+        // Calculate the percentage of income spend on specific category and compare to recommended standard
+        const totalCategorySpendPercentage: number =
+          (categorySpend[TransactionCategories[category]] / availableFunds) *
+          100;
+        const targetPercent: number =
+          CategoryPercentages[TransactionCategories[category]];
+
+        if (totalCategorySpendPercentage > targetPercent) {
+          //Their percentage spend is greater than target recommended, create a suggestion
+          const reduceAmount =
+            ((totalCategorySpendPercentage - targetPercent) * availableFunds) /
+            100;
+
+          const newSuggestion: Suggestion = {
+            suggestionType: suggestionType,
+            badgeColor: "red",
+            suggestionBadge: suggestionBadge,
+            suggestionTitle: `Your spending in ${
+              TransactionCategories[category]
+            } last month was ${Math.trunc(
+              totalCategorySpendPercentage
+            )}% of your monthly income, higher than the recommended percentage.`,
+            suggestionDescription: `Based on budgetting guidelines set by The Credit Counselling Society, you should aim to spend ${targetPercent}% of your income on ${
+              TransactionCategories[category]
+            }. Analyzing your last month spending on ${
+              TransactionCategories[category]
+            }, we found you spent ${Math.trunc(
+              totalCategorySpendPercentage
+            )}% of your monthly income on ${
+              TransactionCategories[category]
+            } which is ${Math.trunc(
+              totalCategorySpendPercentage - targetPercent
+            )}% more than recommended. It is recommened for you to reduce you spending in this category by $${reduceAmount
+              .toFixed(2)
+              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}!`,
+            source: [
+              {
+                link: "https://www.mymoneycoach.ca/budgeting/budgeting-guidelines",
+                linkTitle: "Budget Guidelines",
+              },
+            ],
+          };
+          suggestionArray.push(newSuggestion);
+        }
+      }
     }
 
-    // loop through every transaction ever made by this user
-    userData.monthTransactionsMap[lastMonthKey].forEach((transaction) => {
-      // for each transaction made in the last month - negative we are looking at percentage spend
-      if (transaction.category in CategoryPercentages) {
-        categorySpend[transaction.category] += -transaction.amount;
-      }
-    });
+    // Demographic Suggestions
+    let userAgeKey = undefined;
+    if (userData.age >= 18 && userData.age <= 24) {
+      userAgeKey = "18-24";
+    } else if (userData.age >= 25 && userData.age <= 29) {
+      userAgeKey = "25-29";
+    } else if (userData.age >= 30 && userData.age <= 34) {
+      userAgeKey = "30-34";
+    } else if (userData.age >= 35 && userData.age <= 39) {
+      userAgeKey = "35-39";
+    } else if (userData.age >= 40 && userData.age <= 44) {
+      userAgeKey = "40-44";
+    }
 
-    const suggestionArray: Suggestion[] = [];
-    const suggestionType = "SpendingAndBudget";
-    const suggestionBadge = "Category Spending";
-    for (const category of enumKeys(TransactionCategories)) {
-      if (categorySpend[TransactionCategories[category]] < 0) {
-        // Skip category if negative as it implies no spending rather money gained
-        continue;
-      }
-
-      // Calculate the percentage of income spend on specific category and compare to recommended standard
-      const totalCategorySpendPercentage: number =
-        (categorySpend[TransactionCategories[category]] / availableFunds) * 100;
-      const targetPercent: number =
-        CategoryPercentages[TransactionCategories[category]];
-
-      if (totalCategorySpendPercentage > targetPercent) {
-        //Their percentage spend is greater than target recommended, create a suggestion
-        const reduceAmount =
-          ((totalCategorySpendPercentage - targetPercent) * availableFunds) /
-          100;
-
-        const newSuggestion: Suggestion = {
+    if (userAgeKey !== undefined) {
+      // Monthly Income After tax
+      const monthlyIncome =
+        userData.financialInfo.annualIncome * userData.financialInfo.payfreq +
+        userData.financialInfo.addtlIncome;
+      if (AverageIncomeByAge[userAgeKey]) {
+        suggestionArray.push({
           suggestionType: suggestionType,
-          badgeColor: "red",
-          suggestionBadge: suggestionBadge,
-          suggestionTitle: `Your spending in ${
-            TransactionCategories[category]
-          } last month was ${Math.trunc(
-            totalCategorySpendPercentage
-          )}% of your monthly income, higher than the recommended percentage.`,
-          suggestionDescription: `Based on budgetting guidelines set by The Credit Counselling Society, you should aim to spend ${targetPercent}% of your income on ${
-            TransactionCategories[category]
-          }. Analyzing your last month spending on ${
-            TransactionCategories[category]
-          }, we found you spent ${Math.trunc(
-            totalCategorySpendPercentage
-          )}% of your monthly income on ${
-            TransactionCategories[category]
-          } which is ${Math.trunc(
-            totalCategorySpendPercentage - targetPercent
-          )}% more than recommended. It is recommened for you to reduce you spending in this category by $${reduceAmount
+          badgeColor: "orange",
+          suggestionBadge: "Demographic Comparison",
+          suggestionTitle: `Comparing your monthly income to your age demographic average monthly income.`,
+          suggestionDescription: `Currently your monthly income is $${monthlyIncome
             .toFixed(2)
-            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}!`,
+            .replace(
+              /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+              ","
+            )}. In comparison, the average monthly income for the ${userAgeKey} age group is $${AverageIncomeByAge[
+            userAgeKey
+          ]
+            .toFixed(2)
+            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}.`,
           source: [
             {
-              link: "https://www.mymoneycoach.ca/budgeting/budgeting-guidelines",
-              linkTitle: "Budget Guidelines",
+              link: "https://docs.google.com/spreadsheets/d/15c7ZnSVMEaTFHxsEVqz5I8HBMBYpMiTPCz8OvbZNHV4/edit#gid=1892118786",
+              linkTitle:
+                "/r/personalfinancecanada Budget Survey (800+ Responses)",
             },
           ],
-        };
-        suggestionArray.push(newSuggestion);
+        });
+      }
+
+      const currentMonthSavings =
+        BudgetEngineUtils.calculateCurrentMonthSavings(userData);
+      if (
+        currentMonthSavings > 0 &&
+        currentMonthSavings < AverageSavingsByAge[userAgeKey]
+      ) {
+        suggestionArray.push({
+          suggestionType: suggestionType,
+          badgeColor: "orange",
+          suggestionBadge: "Demographic Comparison",
+          suggestionTitle: `Your current monthly savings is less than the average savings amount of your age group.`,
+          suggestionDescription: `This month, you are on track to save $${currentMonthSavings
+            .toFixed(2)
+            .replace(
+              /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+              ","
+            )}. In comparison, the average monthly savings amount for the ${userAgeKey} age group is $${AverageSavingsByAge[
+            userAgeKey
+          ]
+            .toFixed(2)
+            .replace(
+              /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+              ","
+            )}. You are currently behind the average savings amount by $${(
+            AverageSavingsByAge[userAgeKey] - currentMonthSavings
+          )
+            .toFixed(2)
+            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}!`,
+          suggestionActions: [
+            "Review the spending and budget suggestions to look for potential areas for savings!",
+            "Explore income growth opportunities in the money allocation suggestions!",
+          ],
+          source: [
+            {
+              link: "https://docs.google.com/spreadsheets/d/15c7ZnSVMEaTFHxsEVqz5I8HBMBYpMiTPCz8OvbZNHV4/edit#gid=1892118786",
+              linkTitle:
+                "/r/personalfinancecanada Budget Survey (800+ Responses)",
+            },
+          ],
+        });
+      }
+
+      const currentMonthSpending =
+        BudgetEngineUtils.calculateCurrentMonthExpenses(userData);
+      if (currentMonthSpending > AverageExpensesByAge[userAgeKey]) {
+        suggestionArray.push({
+          suggestionType: suggestionType,
+          badgeColor: "orange",
+          suggestionBadge: "Demographic Comparison",
+          suggestionTitle: `Your current monthly spending is greater than the average spending of your age group!`,
+          suggestionDescription: `This month, you have spent $${currentMonthSpending
+            .toFixed(2)
+            .replace(
+              /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+              ","
+            )}! In comparison, the average monthly spending amount for the ${userAgeKey} age group is $${AverageExpensesByAge[
+            userAgeKey
+          ]
+            .toFixed(2)
+            .replace(
+              /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+              ","
+            )}. You are currently spending $${(
+            AverageExpensesByAge[userAgeKey] - currentMonthSpending
+          )
+            .toFixed(2)
+            .replace(
+              /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+              ","
+            )} more than others in your age group!`,
+          suggestionActions: [
+            "Explore the spending and budget suggestions to look for your largest expense categories.",
+            "Review your current month's expenses on the budget page for a complete view of your spending.",
+          ],
+          source: [
+            {
+              link: "https://docs.google.com/spreadsheets/d/15c7ZnSVMEaTFHxsEVqz5I8HBMBYpMiTPCz8OvbZNHV4/edit#gid=1892118786",
+              linkTitle:
+                "/r/personalfinancecanada Budget Survey (800+ Responses)",
+            },
+          ],
+        });
+      }
+
+      for (const category of enumKeys(TransactionCategories)) {
+        if (
+          categorySpend[TransactionCategories[category]] < 0 ||
+          AverageExpensesOnePersonHousehold[TransactionCategories[category]] ===
+            undefined
+        ) {
+          // Skip category
+          continue;
+        }
+
+        if (
+          categorySpend[TransactionCategories[category]] >
+          AverageExpensesOnePersonHousehold[TransactionCategories[category]]
+        ) {
+          suggestionArray.push({
+            suggestionType: suggestionType,
+            badgeColor: "red",
+            suggestionBadge: "Demographic Comparison",
+            suggestionTitle: `Your last month spending for ${TransactionCategories[category]} is greater than the average spending in this category!`,
+            suggestionDescription: `Last month, you spent $${categorySpend[
+              TransactionCategories[category]
+            ]
+              .toFixed(2)
+              .replace(
+                /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                ","
+              )} which is greater than the average spending among Canadians in this category which spend $${AverageExpensesOnePersonHousehold[
+              TransactionCategories[category]
+            ]
+              .toFixed(2)
+              .replace(
+                /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                ","
+              )}. You are spending $${(
+              AverageExpensesOnePersonHousehold[
+                TransactionCategories[category]
+              ] - categorySpend[TransactionCategories[category]]
+            )
+              .toFixed(2)
+              .replace(
+                /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                ","
+              )} more. Review your budget and transactions last month for ${
+              TransactionCategories[category]
+            }!`,
+            source: [
+              {
+                link: "https://www150.statcan.gc.ca/n1/daily-quotidien/210122/dq210122b-eng.htm",
+                linkTitle:
+                  "Statistics Canada - Survey of Household Spending, 2019",
+              },
+            ],
+          });
+        }
       }
     }
 
     return suggestionArray;
   }
-
-  // static generateDemographicSuggestions(userData: UserModel | null) {
-  //   //do something
-  // }
 
   // ---- Money Allocation Suggestions  ----
 
@@ -415,7 +602,7 @@ export class SuggestionEngine {
         allMoneyAllocationSuggestions.push({
           suggestionType: suggestionType,
           suggestionBadge: "Loan Repayment Allocation",
-          badgeColor: "blue",
+          badgeColor: "green",
           suggestionTitle: `Allocate your savings towards your ${loanSortedByInterestRate[0].name}.`,
           suggestionDescription: `Your ${
             loanSortedByInterestRate[0].name

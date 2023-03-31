@@ -75,12 +75,13 @@ export default function FinancesPages() {
                   <PopoverBody>
                     <Box>
                       In the first field below, please enter your net take home,
-                      after tax payslip amount. In the second field below, please
-                      enter the frequency of your payments (for example, 2 for
-                      biweekly or 1 for monthly). In the third field below, please
-                      enter any other additional income you earn monthly.
-                      Then, please add your bank accounts, investment accounts, other assets, 
-                      credit cards and other loans outstanding.
+                      after tax payslip amount. In the second field below,
+                      please enter the frequency of your payments (for example,
+                      2 for biweekly or 1 for monthly). In the third field
+                      below, please enter any other additional income you earn
+                      monthly. Then, please add your bank accounts, investment
+                      accounts, other assets, credit cards and other loans
+                      outstanding.
                     </Box>
                   </PopoverBody>
                 </PopoverContent>
@@ -231,7 +232,7 @@ export default function FinancesPages() {
                 <NumberInputControl
                   name="addtlIncome"
                   numberInputProps={{
-                    min: 1,
+                    min: 0,
                     max: 1000000000,
                     step: 1,
                     precision: 2,
