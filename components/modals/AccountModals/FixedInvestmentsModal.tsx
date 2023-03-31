@@ -10,6 +10,7 @@ import {
   Alert,
   AlertIcon,
   AlertTitle,
+  useToast,
 } from "@chakra-ui/react";
 import { useAuth } from "../../../src/auth/auth";
 import { Formik } from "formik";
@@ -30,6 +31,7 @@ export default function FixedInvestmentsModal(props: {
 }) {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
+  const toast = useToast();
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
@@ -45,30 +47,54 @@ export default function FixedInvestmentsModal(props: {
               maturityDate: "",
               startingValue: "0",
               interestRate: "0",
-              error: null,
             }}
             onSubmit={(values, actions) => {
               if (userData) {
-                addAccount(
-                  userData.uid,
-                  userData.financialInfo.accounts,
-                  "FixedInvestment",
-                  {
-                    name: values.name,
-                    startDate: new Timestamp(
-                      Date.parse(values.startDate) / 1000,
-                      0
-                    ),
-                    maturityDate: new Timestamp(
-                      Date.parse(values.maturityDate) / 1000,
-                      0
-                    ),
-                    startingValue: parseFloat(values.startingValue),
-                    interestRate: parseFloat(values.interestRate),
-                  }
-                );
-                actions.resetForm;
-                props.onClose();
+                if (values.maturityDate < values.startDate) {
+                  // throw Toast error
+                  toast({
+                    title: "Date Error",
+                    description: "Maturity Date must be after Start Date",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                  });
+                  actions.setSubmitting(false);
+                } else if (
+                  values.name === "" ||
+                  values.startDate === "" ||
+                  values.maturityDate === ""
+                ) {
+                  toast({
+                    title: "Error",
+                    description: "Atleast one input missing value!",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                  });
+                  actions.setSubmitting(false);
+                } else {
+                  addAccount(
+                    userData.uid,
+                    userData.financialInfo.accounts,
+                    "FixedInvestment",
+                    {
+                      name: values.name,
+                      startDate: new Timestamp(
+                        Date.parse(values.startDate) / 1000,
+                        0
+                      ),
+                      maturityDate: new Timestamp(
+                        Date.parse(values.maturityDate) / 1000,
+                        0
+                      ),
+                      startingValue: parseFloat(values.startingValue),
+                      interestRate: parseFloat(values.interestRate),
+                    }
+                  );
+                  actions.resetForm;
+                  props.onClose();
+                }
               } else {
                 alert("Error: User not logged in...");
               }
@@ -120,14 +146,6 @@ export default function FixedInvestmentsModal(props: {
                     precision: 2,
                   }}
                 />
-                {values.error !== null ? (
-                  <Alert status="error">
-                    <AlertIcon />
-                    <AlertTitle>{values.error}</AlertTitle>
-                  </Alert>
-                ) : (
-                  <></>
-                )}
                 <SubmitButton mt={"20px"} colorScheme={"green"}>
                   Add investment account
                 </SubmitButton>
