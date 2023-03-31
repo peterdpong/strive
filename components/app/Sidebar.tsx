@@ -20,7 +20,7 @@ import {
   MdCreditCard,
   MdOutlineFlashOn,
   MdPieChart,
-  MdSettings,
+  MdLogout,
   MdMenu,
   MdBuild,
 } from "react-icons/md";
@@ -42,7 +42,7 @@ const LinkItems: Array<LinkItemProps> = [
 ];
 
 const BottomItems: Array<LinkItemProps> = [
-  { name: "Settings", icon: MdSettings, href: "/app/settings" },
+  { name: "Logout", icon: MdLogout, href: "/app/logout" },
 ];
 
 export default function Sidebar({ children }: { children: ReactNode }) {

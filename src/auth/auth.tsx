@@ -21,6 +21,7 @@ import {
 import { authInstance, firestoreDB } from "../firebase/firebase";
 import { addNewUser, getUserData } from "../firebase/UserActions";
 import { UserModel } from "../models/UserModel";
+import { useRouter } from "next/router";
 
 interface AuthContext {
   useRequiredAuth: () => UserModel | null;
@@ -77,6 +78,7 @@ const formatUserState = (userData: DocumentSnapshot): UserModel | null => {
 function useProvideAuth() {
   const [auth, setAuth] = useState<UserModel | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   const handleAuthChange = async (authState: User | null) => {
     if (!authState) {
@@ -157,7 +159,8 @@ function useProvideAuth() {
   };
 
   const signOutAuth = async () => {
-    return signOut(authInstance).then(clearAuthState);
+    signOut(authInstance).then(clearAuthState);
+    router.push("/login");
   };
 
   const useRequiredAuth = () => {

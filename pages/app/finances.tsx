@@ -131,7 +131,7 @@ export default function FinancesPage() {
                 <NumberInputControl
                   name="addtlIncome"
                   numberInputProps={{
-                    min: 1,
+                    min: 0,
                     max: 1000000000,
                     step: 1,
                     precision: 2,
