@@ -86,9 +86,22 @@ export default function BankInvestmentAccountModal(props: {
                   label="Account Type"
                   selectProps={{ placeholder: "Select account type" }}
                 >
-                  <option value={AccountType.SAVINGS}>{AccountType.SAVINGS}</option>
-                  <option value={AccountType.CHEQUINGS}>{AccountType.CHEQUINGS}</option>
+                  <option value={AccountType.SAVINGS}>
+                    {AccountType.SAVINGS}
+                  </option>
+                  <option value={AccountType.CHEQUINGS}>
+                    {AccountType.CHEQUINGS}
+                  </option>
                 </SelectControl>
+                <NumberInputControl
+                  name="interestRate"
+                  label="Account Interest Rate (%)"
+                  numberInputProps={{
+                    min: 0,
+                    step: 1,
+                    precision: 2,
+                  }}
+                />
                 {values.error !== null ? (
                   <Alert status="error">
                     <AlertIcon />

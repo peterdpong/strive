@@ -111,6 +111,15 @@ export default function FixedInvestmentsModal(props: {
                     precision: 2,
                   }}
                 />
+                <NumberInputControl
+                  name="interestRate"
+                  label="Investment Interest Rate (%)"
+                  numberInputProps={{
+                    min: 0,
+                    step: 1,
+                    precision: 2,
+                  }}
+                />
                 {values.error !== null ? (
                   <Alert status="error">
                     <AlertIcon />
