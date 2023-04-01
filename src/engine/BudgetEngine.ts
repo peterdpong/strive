@@ -33,6 +33,8 @@ export class BudgetEngine {
       }
     );
 
+    console.log("this is bankacctotal: " + bankAcctTotal);
+
     //return ("this is bankaacctotal:" ) + bankAcctTotal;
 
     //fv bank account assets
@@ -203,32 +205,32 @@ export class BudgetEngine {
 
     //return ("this is monthly transactions: ") + categoryAllocations;
 
-    let creditCardRepayment = 0;
-    Object.values(userData.financialInfo.accounts.creditCards).map(
-      (account) => {
-        creditCardRepayment += account.nextPaymentAmount; //monthly payment
-      }
-    );
+    // let creditCardRepayment = 0;
+    // Object.values(userData.financialInfo.accounts.creditCards).map(
+    //   (account) => {
+    //     creditCardRepayment += account.nextPaymentAmount; //monthly payment
+    //   }
+    // );
 
     //return ("this is credit card repayment: ") + creditCardRepayment;
 
-    let loanPrincipal = 0;
-    let loanInterest = 0;
-    let loanRepayment = 0;
+    // let loanPrincipal = 0;
+    // let loanInterest = 0;
+    // let loanRepayment = 0;
 
-    Object.values(userData.financialInfo.accounts.loans).map((account) => {
-      loanPrincipal += account.minimumPayment;
-    });
+    // Object.values(userData.financialInfo.accounts.loans).map((account) => {
+    //   loanPrincipal += account.minimumPayment;
+    // });
 
-    Object.values(userData.financialInfo.accounts.loans).map((account) => {
-      loanInterest += (account.remainingAmount * account.interestRate);
-    });
+    // Object.values(userData.financialInfo.accounts.loans).map((account) => {
+    //   loanInterest += (account.remainingAmount * account.interestRate);
+    // });
 
     // Object.values(userData.financialInfo.accounts.loans).map((account) => {
     //   loansTotal += account.remainingAmount;
     // });
 
-    loanRepayment = loanPrincipal + loanInterest;
+    // loanRepayment = loanPrincipal + loanInterest;
 
     // let loanRepayment = 0;
     // Object.values(userData.financialInfo.accounts.loans).map((account) => {
@@ -238,7 +240,8 @@ export class BudgetEngine {
     //return ("this is loan repayment: ") + loanRepayment;
 
     let totalOutflows = 0;
-    totalOutflows = categoryAllocations + creditCardRepayment + loanRepayment;
+    // totalOutflows = categoryAllocations + creditCardRepayment + loanRepayment;
+    totalOutflows = categoryAllocations;
 
     //return ("this is total outflows: ") + totalOutflows;
 
@@ -282,10 +285,10 @@ export class BudgetEngine {
         (interestRate / 100 / 12));
     moreAggressiveNW = currNetWorthFV + futureValMoreAggressive;
 
-    if (calcMonthlySavings > monthlySavingsAvail) {
-      return null;
-      //TO DO: return suggestions
-    } else {
+    // if (calcMonthlySavings > monthlySavingsAvail) {
+    //   return null;
+    //   //TO DO: return suggestions
+    // } else {
       return {
         lessAggressiveGoal: {
           startingNetWorth: currNetWorth,
@@ -308,4 +311,4 @@ export class BudgetEngine {
       };
     }
   }
-}
+// }
