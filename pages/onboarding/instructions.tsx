@@ -61,8 +61,8 @@ export default function InstructionsPage() {
           <Text>
             Strive allows you to create a financial goal and monitor your progress with our projections and visualizations.
             In order to use Strive, you'll need to click 'Get Started' above and input three items on the proceeding pages: 
-            your financial accounts & loans, your monthly net income along with any recurring monthly expenses 
-            and your savings goal amount & timeline.
+            your financial accounts & loans (feel free to input your own interest rate or the Canada Prime Rate, pulled live), 
+            your monthly net income along with any recurring monthly expenses and your savings goal amount & timeline.
           </Text>
           {/* <Image src="/financespic.PNG" alt="Pic 1" /> */}
         </VStack>
@@ -84,8 +84,7 @@ export default function InstructionsPage() {
             Strive reimagines the process of budgeting towards a goal.  Here, you'll enter a financial savings goal,
             whether it be a specific net worth or enough money for a downpayment on the home of your dreams.  You'll also
             set a time period that you'd like to accomplish your goal by.  Our recommended long-term rate-of-return on investments is 5%,
-            based on a diversified growth portolio, though we give you the flexibility of either using your own rate-of-return 
-            or the Canada Prime rate, updated and pulled live.
+            based on a diversified growth portolio, though we give you the flexibility of either using your own rate-of-return.
           </Text>
           <Image src="/chooseyourgoalpicrevised.png" alt="Savings Goal" />
           <Text>

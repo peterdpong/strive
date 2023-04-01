@@ -7,6 +7,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Box,
+  Button,
   Alert,
   AlertIcon,
   AlertTitle,
@@ -30,6 +31,19 @@ export default function LoanAccountModal(props: {
 }) {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
+
+  const getBankRate = async () => {
+    try {
+      const res = await fetch(
+        "https://www.bankofcanada.ca/valet/observations/V80691311/json?recent=5"
+      );
+      const data = await res.json();
+
+      return data.observations[data.observations.length - 1]["V80691311"].v;
+    } catch {
+      console.log("Error getting bank rate");
+    }
+  };
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
@@ -71,7 +85,7 @@ export default function LoanAccountModal(props: {
               }
             }}
           >
-            {({ handleSubmit, values }) => (
+            {({ handleSubmit, values, setFieldValue }) => (
               <Box
                 as="form"
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -89,7 +103,9 @@ export default function LoanAccountModal(props: {
                   <option value={LoanTypes.CAR}>{LoanTypes.CAR}</option>
                   <option value={LoanTypes.STUDENT}>{LoanTypes.STUDENT}</option>
                   <option value={LoanTypes.LOC}>{LoanTypes.LOC}</option>
-                  <option value={LoanTypes.OTHERLOANS}>{LoanTypes.OTHERLOANS}</option>
+                  <option value={LoanTypes.OTHERLOANS}>
+                    {LoanTypes.OTHERLOANS}
+                  </option>
                 </SelectControl>
                 <NumberInputControl
                   name="remainingAmount"
@@ -102,7 +118,7 @@ export default function LoanAccountModal(props: {
                 />
                 <NumberInputControl
                   name="minimumPayment"
-                  label="Minimum monthly payment (principal + interest)"
+                  label="Monthly Principal Repayment"
                   numberInputProps={{
                     min: 0,
                     step: 1,
@@ -116,8 +132,18 @@ export default function LoanAccountModal(props: {
                     min: 0,
                     step: 1,
                     precision: 2,
+                    value: values.interestRate,
                   }}
                 />
+                <Button
+                  onClick={async () => {
+                    const bankPrimeRate = await getBankRate();
+                    setFieldValue("interestRate", bankPrimeRate);
+                  }}
+                  colorScheme="green"
+                >
+                  Use Canada Prime Rate
+                </Button>
                 <InputControl
                   inputProps={{ type: "date" }}
                   name="paymentDate"

@@ -306,7 +306,7 @@ export default function AccountsPage() {
                                   <Stat>
                                     <StatLabel>Interest rate</StatLabel>
                                     <StatNumber>
-                                      {currAccount.interestRate}%
+                                      {currAccount.interestRate.toFixed(2)}%
                                     </StatNumber>
                                   </Stat>
                                 </Stat>
@@ -536,7 +536,7 @@ export default function AccountsPage() {
                                 <Stat>
                                   <StatLabel>Interest Rate</StatLabel>
                                   <StatNumber>
-                                    {currAccount.interestRate}%
+                                    {currAccount.interestRate.toFixed(2)}%
                                   </StatNumber>
                                 </Stat>
                                 <Stat>

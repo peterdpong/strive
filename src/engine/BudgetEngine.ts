@@ -48,7 +48,7 @@ export class BudgetEngine {
       }
     );
 
-    //return ("this is fixedInvTotal: ") + fixedInvTotal;
+    //console.log("this is fixedInvTotal: " + fixedInvTotal);
 
     //fv investments assets
     //const fixedInvTotalInterest = fixedInvTotal*(1+(userData.financialInfo.accounts.bankAccounts.FixedInvestment.interestRate)/100)**goalTimeline;
@@ -104,6 +104,8 @@ export class BudgetEngine {
       valuablesTotal +
       othersTotal;
 
+    //console.log("this is total other assets: " + otherAssetsTotal);
+
     //return ("artTotal: ") + artTotal;
     //return ("this is other assets: ") + otherAssetsTotal;
 
@@ -111,7 +113,7 @@ export class BudgetEngine {
     let totalAssets = 0;
     totalAssets = bankAcctTotal + fixedInvTotal + otherAssetsTotal;
 
-    //return ("this is total assets: ") + totalAssets;
+    //console.log("this is total assets: " + totalAssets);
 
     /*
     for (const [key, value] of Object.entries(userData.financialInfo.accounts.bankAccounts)) {
@@ -154,7 +156,7 @@ export class BudgetEngine {
     let totalLiabilities = 0;
     totalLiabilities = creditCardTotal + loansTotal;
 
-    //return ("this is totalLiabilities: ") + totalLiabilities;
+    //console.log("this is totalLiabilities: " + totalLiabilities);
 
     /*
     const totalLiabilities: number = (userData.financialInfo.accounts.loans.LoanAccount.remainingAmount)
@@ -170,7 +172,7 @@ export class BudgetEngine {
     //present net worth future valued
     let currNetWorthFV = 0;
     currNetWorthFV =
-      currNetWorth * (1 + interestRate / 100 / 12) ** (12 * goalTimeline); //5% RoR assumption
+      currNetWorth * (1 + interestRate / 100 / 12) ** (12 * goalTimeline); //RoR assumption
 
     //console.log("this is FV currNW: " + currNetWorthFV);
     //console.log("goalTimeline" + goalTimeline);
@@ -178,6 +180,8 @@ export class BudgetEngine {
     //net worth differential
     let netWorthDiff = 0;
     netWorthDiff = goalNetWorth - currNetWorthFV;
+
+    //console.log("this is nw diff: " + netWorthDiff);
 
     //const arr1 = [goalNetWorth, currNetWorthFV, netWorthDiff];
     //return (arr1);
@@ -193,6 +197,7 @@ export class BudgetEngine {
       userData.financialInfo.annualIncome * userData.financialInfo.payfreq + userData.financialInfo.addtlIncome;
 
     //return ("this is monthly income: ") + monthlyIncome;
+    //console.log("this is monthly income: " + monthlyIncome);
 
     //cash outflows
 
@@ -202,27 +207,48 @@ export class BudgetEngine {
     });
 
     //return ("this is monthly transactions: ") + categoryAllocations;
+    //console.log("this is total allocations: " + categoryAllocations);
 
-    let creditCardRepayment = 0;
-    Object.values(userData.financialInfo.accounts.creditCards).map(
-      (account) => {
-        creditCardRepayment += account.nextPaymentAmount; //monthly payment
-      }
-    );
+    // let creditCardRepayment = 0;
+    // Object.values(userData.financialInfo.accounts.creditCards).map(
+    //   (account) => {
+    //     creditCardRepayment += account.nextPaymentAmount; //monthly payment
+    //   }
+    // );
 
     //return ("this is credit card repayment: ") + creditCardRepayment;
 
-    let loanRepayment = 0;
-    Object.values(userData.financialInfo.accounts.loans).map((account) => {
-      loanRepayment += account.minimumPayment; //monthly payment
-    });
+    // let loanPrincipal = 0;
+    // let loanInterest = 0;
+    // let loanRepayment = 0;
+
+    // Object.values(userData.financialInfo.accounts.loans).map((account) => {
+    //   loanPrincipal += account.minimumPayment;
+    // });
+
+    // Object.values(userData.financialInfo.accounts.loans).map((account) => {
+    //   loanInterest += (account.remainingAmount * account.interestRate);
+    // });
+
+    // Object.values(userData.financialInfo.accounts.loans).map((account) => {
+    //   loansTotal += account.remainingAmount;
+    // });
+
+    // loanRepayment = loanPrincipal + loanInterest;
+
+    // let loanRepayment = 0;
+    // Object.values(userData.financialInfo.accounts.loans).map((account) => {
+    //   loanRepayment += account.minimumPayment; //monthly payment
+    // });
 
     //return ("this is loan repayment: ") + loanRepayment;
 
     let totalOutflows = 0;
-    totalOutflows = categoryAllocations + creditCardRepayment + loanRepayment;
+    // totalOutflows = categoryAllocations + creditCardRepayment + loanRepayment;
+    totalOutflows = categoryAllocations;
 
     //return ("this is total outflows: ") + totalOutflows;
+    //console.log("total outflows: " + totalOutflows)
 
     //monthly savings available (inflows - outflows)
 
@@ -230,6 +256,7 @@ export class BudgetEngine {
     monthlySavingsAvail = monthlyIncome - totalOutflows;
 
     //return ("This is monthlysavingsavail: ") + monthlySavingsAvail;
+    //console.log("monthly savings available: " + monthlySavingsAvail);
 
     //FORMULA 3: comparing monthly savings available to calculated monthly savings needed to reach goal
     let calcMonthlySavings = 0;
@@ -240,6 +267,7 @@ export class BudgetEngine {
       ((1 + interestRate / 100 / 12) ** (12 * goalTimeline) - 1);
 
     //return ("this is calcMonthlySavings: ") + calcMonthlySavings;
+    //console.log("calculated monthly needed: " + calcMonthlySavings);
 
     //CALCULATION: future net worth for less aggressive and more aggressive options
     //less aggressive

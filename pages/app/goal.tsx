@@ -79,23 +79,6 @@ export default function GoalPage() {
     setGeneratedGoals(generateGoalsResult);
   };
 
-  const getBankRate = async () => {
-    try {
-      const res = await fetch(
-        "https://www.bankofcanada.ca/valet/observations/V80691311/json?recent=5"
-      );
-      const data = await res.json();
-      setInterestRate(
-        data.observations[data.observations.length - 1]["V80691311"].v
-      );
-      console.log(
-        parseFloat(data.observations[data.observations.length - 1]["V80691311"].v)
-      );
-    } catch {
-      console.log("Error getting bank rate");
-    }
-  };
-
   const onUpdateGoal = () => {
     if (userData && generatedGoals) {
       if (selectedGoalIndex === 0) {
@@ -288,9 +271,6 @@ export default function GoalPage() {
                   <NumberDecrementStepper />
                 </NumberInputStepper>
               </NumberInput>
-              <Button onClick={getBankRate} colorScheme="green">
-                Use Canada Prime Rate
-              </Button>
             </Stack>
           </Flex>
           <Button onClick={onGenerateGoals} colorScheme="green">
