@@ -15,11 +15,13 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import { getTransactionCategoriesArray } from "../../src/models/BudgetModel";
+import {
+  getTransactionCategoriesArray,
+  TransactionCategories,
+} from "../../src/models/BudgetModel";
 import { useAuth } from "../../src/auth/auth";
 import { addBudgetCategoryAllocation } from "../../src/firebase/UserActions";
 import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
-import LoanAccountModal from "../../../components/modals/AccountModals/LoanAccountModal";
 
 export default function BudgetAllocationModal(props: {
   isOpen: boolean;
@@ -29,7 +31,7 @@ export default function BudgetAllocationModal(props: {
   const [error, setError] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [color, setColor] = useState<string>("#FF6384");
-  const [allocation, setAllocation] = useState<number | null>(null);
+  const [allocation, setAllocation] = useState<number>(0);
   const transactionCategories = getTransactionCategoriesArray();
 
   const { useRequiredAuth } = useAuth();
@@ -37,23 +39,22 @@ export default function BudgetAllocationModal(props: {
 
   const categoryHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value);
-    if (e.target.value = "Loan Repayment - Principal") {
-      let loanRepayPrincipal = 0;
-      Object.values(userData.financialInfo.accounts.loans).map((account) => {
-        loanRepayPrincipal += account.minimumPayment;
-      });
-      setAllocation(loanRepayPrincipal)
-    }
-    else if (e.target.value = "Loan Repayment - Interest") {
-      let loanRepayInterest = 0;
-      Object.values(userData.financialInfo.accounts.loans).map((account) => {
-        loanRepayInterest += ((account.interestRate / 100 / 12) * account.remainingAmount);
-      });
-      setAllocation(loanRepayInterest)
-    // else {
-    //   setCategory(e.target.value);
-    // }
-    // setCategory(e.target.value);
+    if (userData) {
+      if (e.target.value === "LOANREPAYMENTPRINCIPAL") {
+        let loanRepayPrincipal = 0;
+        Object.values(userData.financialInfo.accounts.loans).map((account) => {
+          loanRepayPrincipal += account.minimumPayment;
+        });
+
+        setAllocation(Number(loanRepayPrincipal.toFixed(2)));
+      } else if (e.target.value === "INTEREST") {
+        let loanRepayInterest = 0;
+        Object.values(userData.financialInfo.accounts.loans).map((account) => {
+          loanRepayInterest +=
+            (account.interestRate / 100 / 12) * account.remainingAmount;
+        });
+        setAllocation(Number(loanRepayInterest.toFixed(2)));
+      }
     }
   };
 
@@ -92,7 +93,7 @@ export default function BudgetAllocationModal(props: {
     }
 
     setCategory(null);
-    setAllocation(null);
+    setAllocation(0);
     setError(null);
     props.onClose();
   };
@@ -126,7 +127,12 @@ export default function BudgetAllocationModal(props: {
           </FormControl>
           <FormControl id="category-value" isRequired>
             <FormLabel>Monthly amount</FormLabel>
-            <Input type="number" placeholder="$125" onChange={amountHandler}/>
+            <Input
+              type="number"
+              placeholder="$125"
+              value={allocation}
+              onChange={amountHandler}
+            />
           </FormControl>
           {error !== null ? <div>Error: {error}</div> : <></>}
         </ModalBody>
