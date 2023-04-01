@@ -170,7 +170,7 @@ export class BudgetEngine {
     //present net worth future valued
     let currNetWorthFV = 0;
     currNetWorthFV =
-      currNetWorth * (1 + interestRate / 100 / 12) ** (12 * goalTimeline); //5% RoR assumption
+      currNetWorth * (1 + interestRate / 100 / 12) ** (12 * goalTimeline); //RoR assumption
 
     //console.log("this is FV currNW: " + currNetWorthFV);
     //console.log("goalTimeline" + goalTimeline);
@@ -212,10 +212,28 @@ export class BudgetEngine {
 
     //return ("this is credit card repayment: ") + creditCardRepayment;
 
+    let loanPrincipal = 0;
+    let loanInterest = 0;
     let loanRepayment = 0;
+
     Object.values(userData.financialInfo.accounts.loans).map((account) => {
-      loanRepayment += account.minimumPayment; //monthly payment
+      loanPrincipal += account.minimumPayment;
     });
+
+    Object.values(userData.financialInfo.accounts.loans).map((account) => {
+      loanInterest += (account.remainingAmount * account.interestRate);
+    });
+
+    // Object.values(userData.financialInfo.accounts.loans).map((account) => {
+    //   loansTotal += account.remainingAmount;
+    // });
+
+    loanRepayment = loanPrincipal + loanInterest;
+
+    // let loanRepayment = 0;
+    // Object.values(userData.financialInfo.accounts.loans).map((account) => {
+    //   loanRepayment += account.minimumPayment; //monthly payment
+    // });
 
     //return ("this is loan repayment: ") + loanRepayment;
 

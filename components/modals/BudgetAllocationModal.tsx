@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+// import { BudgetModel, Transaction } from "../models/BudgetModel";
+
 import {
   Modal,
   ModalOverlay,
@@ -17,6 +19,7 @@ import { getTransactionCategoriesArray } from "../../src/models/BudgetModel";
 import { useAuth } from "../../src/auth/auth";
 import { addBudgetCategoryAllocation } from "../../src/firebase/UserActions";
 import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
+import LoanAccountModal from "../../../components/modals/AccountModals/LoanAccountModal";
 
 export default function BudgetAllocationModal(props: {
   isOpen: boolean;
@@ -34,6 +37,23 @@ export default function BudgetAllocationModal(props: {
 
   const categoryHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value);
+    if (e.target.value = "Loan Repayment - Principal") {
+      let loanRepayPrincipal = 0;
+      Object.values(userData.financialInfo.accounts.loans).map((account) => {
+        loanRepayPrincipal += account.minimumPayment;
+      });
+      setAllocation(loanRepayPrincipal)
+    }
+    else if (e.target.value = "Loan Repayment - Interest") {
+      let loanRepayInterest = 0;
+      Object.values(userData.financialInfo.accounts.loans).map((account) => {
+        loanRepayInterest += ((account.interestRate / 100 / 12) * account.remainingAmount);
+      });
+      setAllocation(loanRepayInterest)
+    // else {
+    //   setCategory(e.target.value);
+    // }
+    // setCategory(e.target.value);
   };
 
   const colorHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +125,7 @@ export default function BudgetAllocationModal(props: {
           </FormControl>
           <FormControl id="category-value" isRequired>
             <FormLabel>Monthly amount</FormLabel>
-            <Input type="number" placeholder="$125" onChange={amountHandler} />
+            <Input type="number" placeholder="$125" onChange={amountHandler}/>
           </FormControl>
           {error !== null ? <div>Error: {error}</div> : <></>}
         </ModalBody>

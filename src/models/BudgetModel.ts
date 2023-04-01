@@ -17,10 +17,9 @@ export enum TransactionCategories {
   CLOTHING = "Clothing",
   TRAVEL = "Travel",
   EDUCATION = "Education",
-  LOANREPAYMENT = "Loan Repayment",
   INSURANCE = "Insurance",
-  INTEREST = "Interest",
-  SAVINGS = "Savings",
+  LOANREPAYMENTPRINCIPAL = "Loan Repayment - Principal",
+  INTEREST = "Loan Repayment - Interest",
   INCOME = "Income",
   OTHEREXP = "Other",
 }

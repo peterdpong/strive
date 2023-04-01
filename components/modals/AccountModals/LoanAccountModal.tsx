@@ -118,7 +118,7 @@ export default function LoanAccountModal(props: {
                 />
                 <NumberInputControl
                   name="minimumPayment"
-                  label="Monthly Prinipal Repayment"
+                  label="Monthly Principal Repayment"
                   numberInputProps={{
                     min: 0,
                     step: 1,
