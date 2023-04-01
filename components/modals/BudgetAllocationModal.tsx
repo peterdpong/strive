@@ -54,6 +54,7 @@ export default function BudgetAllocationModal(props: {
     //   setCategory(e.target.value);
     // }
     // setCategory(e.target.value);
+    }
   };
 
   const colorHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
