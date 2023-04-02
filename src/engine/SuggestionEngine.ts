@@ -594,7 +594,7 @@ export class SuggestionEngine {
           suggestionType: suggestionType,
           suggestionBadge: "Loan Repayment Allocation",
           badgeColor: "green",
-          suggestionTitle: `Allocate your savings towards your ${loanSortedByInterestRate[0].name}.`,
+          suggestionTitle: `Allocate your savings towards your ${loanSortedByInterestRate[0].name} loan.`,
           suggestionDescription: `Your ${
             loanSortedByInterestRate[0].name
           } interest rate is at ${
