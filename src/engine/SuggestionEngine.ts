@@ -497,7 +497,7 @@ export class SuggestionEngine {
         suggestionBadge: "Account Suggestion",
         badgeColor: "blue",
         suggestionTitle:
-          "You currently have a high interest savings account, considering opening one.",
+          "You currently do not have a high interest savings account, considering opening one.",
         suggestionDescription: `A high interest savings account is one that has an interest rate higher than 1.5%. Consider opening on to hold short-term money while maximizing growth. See below for possible high interest savings accounts available.`,
         suggestionActions: [
           "EQ Bank Savings Plus Account - 2.5%",
@@ -566,6 +566,12 @@ export class SuggestionEngine {
       }
     );
 
+    const highestInterestRateBankAccount = Object.values(
+      userData.financialInfo.accounts.bankAccounts
+    ).sort(
+      (account1, account2) => account2.interestRate - account1.interestRate
+    );
+
     // Analyze debts vs savings allocation
     const loanSortedByInterestRate = Object.values(
       userData.financialInfo.accounts.loans
@@ -581,13 +587,13 @@ export class SuggestionEngine {
     );
 
     if (
-      userHighInterestRateAccount !== undefined &&
+      highestInterestRateBankAccount.length > 0 &&
       loanSortedByInterestRate.length > 0
     ) {
       if (
-        (userHighInterestRateAccount as BankInvestmentAccount).interestRate <=
+        highestInterestRateBankAccount[0].interestRate <=
           loanSortedByInterestRate[0].interestRate &&
-        totalSumOfBankAccounts * 0.5 >=
+        totalSumOfBankAccounts * 0.75 >=
           loanSortedByInterestRate[0].remainingAmount
       ) {
         allMoneyAllocationSuggestions.push({
