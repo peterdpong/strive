@@ -2,7 +2,6 @@
 import { GoalModel } from "../models/GoalModel";
 import { UserModel } from "../models/UserModel";
 import Rand, {PRNG} from 'rand-seed';
-import randomNormal from 'random-normal';
 
 export type GeneratedGoals = {
   lessAggressiveGoal: GoalModel;
