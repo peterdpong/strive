@@ -305,6 +305,18 @@ export default function GoalPage() {
                             .toFixed(2)
                             .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                         </StatNumber>
+                        <StatLabel>
+                        Expected Monthly Savings Range:
+                      </StatLabel>
+                      <StatNumber fontSize="md">
+                        $
+                        {generatedGoals.lessAggressiveGoal.lowRange
+                          .toFixed(2)
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} to
+                        ${generatedGoals.lessAggressiveGoal.topRange
+                          .toFixed(2)
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                      </StatNumber>
                       </Stat>
                       <Button
                         onClick={() => {
@@ -341,6 +353,18 @@ export default function GoalPage() {
                               .toFixed(2)
                               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                           </StatNumber>
+                          <StatLabel>
+                        Expected Monthly Savings Range:
+                      </StatLabel>
+                      <StatNumber fontSize="md">
+                        $
+                        {generatedGoals.neutralGoal.lowRange
+                          .toFixed(2)
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} to
+                        ${generatedGoals.neutralGoal.topRange
+                          .toFixed(2)
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                      </StatNumber>
                         </Stat>
                         <Button
                           onClick={() => {
@@ -379,6 +403,18 @@ export default function GoalPage() {
                               .toFixed(2)
                               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                           </StatNumber>
+                          <StatLabel>
+                        Expected Monthly Savings Range:
+                      </StatLabel>
+                      <StatNumber fontSize="md">
+                        $
+                        {generatedGoals.moreAggressiveGoal.lowRange
+                          .toFixed(2)
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} to
+                        ${generatedGoals.moreAggressiveGoal.topRange
+                          .toFixed(2)
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                      </StatNumber>
                         </Stat>
                         <Button
                           onClick={() => {

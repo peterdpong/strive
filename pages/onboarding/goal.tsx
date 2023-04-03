@@ -197,7 +197,10 @@ export default function SuggestionsPage() {
                         take into account your inputted information and use a long-term
                         conservative average 5% rate-of-return on investments figure, which assumes
                         a diversified growth portfolio (comprising 75% equities,
-                        23% fixed income and 2% cash).  
+                        23% fixed income and 2% cash).  The expected monthly savings range shows savings
+                        possibilities taking into account average rates of returns 2% higher than your inputted
+                        rate of return (meaning less savings needed) and 2% lower than your inputted rate of return
+                        (meaning more savings needed).
                       </Text>
                     </Box>
                   </PopoverBody>
@@ -314,6 +317,14 @@ export default function SuggestionsPage() {
                           .toFixed(2)
                           .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                       </StatNumber>
+                      <StatLabel>
+                        Expected Monthly Savings Range:
+                      </StatLabel>
+                      <StatNumber fontSize="md">
+                        $
+                        {goals.lessAggressiveGoal.lowRange.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} to 
+                        ${goals.lessAggressiveGoal.topRange.toFixed(2).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                      </StatNumber>
                     </Stat>
                     <Button
                       onClick={() => {
@@ -350,6 +361,18 @@ export default function SuggestionsPage() {
                             .toFixed(2)
                             .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                         </StatNumber>
+                        <StatLabel>
+                        Expected Monthly Savings Range:
+                      </StatLabel>
+                      <StatNumber fontSize="md">
+                        $
+                        {goals.neutralGoal.lowRange
+                          .toFixed(2)
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} to
+                        ${goals.neutralGoal.topRange
+                          .toFixed(2)
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                      </StatNumber>
                       </Stat>
                       <Button
                         onClick={() => {
@@ -387,6 +410,18 @@ export default function SuggestionsPage() {
                             .toFixed(2)
                             .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
                         </StatNumber>
+                        <StatLabel>
+                        Expected Monthly Savings Range:
+                      </StatLabel>
+                      <StatNumber fontSize="md">
+                        $
+                        {goals.moreAggressiveGoal.lowRange
+                          .toFixed(2)
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} to
+                        ${goals.moreAggressiveGoal.topRange
+                          .toFixed(2)
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+                      </StatNumber>
                       </Stat>
                       <Button
                         onClick={() => {

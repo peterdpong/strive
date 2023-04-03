@@ -9,4 +9,6 @@ export type GoalModel = {
   monthlyAmount: number;
   networthGoal: number;
   timelineGoal: number;
+  lowRange: number;
+  topRange: number;
 };

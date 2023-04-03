@@ -1,6 +1,7 @@
 // Holds all budget optimization functions
 import { GoalModel } from "../models/GoalModel";
 import { UserModel } from "../models/UserModel";
+import Rand, {PRNG} from 'rand-seed';
 
 export type GeneratedGoals = {
   lessAggressiveGoal: GoalModel;
@@ -191,13 +192,25 @@ export class BudgetEngine {
     //cash inflows
     //const monthlySavingsAvail: number = userData.budgetInfo.monthlyVariableBudgetUnallocated
 
-    let monthlyIncome = 0;
+    //let monthlyIncome = 0;
     //monthlyIncome = userData.financialInfo.annualIncome / 12;
-    monthlyIncome =
-      userData.financialInfo.annualIncome * userData.financialInfo.payfreq + userData.financialInfo.addtlIncome;
+    //monthlyIncome = userData.financialInfo.annualIncome * userData.financialInfo.payfreq + userData.financialInfo.addtlIncome;
 
     //return ("this is monthly income: ") + monthlyIncome;
     //console.log("this is monthly income: " + monthlyIncome);
+
+    //income growth array
+    const incomeGrowthYOY = 1.02;
+    const incomeArray = [];
+    for (let i = 0; i < goalTimeline; i++) {
+      const monthlyIncomeIter = userData.financialInfo.annualIncome*incomeGrowthYOY**i * userData.financialInfo.payfreq
+      + userData.financialInfo.addtlIncome;
+      incomeArray.push(monthlyIncomeIter);
+    }
+    // console.log(monthlyIncome);
+
+    // console.log(incomeArray);
+
 
     //cash outflows
 
@@ -247,13 +260,30 @@ export class BudgetEngine {
     // totalOutflows = categoryAllocations + creditCardRepayment + loanRepayment;
     totalOutflows = categoryAllocations;
 
+    //outflows growth array
+    const outflowGrowthYOY = 1.02;
+    const outflowArray = [];
+    for (let i = 0; i < goalTimeline; i++) {
+      outflowArray.push(totalOutflows*outflowGrowthYOY**i);
+    }
+
+    // console.log(outflowArray);
+
     //return ("this is total outflows: ") + totalOutflows;
     //console.log("total outflows: " + totalOutflows)
 
     //monthly savings available (inflows - outflows)
 
-    let monthlySavingsAvail = 0;
-    monthlySavingsAvail = monthlyIncome - totalOutflows;
+    // let monthlySavingsAvail = 0;
+    // monthlySavingsAvail = monthlyIncome - totalOutflows;
+
+    //monthly savings array
+    const monthlySavingsArray = [];
+    for (let i = 0; i < goalTimeline; i++) {
+      monthlySavingsArray.push(incomeArray[i]-outflowArray[i]);
+    }
+
+    // console.log(monthlySavingsArray);
 
     //return ("This is monthlysavingsavail: ") + monthlySavingsAvail;
     //console.log("monthly savings available: " + monthlySavingsAvail);
@@ -265,6 +295,14 @@ export class BudgetEngine {
     calcMonthlySavings =
       (netWorthDiff * (interestRate / 100 / 12)) /
       ((1 + interestRate / 100 / 12) ** (12 * goalTimeline) - 1);
+
+    let midBottomRange = 0;
+    midBottomRange = (netWorthDiff * ((interestRate+2) / 100 / 12)) /
+    ((1 + (interestRate+2) / 100 / 12) ** (12 * goalTimeline) - 1);
+
+    let midTopRange = 0;
+    midTopRange = (netWorthDiff * ((interestRate-2) / 100 / 12)) /
+      ((1 + (interestRate-2) / 100 / 12) ** (12 * goalTimeline) - 1);
 
     //return ("this is calcMonthlySavings: ") + calcMonthlySavings;
     //console.log("calculated monthly needed: " + calcMonthlySavings);
@@ -281,6 +319,17 @@ export class BudgetEngine {
         (interestRate / 100 / 12));
     lessAggressiveNW = currNetWorthFV + futureValLessAggressive;
 
+    let consBottomRange = 0;
+    consBottomRange = 0.95*(netWorthDiff * ((interestRate+2) / 100 / 12)) /
+    ((1 + (interestRate+2) / 100 / 12) ** (12 * goalTimeline) - 1);
+
+    let consTopRange = 0;
+    consTopRange = 0.95*(netWorthDiff * ((interestRate-2) / 100 / 12)) /
+      ((1 + (interestRate-2) / 100 / 12) ** (12 * goalTimeline) - 1);
+
+    // console.log("this is consBottomRange: " + consBottomRange);
+    // console.log("this is consTopRange: " + consTopRange);
+
     //more aggressive
     let moreAggressiveNW = 0;
     let futureValMoreAggressive = 0;
@@ -292,30 +341,90 @@ export class BudgetEngine {
         (interestRate / 100 / 12));
     moreAggressiveNW = currNetWorthFV + futureValMoreAggressive;
 
-    if (calcMonthlySavings > monthlySavingsAvail) {
-      return null;
-      //TO DO: return suggestions
-    } else {
-      return {
-        lessAggressiveGoal: {
-          startingNetWorth: currNetWorth,
-          monthlyAmount: calcMonthlySavings * 0.95,
-          networthGoal: lessAggressiveNW,
-          timelineGoal: goalTimeline,
-        },
-        neutralGoal: {
-          startingNetWorth: currNetWorth,
-          monthlyAmount: calcMonthlySavings,
-          networthGoal: goalNetWorth,
-          timelineGoal: goalTimeline,
-        },
-        moreAggressiveGoal: {
-          startingNetWorth: currNetWorth,
-          monthlyAmount: calcMonthlySavings * 1.05,
-          networthGoal: moreAggressiveNW,
-          timelineGoal: goalTimeline,
-        },
-      };
+    let aggBottomRange = 0;
+    aggBottomRange = 1.05*(netWorthDiff * ((interestRate+2) / 100 / 12)) /
+    ((1 + (interestRate+2) / 100 / 12) ** (12 * goalTimeline) - 1);
+
+    let aggTopRange = 0;
+    aggTopRange = 1.05*(netWorthDiff * ((interestRate-2) / 100 / 12)) /
+      ((1 + (interestRate-2) / 100 / 12) ** (12 * goalTimeline) - 1);
+
+    //monte carlo simulation
+    // const numOfIter = 1000;
+    // const delta_T = 1/252;
+    // const monthlySavings = [];
+
+    // for (let i = 0; i < numOfIter; i++) {
+    //   const mu = 0.01
+    //   const sigma = 0.05
+    //   const monthlySavingFig = [calcMonthlySavings]
+    //   const rand = new Rand('i');
+    //   for (let j = 0; j < goalTimeline; j++) {
+    //     monthlySavingFig.push(monthlySavingFig[j]**((mu-sigma**2/2)*(delta_T) + sigma*Math.sqrt(delta_T)*randomNormal()))
+    //   }
+    //   monthlySavings.push(monthlySavingFig)
+    // }
+
+    // console.log(monthlySavings);
+
+    for (let i = 0; i < goalTimeline; i++) {
+      if (calcMonthlySavings > monthlySavingsArray[i]) {
+        return null;
+        //TO DO: return suggestions
+      } else {
+        return {
+          lessAggressiveGoal: {
+            startingNetWorth: currNetWorth,
+            monthlyAmount: calcMonthlySavings * 0.95,
+            networthGoal: lessAggressiveNW,
+            timelineGoal: goalTimeline,
+            lowRange: consBottomRange,
+            topRange: consTopRange,
+          },
+          neutralGoal: {
+            startingNetWorth: currNetWorth,
+            monthlyAmount: calcMonthlySavings,
+            networthGoal: goalNetWorth,
+            timelineGoal: goalTimeline,
+            lowRange: midBottomRange,
+            topRange: midTopRange,
+          },
+          moreAggressiveGoal: {
+            startingNetWorth: currNetWorth,
+            monthlyAmount: calcMonthlySavings * 1.05,
+            networthGoal: moreAggressiveNW,
+            timelineGoal: goalTimeline,
+            lowRange: aggBottomRange,
+            topRange: aggTopRange,
+          },
+        };
+      }
     }
+
+    // if (calcMonthlySavings > monthlySavingsAvail) {
+    //   return null;
+    //   //TO DO: return suggestions
+    // } else {
+    //   return {
+    //     lessAggressiveGoal: {
+    //       startingNetWorth: currNetWorth,
+    //       monthlyAmount: calcMonthlySavings * 0.95,
+    //       networthGoal: lessAggressiveNW,
+    //       timelineGoal: goalTimeline,
+    //     },
+    //     neutralGoal: {
+    //       startingNetWorth: currNetWorth,
+    //       monthlyAmount: calcMonthlySavings,
+    //       networthGoal: goalNetWorth,
+    //       timelineGoal: goalTimeline,
+    //     },
+    //     moreAggressiveGoal: {
+    //       startingNetWorth: currNetWorth,
+    //       monthlyAmount: calcMonthlySavings * 1.05,
+    //       networthGoal: moreAggressiveNW,
+    //       timelineGoal: goalTimeline,
+    //     },
+    //   };
+    // }
   }
 }

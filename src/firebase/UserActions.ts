@@ -75,6 +75,8 @@ export const addNewUser = (
       monthlyAmount: 0,
       networthGoal: 0,
       timelineGoal: 0,
+      lowRange: 0,
+      topRange: 0,
     },
     monthTransactionsMap: initMonthTransactionsMap,
     suggestions: {},
