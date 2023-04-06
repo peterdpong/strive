@@ -11,6 +11,7 @@ import {
   Alert,
   AlertIcon,
   AlertTitle,
+  useToast,
 } from "@chakra-ui/react";
 import { useAuth } from "../../../src/auth/auth";
 import { Formik } from "formik";
@@ -45,6 +46,8 @@ export default function LoanAccountModal(props: {
     }
   };
 
+  const toast = useToast();
+
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
@@ -63,6 +66,17 @@ export default function LoanAccountModal(props: {
             }}
             onSubmit={(values, actions) => {
               if (userData) {
+                if (!values.paymentDate) {
+                  toast({
+                    title: "Empty Values",
+                    description: "Please delete the loan, re-enter it, and fill in the date field.",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                  });
+                  values.paymentDate = new Date().toLocaleString();
+                }
+                
                 addAccount(
                   userData.uid,
                   userData.financialInfo.accounts,
