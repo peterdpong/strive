@@ -105,10 +105,10 @@ export default function LoanAccountModal(props: {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
-                <InputControl name="name" label="Loan Name" />
+                <InputControl name="name" label="Loan name" />
                 <SelectControl
                   name="type"
-                  label="Loan Type"
+                  label="Loan type"
                   selectProps={{ placeholder: "Select loan type" }}
                 >
                   <option value={LoanTypes.MORTGAGE}>
@@ -132,7 +132,7 @@ export default function LoanAccountModal(props: {
                 />
                 <NumberInputControl
                   name="minimumPayment"
-                  label="Monthly Principal Repayment"
+                  label="Monthly principal repayment"
                   numberInputProps={{
                     min: 0,
                     step: 1,
@@ -141,7 +141,7 @@ export default function LoanAccountModal(props: {
                 />
                 <NumberInputControl
                   name="interestRate"
-                  label="Loan Interest Rate (%)"
+                  label="Loan interest rate (%)"
                   numberInputProps={{
                     min: 0,
                     step: 1,
@@ -156,7 +156,7 @@ export default function LoanAccountModal(props: {
                   }}
                   colorScheme="green"
                 >
-                  Use Canada Prime Rate
+                  Use Canada Prime rate
                 </Button>
                 <InputControl
                   inputProps={{ type: "date" }}

@@ -106,10 +106,10 @@ export default function FixedInvestmentsModal(props: {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
-                <InputControl name="name" label="Account Name" />
+                <InputControl name="name" label="Account name" />
                 <SelectControl
                   name="type"
-                  label="Account Type"
+                  label="Account type"
                   selectProps={{ placeholder: "Select account type" }}
                 >
                   <option value={AccountType.TFSA}>{AccountType.TFSA}</option>
@@ -139,7 +139,7 @@ export default function FixedInvestmentsModal(props: {
                 />
                 <NumberInputControl
                   name="interestRate"
-                  label="Investment Interest Rate (%)"
+                  label="Investment interest rate (%)"
                   numberInputProps={{
                     min: 0,
                     step: 1,

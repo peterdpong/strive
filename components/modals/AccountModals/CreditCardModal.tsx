@@ -75,10 +75,10 @@ export default function CreditCardModal(props: {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
-                <InputControl name="name" label="Account Name" />
+                <InputControl name="name" label="Account name" />
                 <NumberInputControl
                   name="interestRate"
-                  label="Account Interest Rate (%)"
+                  label="Account interest rate (%)"
                   numberInputProps={{
                     min: 0,
                     step: 1,
@@ -87,7 +87,7 @@ export default function CreditCardModal(props: {
                 />
                 <NumberInputControl
                   name="amountOwned"
-                  label="Current amount balance"
+                  label="Current balance"
                   numberInputProps={{
                     min: 0,
                     step: 1,

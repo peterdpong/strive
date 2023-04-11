@@ -118,7 +118,7 @@ export default function BudgetAllocationModal(props: {
             </Select>
           </FormControl>
           <FormControl id="category-color" isRequired>
-            <FormLabel>Category Color</FormLabel>
+            <FormLabel>Category colour</FormLabel>
             <Input
               type="color"
               defaultValue={"#FF6384"}

@@ -472,8 +472,8 @@ export class SuggestionEngine {
       undefined;
     let totalSumOfBankAccounts = 0;
     const moveMoneyActions: string[] = [
-      "If you do not need the money short-term, consider utilizing fixed guaranteed investments with lock-in terms varying from 6 months to 5 years at a fixed interest rate. Additionally, fixed investments tend to have more favourable interest rates (as your lock-in term increases) varying from 3% - 5%",
-      "For very long savings timelines(10+ years), consider long-term investments into stocks, bonds, and index funds which average 6%-10% yearly returns. However, consider exploring your risk tolerance before you start investing as unlike savings accounts and fixed investments, your balance does not only go up.",
+      "If you do not need the money short-term, consider utilizing fixed guaranteed investments with lock-in terms varying from 6 months to 5 years at a fixed interest rate. Additionally, fixed investments tend to have more favourable interest rates (as your lock-in term increases) varying from 3% - 5%.  Ensure that your savings accounts and fixed investments are with credit worthy banks and financial institutions.",
+      "For growth profile investors starting out in their careers with long savings timelines (10+ years), consider long-term investments in stocks, bonds and index funds which average 6%-10% yearly returns. However, assess your risk tolerance before you start investing as unlike savings accounts and fixed investments, your balance does not only go up (there is downside risk).",
     ];
     // Check if user has a high interest savings account -> we consider an account with > 1.5%
     Object.values(userData.financialInfo.accounts.bankAccounts).forEach(
@@ -497,8 +497,8 @@ export class SuggestionEngine {
         suggestionBadge: "Account Suggestion",
         badgeColor: "blue",
         suggestionTitle:
-          "You currently do not have a high interest savings account, considering opening one.",
-        suggestionDescription: `A high interest savings account is one that has an interest rate higher than 1.5%. Consider opening on to hold short-term money while maximizing growth. See below for possible high interest savings accounts available.`,
+          "You currently do not have a high interest savings account; consider opening one.",
+        suggestionDescription: `A high interest savings account is one that has an interest rate higher than 1.5%. Consider opening one to hold short-term money while maximizing growth. See below for possible high interest savings accounts available.`,
         suggestionActions: [
           "EQ Bank Savings Plus Account - 2.5%",
           "Saven Financial High Interest Savings Account - 3.75%",
@@ -516,11 +516,11 @@ export class SuggestionEngine {
       );
     } else {
       moveMoneyActions.push(
-        `For money needed in the short-term, consider moving it to your high-interest account ${
+        `For money needed in the short-term, consider moving it to your high-interest ${
           (userHighInterestRateAccount as BankInvestmentAccount).name
-        } which has an interest rate of ${
+        } account which has an interest rate of ${
           (userHighInterestRateAccount as BankInvestmentAccount).interestRate
-        }%`
+        }%.`
       );
     }
 
@@ -533,18 +533,19 @@ export class SuggestionEngine {
             suggestionType: suggestionType,
             suggestionBadge: "Growth Opportunity",
             badgeColor: "green",
-            suggestionTitle: `Move some of $${bankAccount.value
+            suggestionTitle: `Move some of the $${bankAccount.value
               .toFixed(2)
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} in your ${
               bankAccount.name
-            } to better growth opportunities.`,
+            } account to better growth opportunities.`,
             suggestionDescription: `$${bankAccount.value
               .toFixed(2)
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} in your ${
               bankAccount.name
-            } is only gaining ${
+            } account is only gaining ${
               bankAccount.interestRate
-            }% interest per year. There are opportunities to move this money to higher interest rate accounts or investments. See the suggestions below of possible ways to maximize your savings based on your timeline.`,
+            }% interest per year. There are opportunities to move this money to higher interest rate accounts or investments. 
+            See the suggestions below for possible ways to maximize your savings based on your timeline.`,
             suggestionActions: moveMoneyActions,
             source: [
               {
@@ -601,7 +602,13 @@ export class SuggestionEngine {
           suggestionBadge: "Loan Repayment Allocation",
           badgeColor: "green",
           suggestionTitle: `Allocate your savings towards your ${loanSortedByInterestRate[0].name} loan.`,
-          suggestionDescription: `Your ${loanSortedByInterestRate[0].name} interest rate is at ${loanSortedByInterestRate[0].interestRate}% which is greater than your highest interest rate account at ${highestInterestRateBankAccount[0].interestRate}% thus the interest earned in this savings account is less than the interest generated by the loan.`,
+          suggestionDescription: `Your ${
+            loanSortedByInterestRate[0].name
+          } account interest rate is at ${
+            loanSortedByInterestRate[0].interestRate.toFixed(2)
+          }%, which is greater than your highest interest rate account at ${
+            highestInterestRateBankAccount[0].interestRate
+          }%; thus, the interest earned in this savings account is less than the interest generated by the loan.`,
           suggestionActions: [
             `Use your available funds of $${totalSumOfBankAccounts
               .toFixed(2)
@@ -610,7 +617,7 @@ export class SuggestionEngine {
                 ","
               )} in your accounts to pay off your ${
               loanSortedByInterestRate[0].name
-            } as it's interest rate is high compared to your saving accounts.`,
+            } account as its interest rate is high compared to your saving accounts.`,
           ],
         });
       }
@@ -628,14 +635,14 @@ export class SuggestionEngine {
         ).toLocaleString("en-us", {
           month: "short",
           year: "numeric",
-        })}. Two possible payment plans are below, Avalanche (High Interest Debt first) and Snowball (Lowest principal first). Explore other debt repayment scenarios/payment amounts in your accounts page.`,
+        })}. Two possible payment plans are below, Avalanche (High interest debt first) and Snowball (Lowest principal first). Explore other debt repayment scenarios/payment amounts in your accounts page.`,
         suggestionActions: [
-          `Avalanche Plan - Pay highest interest rate debt first: Your order of debt to pay off is ${loanSortedByInterestRate
+          `Avalanche Plan - pay highest interest rate debt first.  Your order of debt to pay off is ${loanSortedByInterestRate
             .map((loan, index) => `${index + 1}) ${loan.name} `)
             .toString()
             .split(",")
             .join("")}`,
-          `Snowball Plan - Pay lowest principal debt first: Your order of debt to pay off is ${loanSortedByPrincipal
+          `Snowball Plan - pay lowest principal debt first.  Your order of debt to pay off is ${loanSortedByPrincipal
             .map((loan, index) => `${index + 1}) ${loan.name} `)
             .toString()
             .split(",")

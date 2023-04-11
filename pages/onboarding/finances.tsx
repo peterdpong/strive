@@ -81,7 +81,9 @@ export default function FinancesPages() {
                       below, please enter any other additional income you earn
                       monthly. Then, please add your bank accounts, investment
                       accounts, other assets, credit cards and other loans
-                      outstanding.
+                      outstanding.  Credit cards typically have an interest rate
+                      of around 20%, while loans typically have an interest rate
+                      of around Prime + 1-2%.
                     </Box>
                   </PopoverBody>
                 </PopoverContent>

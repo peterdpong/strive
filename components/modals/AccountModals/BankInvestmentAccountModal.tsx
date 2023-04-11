@@ -71,10 +71,10 @@ export default function BankInvestmentAccountModal(props: {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
-                <InputControl name="name" label="Account Name" />
+                <InputControl name="name" label="Account name" />
                 <NumberInputControl
                   name="value"
-                  label="Account Value"
+                  label="Account value"
                   numberInputProps={{
                     min: 0,
                     step: 1,
@@ -83,7 +83,7 @@ export default function BankInvestmentAccountModal(props: {
                 />
                 <SelectControl
                   name="type"
-                  label="Account Type"
+                  label="Account type"
                   selectProps={{ placeholder: "Select account type" }}
                 >
                   <option value={AccountType.SAVINGS}>
@@ -95,7 +95,7 @@ export default function BankInvestmentAccountModal(props: {
                 </SelectControl>
                 <NumberInputControl
                   name="interestRate"
-                  label="Account Interest Rate (%)"
+                  label="Account interest rate (%)"
                   numberInputProps={{
                     min: 0,
                     step: 1,

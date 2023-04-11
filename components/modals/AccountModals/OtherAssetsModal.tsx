@@ -69,10 +69,10 @@ export default function OtherAssetsModal(props: {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onSubmit={handleSubmit as any}
               >
-                <InputControl name="name" label="Asset Name" />
+                <InputControl name="name" label="Asset name" />
                 <NumberInputControl
                   name="value"
-                  label="Asset Value"
+                  label="Asset value"
                   numberInputProps={{
                     min: 0,
                     step: 1,
@@ -81,7 +81,7 @@ export default function OtherAssetsModal(props: {
                 />
                 <SelectControl
                   name="type"
-                  label="Asset Type"
+                  label="Asset type"
                   selectProps={{ placeholder: "Select other asset type" }}
                 >
                   <option value={AssetTypes.HOUSE}>{AssetTypes.HOUSE}</option>
