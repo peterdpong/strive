@@ -169,13 +169,6 @@ export const buildGoalGraphData = (userInfo: {
         label: userInfo.title,
         data: NetWorthData,
         borderColor: "rgb(30, 159, 92)",
-        backgroundColor: (context: ScriptableContext<"line">) => {
-          const ctx = context.chart.ctx;
-          const gradient = ctx.createLinearGradient(0, 0, 0, 500);
-          gradient.addColorStop(0, "rgba(45,216,129,1)");
-          gradient.addColorStop(1, "rgba(45,216,129,0)");
-          return gradient;
-        },
       },
     ],
   };

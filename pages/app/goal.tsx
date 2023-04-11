@@ -177,13 +177,6 @@ export default function GoalPage() {
       label: "Current Net Worth",
       data: netWorthOverTime,
       borderColor: "rgb(60, 20, 240)",
-      backgroundColor: (context: ScriptableContext<"line">) => {
-        const ctx = context.chart.ctx;
-        const gradient = ctx.createLinearGradient(0, 0, 0, 500);
-        gradient.addColorStop(0, "rgba(140, 80, 240, 1)");
-        gradient.addColorStop(1, "rgba(140, 80, 240, 0)");
-        return gradient;
-      },
     });
   }
 
