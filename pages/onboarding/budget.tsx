@@ -71,7 +71,7 @@ export default function BudgetPage() {
         <Button size="sm" onClick={() => router.push("/onboarding/finances")}>
           Back
         </Button>
-        <Heading>Create a monthly budget</Heading>
+        <Heading>Create a Monthly Budget</Heading>
         <Text fontSize={"md"}>
           Budget your expenses - no need to allocate it all!
         </Text>

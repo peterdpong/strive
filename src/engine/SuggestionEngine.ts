@@ -631,7 +631,7 @@ export class SuggestionEngine {
         suggestionType: suggestionType,
         suggestionBadge: "Debt Repayment",
         badgeColor: "green",
-        suggestionTitle: `Debt Repayment Plan Suggestions`,
+        suggestionTitle: `Debt Repayment Plan Suggestions.`,
         suggestionDescription: `Based on your loan accounts, assuming you pay the minimum payments of each debt account you have, you will be debt free in ${BudgetEngineUtils.loanMinimumDateToPayoff(
           userData
         ).toLocaleString("en-us", {
@@ -640,12 +640,12 @@ export class SuggestionEngine {
         })}. Two possible payment plans are below, Avalanche (High interest debt first) and Snowball (Lowest principal first). Explore other debt repayment scenarios/payment amounts in your accounts page.`,
         suggestionActions: [
           `Avalanche Plan - pay highest interest rate debt first.  Your order of debt to pay off is ${loanSortedByInterestRate
-            .map((loan, index) => `${index + 1}) ${loan.name} `)
+            .map((loan, index) => `${index + 1}) ${loan.name}`)
             .toString()
             .split(",")
             .join("")}.`,
           `Snowball Plan - pay lowest principal debt first.  Your order of debt to pay off is ${loanSortedByPrincipal
-            .map((loan, index) => `${index + 1}) ${loan.name} `)
+            .map((loan, index) => `${index + 1}) ${loan.name}`)
             .toString()
             .split(",")
             .join("")}.`,
@@ -687,7 +687,7 @@ export class SuggestionEngine {
           .replace(
             /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
             ","
-          )} more than you target! This savings makes you ${(
+          )} more than your target! This savings makes you ${(
           ((userCurrentMonthSavings - userData.goalInfo.monthlyAmount) * 100) /
           userData.goalInfo.monthlyAmount
         ).toFixed(2)}% ahead in your financial goal at this time. Keep it up!`,
@@ -803,7 +803,7 @@ export class SuggestionEngine {
         suggestionType: suggestionType,
         suggestionTitle: `${
           currentDate.getFullYear() - 1
-        } Tax Deadline Reminder - ${taxDueDate.toDateString()}`,
+        } Tax Deadline Reminder - ${taxDueDate.toDateString()}.`,
         suggestionDescription: `Your ${
           currentDate.getFullYear() - 1
         } taxes are expected to be submitted by ${taxDueDate.toDateString()}. That is ${Math.floor(
@@ -836,7 +836,7 @@ export class SuggestionEngine {
         suggestionType: suggestionType,
         suggestionTitle: `${
           currentDate.getFullYear() - 1
-        } RRSP Deposit Deadline - ${RRSPDepositDeadlinePrevTax.toDateString()}`,
+        } RRSP Deposit Deadline - ${RRSPDepositDeadlinePrevTax.toDateString()}.`,
         suggestionDescription: `Your deadline to deposit into you RRSP for deduction on your ${
           currentDate.getFullYear() - 1
         } taxes is ${RRSPDepositDeadlinePrevTax.toDateString()}. That is ${Math.floor(
@@ -858,7 +858,7 @@ export class SuggestionEngine {
       // Add suggestion/reminder of current year rrsp deposite deadline
       financialHealthSuggestions.push({
         suggestionType: suggestionType,
-        suggestionTitle: `${currentDate.getFullYear()} RRSP Deposit Deadline - ${RRSPDepositDeadlineCurrentTax.toDateString()}`,
+        suggestionTitle: `${currentDate.getFullYear()} RRSP Deposit Deadline - ${RRSPDepositDeadlineCurrentTax.toDateString()}.`,
         suggestionDescription: `Your deadline to deposit into you RRSP for deduction on your ${currentDate.getFullYear()} taxes is ${RRSPDepositDeadlineCurrentTax.toDateString()}. That is ${Math.floor(
           (RRSPDepositDeadlineCurrentTax.getTime() - currentDate.getTime()) /
             86400000
@@ -903,7 +903,7 @@ export class SuggestionEngine {
       financialHealthSuggestions.push({
         suggestionType: suggestionType,
         suggestionTitle: `Build an emergency fund.`,
-        suggestionDescription: `It is recommended you have at least 3-6 months worth of your living expenses as an emergency fund. Based on your last 3 months spending, you averaged monthly expenses of $${averageThreeMonthsSpending.toFixed(
+        suggestionDescription: `It is recommended you have at least 3-6 months worth of your living expenses as an emergency fund. Based on your last 3 months' spending, your averaged monthly expenses of $${averageThreeMonthsSpending.toFixed(
           2
         )}. A good range of funds you should keep as an emergency fund is then $${(
           averageThreeMonthsSpending * 3

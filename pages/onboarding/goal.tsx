@@ -167,7 +167,7 @@ export default function SuggestionsPage() {
         <Button size="sm" onClick={() => router.push("/onboarding/budget")}>
           Back
         </Button>
-        <Heading>Choose your goal</Heading>
+        <Heading>Choose Your Goal</Heading>
         <Text fontSize={"md"}>Choose your savings and timeline goals.</Text>
         <Popover closeOnBlur={false} placement="bottom">
           {({ isOpen }: { isOpen: boolean }) => (
