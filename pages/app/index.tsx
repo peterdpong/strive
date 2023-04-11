@@ -120,7 +120,7 @@ export default function Dashboard() {
     // construct the array of how net worth changes month-to-month
     // only accounts for unallocated income + transactions
     // no investments are factored into this calculation yet
-    const netWorthOverTime = [];
+    const netWorthOverTime = [userData.goalInfo.startingNetWorth];
     let currMonth = startMonth;
     let currSpending = currNetWorth;
     for (let i = 0; i < graphData.datasets[0].data.length; i++) {
