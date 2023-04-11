@@ -44,7 +44,6 @@ import { buildBudgetCategoryBarGraphData } from "../../src/visualization/BudgetV
 import { BudgetEngineUtils } from "../../src/engine/BudgetEngineUtils";
 import {
   buildGoalGraphData,
-  calculateNetWorth,
   goalGraphOptions,
 } from "../../src/visualization/GoalVisualizations";
 import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
@@ -108,8 +107,10 @@ export default function Dashboard() {
     Object.keys(userData.monthTransactionsMap).forEach((month) => {
       const month1 = startMonth.split("-");
       const month2 = month.split("-");
-      if (
-        parseInt(month2[1]) < parseInt(month1[1]) &&
+      if (parseInt(month2[1]) < parseInt(month1[1])) {
+        startMonth = month;
+      } else if (
+        parseInt(month2[1]) === parseInt(month1[1]) &&
         parseInt(month2[0]) < parseInt(month1[0])
       ) {
         startMonth = month;
@@ -119,7 +120,7 @@ export default function Dashboard() {
     // construct the array of how net worth changes month-to-month
     // only accounts for unallocated income + transactions
     // no investments are factored into this calculation yet
-    const netWorthOverTime = [currNetWorth];
+    const netWorthOverTime = [];
     let currMonth = startMonth;
     let currSpending = currNetWorth;
     for (let i = 0; i < graphData.datasets[0].data.length; i++) {
