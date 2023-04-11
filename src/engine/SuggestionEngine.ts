@@ -254,7 +254,7 @@ export class SuggestionEngine {
               TransactionCategories[category]
             } which is ${Math.trunc(
               totalCategorySpendPercentage - targetPercent
-            )}% more than recommended. It is recommened for you to reduce you spending in this category by $${reduceAmount
+            )}% more than recommended. It is recommended for you to reduce your spending in this category by $${reduceAmount
               .toFixed(2)
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}!`,
             source: [
@@ -294,7 +294,7 @@ export class SuggestionEngine {
           badgeColor: "orange",
           suggestionBadge: "Demographic Comparison",
           suggestionTitle: `Comparing your monthly income to your age demographic average monthly income.`,
-          suggestionDescription: `Currently your monthly income is $${monthlyIncome
+          suggestionDescription: `Currently, your monthly income is $${monthlyIncome
             .toFixed(2)
             .replace(
               /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
@@ -740,7 +740,7 @@ export class SuggestionEngine {
           .replace(
             /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
             ","
-          )}. Currently your net worth today is $${currNetWorth
+          )}. Currently, your net worth today is $${currNetWorth
           .toFixed(2)
           .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")} which is $${(
           currTargetNetWorth - currNetWorth
@@ -956,7 +956,7 @@ export class SuggestionEngine {
       financialHealthSuggestions.push({
         suggestionType: suggestionType,
         suggestionTitle: `Debt to Asset ratio greater than 50%`,
-        suggestionDescription: `It is recommended your total debt does not exceed 50% of your total assets. Currently your debts total to ${(
+        suggestionDescription: `It is recommended your total debt does not exceed 50% of your total assets. Currently, your debts total to ${(
           debtToAssetRatio * 100
         ).toFixed(
           2
