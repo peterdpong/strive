@@ -156,8 +156,10 @@ export class BudgetEngineUtils {
     Object.keys(userData.monthTransactionsMap).forEach((month) => {
       const month1 = startMonth.split("-");
       const month2 = month.split("-");
-      if (
-        parseInt(month2[1]) < parseInt(month1[1]) ||
+      if (parseInt(month2[1]) < parseInt(month1[1])) {
+        startMonth = month;
+      } else if (
+        parseInt(month2[1]) === parseInt(month1[1]) &&
         parseInt(month2[0]) < parseInt(month1[0])
       ) {
         startMonth = month;

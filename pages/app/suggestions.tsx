@@ -21,15 +21,18 @@ import { useAuth } from "../../src/auth/auth";
 import { SuggestionEngine } from "../../src/engine/SuggestionEngine";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { BudgetEngineUtils } from "../../src/engine/BudgetEngineUtils";
+import { useEffect } from "react";
 
 export default function SuggestionsPage() {
   const { useRequiredAuth } = useAuth();
   const userData = useRequiredAuth();
 
-  SuggestionEngine.generateMoneyAllocationSuggestions(userData);
-  SuggestionEngine.generateGoalsAndSavingsSuggestion(userData);
-  if (userData) BudgetEngineUtils.loanPaymentSchedule(userData);
-  if (userData) BudgetEngineUtils.loanMinimumDateToPayoff(userData);
+  useEffect(() => {
+    SuggestionEngine.generateMoneyAllocationSuggestions(userData);
+    SuggestionEngine.generateGoalsAndSavingsSuggestion(userData);
+    if (userData) BudgetEngineUtils.loanPaymentSchedule(userData);
+    if (userData) BudgetEngineUtils.loanMinimumDateToPayoff(userData);
+  }, []);
 
   return (
     <ProtectedRoute>
