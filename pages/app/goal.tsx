@@ -17,6 +17,7 @@ import {
   Stat,
   StatLabel,
   StatNumber,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import {
@@ -68,7 +69,7 @@ export default function GoalPage() {
   >(undefined);
   // Hardcoded to 1 which is neutral goal (0 - less aggressive, 2 more aggressive)
   const [selectedGoalIndex, setSelectedGoalIndex] = useState<number>(1);
-
+  const toast = useToast();
   const onGenerateGoals = () => {
     const generateGoalsResult = BudgetEngine.generateGoals(
       userData,
@@ -76,6 +77,15 @@ export default function GoalPage() {
       timelineYears,
       parseFloat(interestRate)
     );
+    if (generateGoalsResult == null) {
+      toast({
+        title: "Goal Not Feasible",
+        description: "The required savings for your goal exceed your monthly available savings. Please enter a lower savings goal.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
     setGeneratedGoals(generateGoalsResult);
   };
 

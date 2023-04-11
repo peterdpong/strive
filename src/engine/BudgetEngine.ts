@@ -1,4 +1,5 @@
 // Holds all budget optimization functions
+import { useToast } from "@chakra-ui/react";
 import { GoalModel } from "../models/GoalModel";
 import { UserModel } from "../models/UserModel";
 import Rand, {PRNG} from 'rand-seed';
@@ -366,7 +367,6 @@ export class BudgetEngine {
     // }
 
     // console.log(monthlySavings);
-
     for (let i = 0; i < goalTimeline; i++) {
       if (calcMonthlySavings > monthlySavingsArray[i]) {
         return null;
