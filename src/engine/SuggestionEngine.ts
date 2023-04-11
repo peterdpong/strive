@@ -432,9 +432,11 @@ export class SuggestionEngine {
                 /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
                 ","
               )}. You are spending $${(
+              categorySpend[TransactionCategories[category]]
+              -
               AverageExpensesOnePersonHousehold[
                 TransactionCategories[category]
-              ] - categorySpend[TransactionCategories[category]]
+              ] 
             )
               .toFixed(2)
               .replace(
