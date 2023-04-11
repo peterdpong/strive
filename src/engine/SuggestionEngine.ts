@@ -377,7 +377,7 @@ export class SuggestionEngine {
               /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
               ","
             )}. You are currently spending $${(
-            AverageExpensesByAge[userAgeKey] - currentMonthSpending
+              currentMonthSpending - AverageExpensesByAge[userAgeKey]
           )
             .toFixed(2)
             .replace(
