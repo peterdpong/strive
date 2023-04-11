@@ -2,7 +2,6 @@
 import { useToast } from "@chakra-ui/react";
 import { GoalModel } from "../models/GoalModel";
 import { UserModel } from "../models/UserModel";
-import Rand, {PRNG} from 'rand-seed';
 
 export type GeneratedGoals = {
   lessAggressiveGoal: GoalModel;
