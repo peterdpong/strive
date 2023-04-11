@@ -149,7 +149,7 @@ export class SuggestionEngine {
             suggestionType: suggestionType,
             badgeColor: "red",
             suggestionBadge: suggestionBadge,
-            suggestionTitle: `Last month you spent more than you allocated budget for ${TransactionCategories[category]}`,
+            suggestionTitle: `Last month you spent more than you allocated budget for ${TransactionCategories[category]}.`,
             suggestionDescription: `Your allocated budget for ${
               TransactionCategories[category]
             } for a month was $${userData.budgetInfo.monthlyAllocations[
@@ -166,12 +166,12 @@ export class SuggestionEngine {
               .replace(
                 /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
                 ","
-              )} which is over you allocated budget by $${(
+              )} which is over your allocated budget by $${(
               categorySpend[TransactionCategories[category]] -
               userData.budgetInfo.monthlyAllocations[category].allocation
             )
               .toFixed(2)
-              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`,
+              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}.`,
           };
           budgetSelfComparisons.push(newSuggestion);
         }
@@ -641,12 +641,12 @@ export class SuggestionEngine {
             .map((loan, index) => `${index + 1}) ${loan.name} `)
             .toString()
             .split(",")
-            .join("")}`,
+            .join("")}.`,
           `Snowball Plan - pay lowest principal debt first.  Your order of debt to pay off is ${loanSortedByPrincipal
             .map((loan, index) => `${index + 1}) ${loan.name} `)
             .toString()
             .split(",")
-            .join("")}`,
+            .join("")}.`,
         ],
       });
     }
